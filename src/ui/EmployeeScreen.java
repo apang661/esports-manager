@@ -1,2 +1,9 @@
-package ui;public class EmployeeScreen {
+package ui;
+
+import javax.swing.*;
+
+public class EmployeeScreen extends JPanel {
+    public EmployeeScreen() {
+
+    }
 }
