@@ -121,7 +121,7 @@ CREATE TABLE Viewer (
 CREATE TABLE Seat (
       aID     INTEGER,
       seatNum INTEGER,
-      price   FLOAT 5,
+      price   FLOAT(5),
       PRIMARY KEY (aID, seatNum),
       FOREIGN KEY (aID) REFERENCES Arena (aID)
 );
