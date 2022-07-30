@@ -1,2 +1,9 @@
-package ui;public class ViewerScreen {
+package ui;
+
+import javax.swing.*;
+
+public class ViewerScreen extends JPanel {
+    public ViewerScreen(int viewerID) {
+
+    }
 }
