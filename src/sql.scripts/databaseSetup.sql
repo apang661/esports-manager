@@ -84,7 +84,7 @@ CREATE TABLE PlaysIn (
     gID INTEGER,
     pID INTEGER,
     PRIMARY KEY (gID, pID),
-    FOREIGN KEY (gID) REFERENCES Game (gID),
+    FOREIGN KEY (gID) REFERENCES Game (tmID),
     FOREIGN KEY (pID) REFERENCES Player (pID)
 );
 
@@ -118,6 +118,15 @@ CREATE TABLE Viewer (
 );
 
 
+
+CREATE TABLE Seat (
+      aID     INTEGER,
+      seatNum INTEGER,
+      price   FLOAT 5,
+      PRIMARY KEY (aID, seatNum),
+      FOREIGN KEY (aID) REFERENCES Arena (aID)
+);
+
 CREATE TABLE Ticket (
     ticketNum INTEGER PRIMARY KEY,
     vID       INTEGER,
@@ -131,14 +140,6 @@ CREATE TABLE Ticket (
 );
 
 
-
-CREATE TABLE Seat (
-    aID     INTEGER,
-    seatNum INTEGER,
-    price   DOUBLE,
-    PRIMARY KEY (aID, seatNum),
-    FOREIGN KEY (aID) REFERENCES Arena (aID)
-);
 
 INSERT INTO Team VALUES (1, 'Cloud9', 'Jack Etienne');
 INSERT INTO Team VALUES (2, '100 Thieves', 'Matthew Haag');
