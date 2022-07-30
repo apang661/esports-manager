@@ -13,11 +13,8 @@ public class HomeScreen extends JFrame {
 
     public HomeScreen() {
         super("eSports App");
-        setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        setLayout(new OverlayLayout(this.getContentPane()));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
-        setBackground(Color.gray);
+        setResizable(true);
         userSelect = createUserSelect();
         add(userSelect, BorderLayout.CENTER);
         pack();
@@ -29,16 +26,14 @@ public class HomeScreen extends JFrame {
         panel.setBackground(BACKGROUND_COLOR);
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
+        gbc.insets = new Insets(30, 30, 30, 30);
 
         panel.add(createButtonPanel(), gbc);
         return panel;
     }
 
     private JPanel createButtonPanel() {
-
-        JPanel panel = new JPanel(new GridLayout(4, 3, 100, 20));
+        JPanel panel = new JPanel(new GridLayout(4, 1, 0, 20));
         panel.setBackground(BACKGROUND_COLOR);
 
         JLabel instructionText = new JLabel("Please select a login type:");
@@ -95,7 +90,8 @@ public class HomeScreen extends JFrame {
         }
 
         add(mainScreen);
-        userSelect.setVisible(false);
+        remove(userSelect);
+        pack();
     }
 
     private JButton getUserSelectButton(String label, Action action) {
@@ -108,7 +104,9 @@ public class HomeScreen extends JFrame {
         return button;
     }
 
+    // Helper function for finding the borders of a component
     private void createBorder(JComponent comp) {
-        comp.setBorder(BorderFactory.createLineBorder(Color.black));
+        comp.setBorder(BorderFactory.createLineBorder(Color.white));
+
     }
 }
