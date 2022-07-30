@@ -14,7 +14,6 @@ CREATE TABLE Achievement (
     UNIQUE (season, year, tID)
 );
 
-
 CREATE TABLE Roster (
     tID    INTEGER,
     season CHAR(6),
@@ -76,7 +75,7 @@ CREATE TABLE Game (
     aID  INTEGER NOT NULL,
     FOREIGN KEY (rtID) REFERENCES Team (tID),
     FOREIGN KEY (btID) REFERENCES Team (tID),
-    FOREIGN KEY (aID) REFERENCES Arena
+    FOREIGN KEY (aID) REFERENCES Arena (aID)
 );
 
 
@@ -84,8 +83,8 @@ CREATE TABLE PlaysIn (
     gID INTEGER,
     pID INTEGER,
     PRIMARY KEY (gID, pID),
-    FOREIGN KEY (gID) REFERENCES Game (tmID),
-    FOREIGN KEY (pID) REFERENCES Player (pID)
+    FOREIGN KEY (gID) REFERENCES Game (gID),
+    FOREIGN KEY (pID) REFERENCES Player (tmID)
 );
 
 
@@ -182,6 +181,13 @@ INSERT INTO Staff VALUES	(8, 'Analyst');
 INSERT INTO Staff VALUES	(9, 'Sports Psychologist');
 INSERT INTO Staff VALUES	(10, 'Positional Coach');
 
+
+INSERT INTO Arena VALUES (1, 'Rogers Arena', 'Vancouver');
+INSERT INTO Arena VALUES (2, 'LCS Arena', 'Los Angeles');
+INSERT INTO Arena VALUES (3, 'LEC Studio', 'Berlin');
+INSERT INTO Arena VALUES (4, 'LPL Stadium', 'Shanghai');
+INSERT INTO Arena VALUES (5, 'LOL Park', 'Seoul');
+
 INSERT INTO Game VALUES (1, 1, 2, '10-OCT-22', 1);
 INSERT INTO Game VALUES (2, 2, 3, '23-JAN-22', 3);
 INSERT INTO Game VALUES (3, 3, 4, '30-OCT-22', 4);
@@ -191,7 +197,7 @@ INSERT INTO Game VALUES (5, 5, 3, '10-OCT-22', 1);
 INSERT INTO SeasonDates VALUES ('10-OCT-22', 'Winter');
 INSERT INTO SeasonDates VALUES ('23-JAN-22', 'Winter');
 INSERT INTO SeasonDates VALUES ('30-OCT-22', 'Winter');
-INSERT INTO SeasonDates VALUES ('30-FEB-22', 'Spring');
+INSERT INTO SeasonDates VALUES ('27-FEB-22', 'Spring');
 INSERT INTO SeasonDates VALUES ('25-JUN-22', 'Summer');
 
 INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 1);
@@ -213,11 +219,6 @@ INSERT INTO Casts VALUES (2,3, 'French');
 INSERT INTO Casts VALUES (1,4, 'English');
 INSERT INTO Casts VALUES (1,5, 'English');
 
-INSERT INTO Arena VALUES (1, 'Rogers Arena', 'Vancouver');
-INSERT INTO Arena VALUES (2, 'LCS Arena', 'Los Angeles');
-INSERT INTO Arena VALUES (3, 'LEC Studio', 'Berlin');
-INSERT INTO Arena VALUES (4, 'LPL Stadium', 'Shanghai');
-INSERT INTO Arena VALUES (5, 'LOL Park', 'Seoul');
 
 INSERT INTO Viewer VALUES (1, 'Bob');
 INSERT INTO Viewer VALUES (2, 'Joe');
@@ -225,17 +226,17 @@ INSERT INTO Viewer VALUES (3, 'Tom');
 INSERT INTO Viewer VALUES (4, 'Sam');
 INSERT INTO Viewer VALUES (5, 'Rob');
 
-INSERT INTO Ticket VALUES (1, 1, 1, 1, 1);
-INSERT INTO Ticket VALUES (2, 2, 2, 2, 2);
-INSERT INTO Ticket VALUES (3, 3, 3, 3, 3);
-INSERT INTO Ticket VALUES (4, 4, 4, 4, 4);
-INSERT INTO Ticket VALUES (5, 5, 5, 5, 5);
-
 INSERT INTO Seat VALUES (1, 1, 1.00);
 INSERT INTO Seat VALUES (2, 2, 2.00);
 INSERT INTO Seat VALUES (3, 3, 3.00);
 INSERT INTO Seat VALUES (4, 4, 4.00);
 INSERT INTO Seat VALUES (5, 5, 5.00);
+
+INSERT INTO Ticket VALUES (1, 1, 1, 1, 1);
+INSERT INTO Ticket VALUES (2, 2, 2, 2, 2);
+INSERT INTO Ticket VALUES (3, 3, 3, 3, 3);
+INSERT INTO Ticket VALUES (4, 4, 4, 4, 4);
+INSERT INTO Ticket VALUES (5, 5, 5, 5, 5);
 
 INSERT INTO PlaysIn VALUES (1, 1);
 INSERT INTO PlaysIn VALUES (2, 2);
