@@ -10,8 +10,7 @@ CREATE TABLE Achievement (
     placement INTEGER,
     tID       INTEGER NOT NULL,
     PRIMARY KEY (season, year, placement),
-    FOREIGN KEY (tID) REFERENCES Team (tID)
-        ON UPDATE CASCADE,
+    FOREIGN KEY (tID) REFERENCES Team (tID),
     UNIQUE (season, year, tID)
 );
 
@@ -24,7 +23,6 @@ CREATE TABLE Roster (
     losses INTEGER NOT NULL,
     PRIMARY KEY (season, year, tID),
     FOREIGN KEY (tID) REFERENCES Team (tID)
-        ON UPDATE CASCADE
 );
 
 
@@ -42,11 +40,8 @@ CREATE TABLE PartOfRoster (
     tID    INTEGER,
     tmID   INTEGER,
     PRIMARY KEY (season, year, tID, tmID),
-    FOREIGN KEY (season, year, tID) REFERENCES Roster (season, year, tID)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
+    FOREIGN KEY (season, year, tID) REFERENCES Roster (season, year, tID),
     FOREIGN KEY (tmID) REFERENCES TeamMember
-        ON UPDATE CASCADE
 );
 
 CREATE TABLE Player (
@@ -54,7 +49,6 @@ CREATE TABLE Player (
     position CHAR(7),
     alias    CHAR(20) UNIQUE NOT NULL,
     FOREIGN KEY (tmID) REFERENCES TeamMember (tmID)
-        ON UPDATE CASCADE
 );
 
 
@@ -62,7 +56,6 @@ CREATE TABLE Staff (
     tmID INTEGER PRIMARY KEY,
     role CHAR(20),
     FOREIGN KEY (tmID) REFERENCES TeamMember
-        ON UPDATE CASCADE
 );
 
 
@@ -81,13 +74,9 @@ CREATE TABLE Game (
     btID INTEGER NOT NULL,
     day  DATE,
     aID  INTEGER NOT NULL,
-    FOREIGN KEY (rtID) REFERENCES Team (tID)
-        ON UPDATE CASCADE,
-    FOREIGN KEY (btID) REFERENCES Team (tID)
-        ON UPDATE CASCADE,
+    FOREIGN KEY (rtID) REFERENCES Team (tID),
+    FOREIGN KEY (btID) REFERENCES Team (tID),
     FOREIGN KEY (aID) REFERENCES Arena
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 
@@ -95,12 +84,8 @@ CREATE TABLE PlaysIn (
     gID INTEGER,
     pID INTEGER,
     PRIMARY KEY (gID, pID),
-    FOREIGN KEY (gID) REFERENCES Game (gID)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
+    FOREIGN KEY (gID) REFERENCES Game (gID),
     FOREIGN KEY (pID) REFERENCES Player (pID)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 
@@ -122,12 +107,8 @@ CREATE TABLE Casts (
     gID      INTEGER,
     language CHAR(20) NOT NULL,
     PRIMARY KEY (cID, gID),
-    FOREIGN KEY (cID) REFERENCES Caster (cID)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
+    FOREIGN KEY (cID) REFERENCES Caster (cID),
     FOREIGN KEY (gID) REFERENCES Game (gID)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 
@@ -143,15 +124,9 @@ CREATE TABLE Ticket (
     gID       INTEGER NOT NULL,
     aID       INTEGER NOT NULL,
     seatNum   INTEGER NOT NULL,
-    FOREIGN KEY (vID) REFERENCES Viewer (vID)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE,
-    FOREIGN KEY (gID) REFERENCES Game (gID)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    FOREIGN KEY (aID, seatNum) REFERENCES Seat (aID, seatNum)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
+    FOREIGN KEY (vID) REFERENCES Viewer (vID),
+    FOREIGN KEY (gID) REFERENCES Game (gID),
+    FOREIGN KEY (aID, seatNum) REFERENCES Seat (aID, seatNum),
     UNIQUE (gID, seatNum)
 );
 
@@ -163,8 +138,6 @@ CREATE TABLE Seat (
     price   DOUBLE,
     PRIMARY KEY (aID, seatNum),
     FOREIGN KEY (aID) REFERENCES Arena (aID)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 INSERT INTO Team VALUES (1, 'Cloud9', 'Jack Etienne');
