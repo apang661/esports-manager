@@ -5,8 +5,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class HomeScreen extends JFrame {
-    public static final int SCREEN_WIDTH = 800;
-    public static final int SCREEN_HEIGHT = 600;
     public static final Color BACKGROUND_COLOR = new Color(30, 30, 30);
     public static final String DEFAULT_FONT_NAME = "Helvetica";
     private JPanel userSelect;
@@ -14,7 +12,6 @@ public class HomeScreen extends JFrame {
     public HomeScreen() {
         super("eSports App");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(true);
         userSelect = createUserSelect();
         add(userSelect, BorderLayout.CENTER);
         pack();
@@ -105,8 +102,8 @@ public class HomeScreen extends JFrame {
     }
 
     // Helper function for finding the borders of a component
-    private void createBorder(JComponent comp) {
+    public static void createBorder(JComponent comp, Color color) {
         comp.setBorder(BorderFactory.createLineBorder(Color.white));
-
+        comp.getSize();
     }
 }
