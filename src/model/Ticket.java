@@ -2,16 +2,16 @@ package model;
 
 public class Ticket {
     private final int ticketNum;
-    private final int vID;
-    private final int gID;
-    private final int aID;
+    private final int viewerID;
+    private final int gameID;
+    private final int arenaID;
     private final int seatNum;
 
-    public Ticket(int ticketNum, int vID, int gID, int aID, int seatNum) {
+    public Ticket(int ticketNum, int viewerID, int gameID, int arenaID, int seatNum) {
         this.ticketNum = ticketNum;
-        this.vID = vID;
-        this.gID = gID;
-        this.aID = aID;
+        this.viewerID = viewerID;
+        this.gameID = gameID;
+        this.arenaID = arenaID;
         this.seatNum = seatNum;
     }
 
@@ -19,16 +19,16 @@ public class Ticket {
         return ticketNum;
     }
 
-    public int getVID() {
-        return vID;
+    public int getViewerID() {
+        return viewerID;
     }
 
-    public int getGID() {
-        return gID;
+    public int getGameID() {
+        return gameID;
     }
 
-    public int getAID() {
-        return aID;
+    public int getArenaID() {
+        return arenaID;
     }
 
     public int getSeatNum() {

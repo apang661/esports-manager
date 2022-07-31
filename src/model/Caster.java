@@ -1,16 +1,16 @@
 package model;
 
 public class Caster {
-    private final int cID;
+    private final int casterID;
     private final String name;
 
-    public Caster(int cID, String name) {
-        this.cID = cID;
+    public Caster(int casterID, String name) {
+        this.casterID = casterID;
         this.name = name;
     }
 
-    public int getCID() {
-        return cID;
+    public int getCasterID() {
+        return casterID;
     }
 
     public String getName() {

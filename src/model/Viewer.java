@@ -1,16 +1,16 @@
 package model;
 
 public class Viewer {
-    private final int vID;
+    private final int viewerID;
     private final String name;
 
-    public Viewer(int vID, String name) {
-        this.vID = vID;
+    public Viewer(int viewerID, String name) {
+        this.viewerID = viewerID;
         this.name = name;
     }
 
-    public int getVID() {
-        return vID;
+    public int getViewerID() {
+        return viewerID;
     }
 
     public String getName() {
