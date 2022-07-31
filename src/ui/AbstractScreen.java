@@ -4,8 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-// TODO: Add functionality to set click action on tabs to switch to their respective panels
+import java.util.ArrayList;
 
 // A screen GUI template that facilitates the addition of tabs and tab content
 public class AbstractScreen extends JPanel {
@@ -14,11 +13,13 @@ public class AbstractScreen extends JPanel {
     public static final Color TAB_COLOR = new Color(70, 70, 70);
 
     JPanel tabBar;
-
-    JPanel tab;
+    ArrayList<JPanel> tabPanels;
+    int visibleTabIndex;
     JPanel contentPanel;
 
     public AbstractScreen() {
+        visibleTabIndex = 0;
+        tabPanels = new ArrayList<>();
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         setBackground(HomeScreen.BACKGROUND_COLOR);
         setLayout(new BorderLayout());
@@ -28,8 +29,9 @@ public class AbstractScreen extends JPanel {
 
     private JPanel setupContentPanel() {
         contentPanel = new JPanel();
+        contentPanel.setLayout(new OverlayLayout(contentPanel));
         contentPanel.setPreferredSize(new Dimension(SCREEN_WIDTH * 3 / 4, SCREEN_HEIGHT));
-        contentPanel.setBackground(new Color(200, 200, 200));
+        contentPanel.setBackground(new Color(150, 150, 150));
         return contentPanel;
     }
 
@@ -65,17 +67,19 @@ public class AbstractScreen extends JPanel {
     }
 
     protected void addTab(String tabName, JPanel tabPanel) {
-        tab = new JPanel(new GridBagLayout());
+        JPanel tab = new JPanel(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
         JLabel text = new JLabel(tabName);
         text.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 14));
         text.setForeground(Color.WHITE);
         tab.setBackground(TAB_COLOR);
+
+        int currentSize = tabPanels.size();
         tab.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("cool");
+                displayTab(currentSize);
             }
         });
 
@@ -93,8 +97,20 @@ public class AbstractScreen extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         tabBar.add(tab, gbc);
 
-        System.out.println(tab.getPreferredSize());
-//        HomeScreen.createBorder(tab, Color.GRAY);
+        HomeScreen.createBorder(tabPanel, Color.RED);
+        if (tabPanels.size() != 0) {
+            tabPanel.setVisible(false);
+        }
+
+        tabPanels.add(tabPanel);
         contentPanel.add(tabPanel);
+    }
+
+    protected void displayTab(int index) {
+        if (visibleTabIndex != index) {
+            tabPanels.get(visibleTabIndex).setVisible(false);
+            tabPanels.get(index).setVisible(true);
+            visibleTabIndex = index;
+        }
     }
 }

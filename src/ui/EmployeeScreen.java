@@ -1,6 +1,7 @@
 package ui;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class EmployeeScreen extends AbstractScreen {
     public EmployeeScreen() {
@@ -11,10 +12,18 @@ public class EmployeeScreen extends AbstractScreen {
 
 
     private JPanel setupGamesPanel() {
-        return new JPanel();
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.RED);
+        JLabel test = new JLabel("test");
+        panel.add(test);
+        return panel;
     }
 
     private JPanel setupTeamsPanel() {
-        return new JPanel();
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.BLUE);
+        JLabel test = new JLabel("test");
+        panel.add(test);
+        return panel;
     }
 }
