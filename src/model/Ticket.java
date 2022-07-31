@@ -19,15 +19,15 @@ public class Ticket {
         return ticketNum;
     }
 
-    public int getvID() {
+    public int getVID() {
         return vID;
     }
 
-    public int getgID() {
+    public int getGID() {
         return gID;
     }
 
-    public int getaID() {
+    public int getAID() {
         return aID;
     }
 
