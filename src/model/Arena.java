@@ -11,7 +11,7 @@ public class Arena {
         this.city = city;
     }
 
-    public int getaID() {
+    public int getAID() {
         return aID;
     }
 
