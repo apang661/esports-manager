@@ -9,7 +9,7 @@ public class Viewer {
         this.name = name;
     }
 
-    public int getvID() {
+    public int getVID() {
         return vID;
     }
 
