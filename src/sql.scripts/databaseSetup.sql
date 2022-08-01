@@ -168,12 +168,23 @@ INSERT INTO TeamMember VALUES (7, 'Brian Pang', 32);
 INSERT INTO TeamMember VALUES (8, 'Mickey Mouse', 33);
 INSERT INTO TeamMember VALUES (9, 'Barack Obama', 34);
 INSERT INTO TeamMember VALUES (10, 'Peter Parker', 35);
+INSERT INTO TeamMember VALUES (11, 'Ibrahim Allami', 21);
+INSERT INTO TeamMember VALUES (12, 'Can Celik', 22);
+INSERT INTO TeamMember VALUES (13, 'Soren Bjerg', 23);
+INSERT INTO TeamMember VALUES (14, 'Peng Yiliang', 24);
+INSERT INTO TeamMember VALUES (15, 'Philippe Laflamme', 25);
+
 
 INSERT INTO Player VALUES (1, 'TOP', 'Fudge');
 INSERT INTO Player VALUES (2, 'JNG', 'Closer');
 INSERT INTO Player VALUES (3, 'MID', 'Bjergsen');
 INSERT INTO Player VALUES (4, 'ADC', 'Doublelift');
 INSERT INTO Player VALUES (5, 'SUP', 'Vulcan');
+INSERT INTO Player VALUES (11, 'TOP', 'Nill');
+INSERT INTO Player VALUES (12, 'JNG', 'Jull');
+INSERT INTO Player VALUES (13, 'MID', 'Hill');
+INSERT INTO Player VALUES (14, 'ADC', 'Kill');
+INSERT INTO Player VALUES (15, 'SUP', 'Dill');
 
 INSERT INTO Staff VALUES	(6, 'Coach');
 INSERT INTO Staff VALUES	(7, 'Assistant Coach');
@@ -188,23 +199,31 @@ INSERT INTO Arena VALUES (3, 'LEC Studio', 'Berlin');
 INSERT INTO Arena VALUES (4, 'LPL Stadium', 'Shanghai');
 INSERT INTO Arena VALUES (5, 'LOL Park', 'Seoul');
 
-INSERT INTO Game VALUES (1, 1, 2, '10-OCT-22', 1);
-INSERT INTO Game VALUES (2, 2, 3, '23-JAN-22', 3);
-INSERT INTO Game VALUES (3, 3, 4, '30-OCT-22', 4);
-INSERT INTO Game VALUES (4, 1, 2, '25-FEB-22', 3);
-INSERT INTO Game VALUES (5, 5, 3, '10-OCT-22', 1);
+INSERT INTO Game VALUES (1, 1, 2, '22-OCT-10', 1);
+INSERT INTO Game VALUES (2, 2, 3, '22-JAN-23', 3);
+INSERT INTO Game VALUES (3, 3, 4, '22-OCT-30', 4);
+INSERT INTO Game VALUES (4, 1, 2, '22-FEB-27', 3);
+INSERT INTO Game VALUES (5, 5, 3, '22-OCT-10', 1);
 
-INSERT INTO SeasonDates VALUES ('10-OCT-22', 'Winter');
-INSERT INTO SeasonDates VALUES ('23-JAN-22', 'Winter');
-INSERT INTO SeasonDates VALUES ('30-OCT-22', 'Winter');
-INSERT INTO SeasonDates VALUES ('27-FEB-22', 'Spring');
-INSERT INTO SeasonDates VALUES ('25-JUN-22', 'Summer');
+
+INSERT INTO SeasonDates VALUES ('22-OCT-10', 'Spring');
+INSERT INTO SeasonDates VALUES ('22-JAN-23', 'Spring');
+INSERT INTO SeasonDates VALUES ('22-OCT-30', 'Spring');
+INSERT INTO SeasonDates VALUES ('22-FEB-27', 'Spring');
+INSERT INTO SeasonDates VALUES ('22-JUN-25', 'Summer');
+
+
 
 INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 1);
-INSERT INTO PartOfRoster VALUES ('Spring', 2022, 2, 2);
-INSERT INTO PartOfRoster VALUES ('Spring', 2022, 3, 3);
-INSERT INTO PartOfRoster VALUES ('Spring', 2022, 4, 4);
-INSERT INTO PartOfRoster VALUES ('Spring', 2022, 5, 5);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 2);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 3);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 4);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 5);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 2, 11);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 2, 12);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 2, 13);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 2, 14);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 2, 15);
 
 INSERT INTO Caster VALUES (1, 'Kobe');
 INSERT INTO Caster VALUES (2, 'CaptainFlowers');
@@ -243,3 +262,5 @@ INSERT INTO PlaysIn VALUES (2, 2);
 INSERT INTO PlaysIn VALUES (3, 3);
 INSERT INTO PlaysIn VALUES (4, 4);
 INSERT INTO PlaysIn VALUES (5, 5);
+
+commit

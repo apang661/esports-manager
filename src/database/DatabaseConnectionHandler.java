@@ -1,9 +1,15 @@
 package database;
 
+import model.Arena;
 import model.Game;
+import model.Player;
+import model.Team;
 import utils.PrintablePreparedStatement;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -88,28 +94,93 @@ public class DatabaseConnectionHandler {
 	}
 
     public ArrayList<Game> getGames(int i) {
+        ArrayList<Game> list = new ArrayList<>();
         try {
-            ArrayList<Game> list = new ArrayList<>();
             String query = "SELECT * FROM GAME";
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 query = "SELECT season FROM SeasonDates WHERE day = ?";
-                System.out.println(rs.getInt("gID"));
                 ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
                 ps.setDate(1, rs.getDate("day"));
                 ResultSet rs2 = ps.executeQuery();
+                rs2.next();
                 Game temp = new Game(rs.getInt("gID"), rs.getInt("rtID"), rs.getInt("btID"),
-                        rs.getDate("day"), rs.getInt("aID"), rs2.getString("season"));
+                rs.getDate("day"), rs.getInt("aID"), rs2.getString("season"));
                 list.add(temp);
             }
-            return list;
+            rs.close();
+            ps.close();
         } catch (SQLException e) {
             System.out.println(EXCEPTION_TAG + " " + e.getMessage());
             rollbackConnection();
-            return null;
         }
+        return list;
     }
+
+    public Arena getArena(int aID) {
+        Arena arena = null;
+        try {
+            String query = "SELECT * FROM Arena WHERE aID = ?";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, aID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                arena = new Arena(rs.getInt("aID"), rs.getString("name"), rs.getString("city"));
+            }
+            rs.close();
+            ps.close();
+
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return arena;
+    }
+
+    public Team getTeam(int tID) {
+        Team team = null;
+        try {
+            String query = "SELECT * FROM Team WHERE tID = ?";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, tID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                team = new Team(rs.getInt("tID"), rs.getString("name"), rs.getString("owner"));
+            }
+            rs.close();
+            ps.close();
+
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return team;
+    }
+
+    public ArrayList<Player> getRosterPlayers(int tmID, String season, int year) {
+        ArrayList<Player> players = new ArrayList<>();
+        try {
+            String query = "SELECT Player.tmID, Player.position, Player.alias FROM partofroster INNER JOIN Player ON partofroster.tmID=Player.tmID WHERE partofroster.season = ? AND partofroster.tID = ? AND partofroster.year = ?";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setString(1, season);
+            ps.setInt(2, tmID);
+            ps.setInt(3, year + 1900);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Player temp = new Player(rs.getInt("tmID"), rs.getString("position"), rs.getString("alias"));
+                players.add(temp);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return players;
+    }
+
+
 
 //	public void insertBranch(BranchModel model) {
 //		try {

@@ -32,11 +32,16 @@ public class AbstractScreen extends JPanel {
         add(setupContentPanel(), BorderLayout.CENTER);
     }
 
+    public DatabaseConnectionHandler getDbHandler() {
+        return dbHandler;
+    }
+
     private JPanel setupContentPanel() {
         contentPanel = new JPanel();
         contentPanel.setLayout(new OverlayLayout(contentPanel));
         contentPanel.setPreferredSize(new Dimension(SCREEN_WIDTH * 3 / 4, SCREEN_HEIGHT));
         contentPanel.setBackground(new Color(150, 150, 150));
+        contentPanel.setAlignmentX(Box.RIGHT_ALIGNMENT);
         return contentPanel;
     }
 
@@ -73,7 +78,6 @@ public class AbstractScreen extends JPanel {
 
     protected void addTab(String tabName, JPanel tabPanel) {
         JPanel tab = new JPanel(new GridBagLayout());
-
         GridBagConstraints gbc = new GridBagConstraints();
         JLabel text = new JLabel(tabName);
         text.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 14));
