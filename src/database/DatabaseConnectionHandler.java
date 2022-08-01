@@ -1,8 +1,10 @@
 package database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import model.Game;
+import utils.PrintablePreparedStatement;
+
+import java.sql.*;
+import java.util.ArrayList;
 
 
 /**
@@ -19,6 +21,7 @@ public class DatabaseConnectionHandler {
 	private Connection connection = null;
 
 	public DatabaseConnectionHandler() {
+        login("ora_dennis34", "a94349206");
 		try {
 			// Load the Oracle JDBC driver
 			// Note that the path could change for new drivers
@@ -38,26 +41,76 @@ public class DatabaseConnectionHandler {
 		}
 	}
 
-//	public void deleteBranch(int branchId) {
-//		try {
-//			String query = "DELETE FROM branch WHERE branch_id = ?";
-//			PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-//			ps.setInt(1, branchId);
-//
-//			int rowCount = ps.executeUpdate();
-//			if (rowCount == 0) {
-//				System.out.println(WARNING_TAG + " Branch " + branchId + " does not exist!");
-//			}
-//
-//			connection.commit();
-//
-//			ps.close();
-//		} catch (SQLException e) {
-//			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-//			rollbackConnection();
-//		}
-//	}
-//
+	public void insertGame(Game game) {
+//        INSERT INTO Game VALUES (1, 1, 2, '10-OCT-22', 1)
+		try {
+            String query = "INSERT INTO SeasonDates VALUES (?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setDate(1, game.getDay());
+            ps.setString(2, game.getSeason());
+            ps.executeUpdate();
+            connection.commit();
+
+            query = "INSERT INTO Game VALUES (?, ?, ?, ?, ?)";
+			ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+			ps.setInt(1, game.getgID());
+            ps.setInt(2, game.getBtID());
+            ps.setInt(3, game.getRtID());
+            ps.setDate(4, game.getDay());
+            ps.setInt(5, game.getaID());
+            ps.executeUpdate();
+			connection.commit();
+
+			ps.close();
+		} catch (SQLException e) {
+			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+			rollbackConnection();
+		}
+	}
+    public void deleteGame(int gID) {
+		try {
+			String query = "DELETE FROM Game WHERE gID = ?";
+			PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+			ps.setInt(1, gID);
+
+			int rowCount = ps.executeUpdate();
+			if (rowCount == 0) {
+				System.out.println(WARNING_TAG + " Branch " + gID + " does not exist!");
+			}
+
+			connection.commit();
+
+			ps.close();
+		} catch (SQLException e) {
+			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+			rollbackConnection();
+		}
+	}
+
+    public ArrayList<Game> getGames(int i) {
+        try {
+            ArrayList<Game> list = new ArrayList<>();
+            String query = "SELECT * FROM GAME";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                query = "SELECT season FROM SeasonDates WHERE day = ?";
+                System.out.println(rs.getInt("gID"));
+                ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+                ps.setDate(1, rs.getDate("day"));
+                ResultSet rs2 = ps.executeQuery();
+                Game temp = new Game(rs.getInt("gID"), rs.getInt("rtID"), rs.getInt("btID"),
+                        rs.getDate("day"), rs.getInt("aID"), rs2.getString("season"));
+                list.add(temp);
+            }
+            return list;
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+            return null;
+        }
+    }
+
 //	public void insertBranch(BranchModel model) {
 //		try {
 //			String query = "INSERT INTO branch VALUES (?,?,?,?,?)";
@@ -129,30 +182,30 @@ public class DatabaseConnectionHandler {
 //		}
 //	}
 //
-//	public boolean login(String username, String password) {
-//		try {
-//			if (connection != null) {
-//				connection.close();
-//			}
+	public boolean login(String username, String password) {
+		try {
+			if (connection != null) {
+				connection.close();
+			}
+
+			connection = DriverManager.getConnection(ORACLE_URL, username, password);
+			connection.setAutoCommit(false);
+
+			System.out.println("\nConnected to Oracle!");
+			return true;
+		} catch (SQLException e) {
+			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+			return false;
+		}
+	}
 //
-//			connection = DriverManager.getConnection(ORACLE_URL, username, password);
-//			connection.setAutoCommit(false);
-//
-//			System.out.println("\nConnected to Oracle!");
-//			return true;
-//		} catch (SQLException e) {
-//			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-//			return false;
-//		}
-//	}
-//
-//	private void rollbackConnection() {
-//		try  {
-//			connection.rollback();
-//		} catch (SQLException e) {
-//			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-//		}
-//	}
+	private void rollbackConnection() {
+		try  {
+			connection.rollback();
+		} catch (SQLException e) {
+			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+		}
+	}
 //
 //	public void databaseSetup() {
 //		dropBranchTableIfExists();

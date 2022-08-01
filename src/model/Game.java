@@ -1,37 +1,50 @@
 package model;
 
+import java.sql.Date;
+
 public class Game {
-    private final int gameID;
-    private final int redTeamID;
-    private final int blueTeamID;
-    private final String date;
-    private final int arenaID;
+    private int gID;
+    private int btID;
+    private int rtID;
+    private Date day;
+    private int aID;
+    private String season;
 
-    public Game(int gameID, int redTeamID, int blueTeamID, String date, int arenaID) {
-        this.gameID = gameID;
-        this.redTeamID = redTeamID;
-        this.blueTeamID = blueTeamID;
-        this.date = date;
-        this.arenaID = arenaID;
+    public Game(int gID, int btID, int rtID, Date day, int aID, String season) {
+        this.gID = gID;
+        this.btID = btID;
+        this.rtID = rtID;
+        this.day = day;
+        this.aID = aID;
+        this.season = season;
     }
 
-    public int getGameID() {
-        return gameID;
+    public int getgID() {
+        return gID;
     }
 
-    public int getRedTeamID() {
-        return redTeamID;
+    public int getBtID() {
+        return btID;
     }
 
-    public int getBlueTeamID() {
-        return blueTeamID;
+    public int getRtID() {
+        return rtID;
     }
 
-    public String getDate() {
-        return date;
+    public Date getDay() {
+        return day;
     }
 
-    public int getArenaID() {
-        return arenaID;
+    public int getaID() {
+        return aID;
+    }
+
+    public String getSeason() {
+        return season;
+    }
+
+    public String getDescription() {
+        String desc = season + " " + rtID + " vs. " + btID;
+        return desc;
     }
 }

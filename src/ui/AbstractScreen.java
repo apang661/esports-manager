@@ -1,5 +1,7 @@
 package ui;
 
+import database.DatabaseConnectionHandler;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -8,9 +10,11 @@ import java.util.ArrayList;
 
 // A screen GUI template that facilitates the addition of tabs and tab content
 public class AbstractScreen extends JPanel {
+    protected DatabaseConnectionHandler dbHandler = null;
     public static final int SCREEN_WIDTH = 800;
     public static final int SCREEN_HEIGHT = 600;
     public static final Color TAB_COLOR = new Color(70, 70, 70);
+    public static final Color TAB_HIGHLIGHTED = new Color(54,54,54 );
 
     JPanel tabBar;
     ArrayList<JPanel> tabPanels;
@@ -18,6 +22,7 @@ public class AbstractScreen extends JPanel {
     JPanel contentPanel;
 
     public AbstractScreen() {
+        dbHandler = new DatabaseConnectionHandler();
         visibleTabIndex = 0;
         tabPanels = new ArrayList<>();
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -109,7 +114,9 @@ public class AbstractScreen extends JPanel {
     protected void displayTab(int index) {
         if (visibleTabIndex != index) {
             tabPanels.get(visibleTabIndex).setVisible(false);
+            tabBar.getComponent(visibleTabIndex).setBackground(TAB_COLOR);
             tabPanels.get(index).setVisible(true);
+            tabBar.getComponent(index).setBackground(TAB_HIGHLIGHTED);
             visibleTabIndex = index;
         }
     }

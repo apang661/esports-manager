@@ -3,7 +3,6 @@ drop table ARENA cascade constraints;
 drop table CASTER cascade constraints;
 drop table CASTS cascade constraints;
 drop table GAME cascade constraints;
-drop table NEW cascade constraints;
 drop table PARTOFROSTER cascade constraints;
 drop table PLAYER cascade constraints;
 drop table ROSTER cascade constraints;
