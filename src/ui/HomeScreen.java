@@ -103,7 +103,7 @@ public class HomeScreen extends JFrame {
 
     // Helper function for finding the borders of a component
     public static void createBorder(JComponent comp, Color color) {
-        comp.setBorder(BorderFactory.createLineBorder(Color.white));
+        comp.setBorder(BorderFactory.createLineBorder(color));
         comp.getSize();
     }
 }
