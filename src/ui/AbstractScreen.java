@@ -25,7 +25,6 @@ public class AbstractScreen extends JPanel {
         dbHandler = new DatabaseConnectionHandler();
         visibleTabIndex = 0;
         tabPanels = new ArrayList<>();
-        setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         setBackground(HomeScreen.BACKGROUND_COLOR);
         setLayout(new BorderLayout());
         add(setupTabBar(), BorderLayout.LINE_START);
@@ -44,41 +43,47 @@ public class AbstractScreen extends JPanel {
         JPanel sideBar = new JPanel(new GridBagLayout());
         sideBar.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, SCREEN_HEIGHT));
         sideBar.setBackground(TAB_COLOR);
-
         GridBagConstraints gbc = new GridBagConstraints();
 
         tabBar = new JPanel();
         tabBar.setLayout(new GridBagLayout());
-        tabBar.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, SCREEN_HEIGHT));
         tabBar.setBackground(TAB_COLOR);
-
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 1;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
         gbc.insets = new Insets(10, 0, 0, 0);
         gbc.fill = GridBagConstraints.BOTH;
         sideBar.add(tabBar, gbc);
 
+        JPanel panel = new JPanel();
+        panel.setBackground(TAB_COLOR);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 1;
         gbc.weighty = 1;
         gbc.insets = new Insets(0, 0, 0, 0);
         gbc.fill = GridBagConstraints.BOTH;
-        JPanel panel = new JPanel();
+
         sideBar.add(panel, gbc);
-        panel.setBackground(TAB_COLOR);
         return sideBar;
     }
 
+    // Adds tabPanel to the content panel of the app and allows for navigation to the panel using a tab
     protected void addTab(String tabName, JPanel tabPanel) {
         JPanel tab = new JPanel(new GridBagLayout());
+        tab.setBackground(TAB_COLOR);
 
         GridBagConstraints gbc = new GridBagConstraints();
         JLabel text = new JLabel(tabName);
         text.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 14));
         text.setForeground(Color.WHITE);
-        tab.setBackground(TAB_COLOR);
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.weightx = 1;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.insets = new Insets(20, 20, 20, 0);
+        tab.add(text, gbc);
 
         int currentSize = tabPanels.size();
         tab.addMouseListener(new MouseAdapter() {
@@ -90,19 +95,11 @@ public class AbstractScreen extends JPanel {
 
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
-        gbc.weightx = 1;
-        gbc.anchor = GridBagConstraints.LINE_START;
-        gbc.insets = new Insets(20, 20, 20, 0);
-        tab.add(text, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = GridBagConstraints.RELATIVE;
         gbc.insets = new Insets(0, 0, 0, 0);
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         tabBar.add(tab, gbc);
 
-        HomeScreen.createBorder(tabPanel, Color.RED);
         if (tabPanels.size() != 0) {
             tabPanel.setVisible(false);
         }
