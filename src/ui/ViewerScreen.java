@@ -11,7 +11,7 @@ public class ViewerScreen extends AbstractScreen {
         addTab("Schedule", setupSchedulePanel());
         addTab("Standings", setupStandingsPanel());
         addTab("Players", setupPlayersPanel());
-
+        displayTab(0);
     }
 
     private JPanel setupAccountPanel() {
