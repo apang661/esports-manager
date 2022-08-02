@@ -6,15 +6,40 @@ import javax.swing.*;
 import java.awt.*;
 
 public class EmployeeScreen extends AbstractScreen {
-    public static final Color MAIN_COLOR = new Color(47,49,54);
-    public static final Color SECOND_COLOR = new Color(55,57,63);
-    public static final Color TEXT_COLOR = new Color(231, 231, 199);
+
 
     public EmployeeScreen() {
         super();
-
         addTab("Games", setupGamesPanel());
         addTab("Teams", setupTeamsPanel());
+        addTab("TeamMember", setupTeamMemberPanel());
+        addTab("Arena", setupArenasPanel());
+        addTab("Viewers", setupViewersPanel());
+        displayTab(0);
+    }
+
+    private JPanel setupViewersPanel() {
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.RED);
+        JLabel test = new JLabel("test");
+        panel.add(test);
+        return panel;
+    }
+
+    private JPanel setupArenasPanel() {
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.YELLOW);
+        JLabel test = new JLabel("test");
+        panel.add(test);
+        return panel;
+    }
+
+    private JPanel setupTeamMemberPanel() {
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.GRAY);
+        JLabel test = new JLabel("test");
+        panel.add(test);
+        return panel;
     }
 
 

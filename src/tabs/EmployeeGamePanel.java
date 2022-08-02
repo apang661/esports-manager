@@ -2,12 +2,15 @@ package tabs;
 
 import model.Game;
 import model.Player;
+import ui.AbstractScreen;
 import ui.EmployeeScreen;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,10 +20,8 @@ import static ui.AbstractScreen.SCREEN_HEIGHT;
 import static ui.AbstractScreen.SCREEN_WIDTH;
 
 public class EmployeeGamePanel {
-    public static final Color MAIN_COLOR = new Color(47,49,54);
-    public static final Color SECOND_COLOR = new Color(55,57,63);
-    public static final Color TEXT_COLOR = new Color(231, 231, 199);
-    private ArrayList<String> glistModel;
+    public static final int DEF_ITEMS = 10;
+    private DefaultListModel<String> glistModel;
     private HashMap<String, Game> glist;
     private JTextArea main;
 
@@ -29,31 +30,87 @@ public class EmployeeGamePanel {
     private  JPanel panel;
 
     private EmployeeScreen parent;
+    private String filter;
     public EmployeeGamePanel(EmployeeScreen parent) {
         this.parent = parent;
         selectedG = null;
         panel = new JPanel(new BorderLayout());
-        panel.setBackground(MAIN_COLOR);
-        glistModel = new ArrayList<>();
+        panel.setBackground(AbstractScreen.MAIN_COLOR);
+        add(panel, BorderLayout.CENTER);
+        glistModel = new DefaultListModel<>();
         glist = new HashMap<>();
+        addSearchBar();
         addMainPanel();
-        displayGames(panel);
+        displayGames();
+    }
+
+    private void addSearchBar() {
+        JPanel searchBar = new JPanel(new BorderLayout());
+        AbstractScreen.setColors(searchBar, "m");
+        searchBar.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 40));
+        JTextField search = new JTextField();
+        AbstractScreen.setColors(search, "s");
+        search.setText("Search");
+        String[] filters = { "game ID", "arena", "team"};
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        AbstractScreen.setColors(leftPanel, "s");
+        JButton all = new JButton("View all");
+        all.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                getGames("", "");
+            }
+        });
+        JComboBox filterList = new JComboBox(filters);
+        filterList.setSelectedIndex(0);
+        filterList.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filter = (String) filterList.getSelectedItem();
+            }
+        });
+        leftPanel.add(all, BorderLayout.WEST);
+        leftPanel.add(filterList, BorderLayout.EAST);
+        searchBar.add(leftPanel, BorderLayout.WEST);
+        searchBar.add(search, BorderLayout.CENTER);
+        JButton submit = new JButton("Search");
+        submit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                searchFilter(search.getText(), filter);
+            }
+        });
+        searchBar.add(submit, BorderLayout.EAST);
+        panel.add(searchBar, BorderLayout.NORTH);
     }
 
 
+
+    private void searchFilter(String searchTerm, String attribute) {
+        switch (attribute) {
+            case "arena":
+                getGames("aID", searchTerm);
+                break;
+            case "team":
+                getGames("team", searchTerm);
+                break;
+            case "game ID":
+                getGames("gID", searchTerm);
+                break;
+        }
+    }
     public JPanel getPanel() {
         return panel;
     }
 
-    private void displayGames(JPanel panel) {
-        JList rlist = new JList(getGames(5));
+    private void displayGames() {
+        JList rlist = new JList(getGames("",""));
         rlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         rlist.setSelectedIndex(0);
         rlist.setVisibleRowCount(5);
-        rlist.setBackground(SECOND_COLOR);
-        rlist.setForeground(TEXT_COLOR);
+        AbstractScreen.setColors(rlist, "s");
         JScrollPane listScrollPane = new JScrollPane(rlist);
-        listScrollPane.setBackground(MAIN_COLOR);
+        AbstractScreen.setColors(listScrollPane, "m");
         panel.add(listScrollPane, BorderLayout.SOUTH);
         listScrollPane.setPreferredSize(new Dimension( SCREEN_WIDTH * 3/4, SCREEN_HEIGHT/2));
         listScrollPane.setAlignmentY(BOTTOM_ALIGNMENT);
@@ -68,31 +125,28 @@ public class EmployeeGamePanel {
     private void addMainPanel() {
         initializeMain();
         JScrollPane p = new JScrollPane(main);
-        p.setBackground(MAIN_COLOR);
+        AbstractScreen.setColors(p, "m");
         printGame();
-        add(panel, BorderLayout.CENTER);
         panel.add(p, BorderLayout.CENTER);
     }
 
     private void initializeMain() {
         main = new JTextArea();
         main.setEditable(false);
-        main.setBackground(SECOND_COLOR);
-        main.setForeground(TEXT_COLOR);
+        AbstractScreen.setColors(main, "s");
     }
 
-    public String[] getGames(int items) {
-        ArrayList<Game> games = parent.getDbHandler().getGames(items);
+    public DefaultListModel<String> getGames(String attr, String query) {
+        glistModel.clear();
+        ArrayList<Game> games = parent.getDbHandler().getGames(DEF_ITEMS, attr, query);
         for (Game g : games) {
             if (!glist.containsKey(g.getgID())) {
-                glistModel.add(g.getDescription());
                 glist.put(g.getDescription(),g);
             }
+            glistModel.addElement(g.getDescription());
         }
-        String[] arr = new String[glistModel.size()];
-        arr = glistModel.toArray(arr);
 
-        return arr;
+        return glistModel;
     }
 
     private void printGame() {

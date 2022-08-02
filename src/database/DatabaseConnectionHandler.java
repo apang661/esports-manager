@@ -93,11 +93,29 @@ public class DatabaseConnectionHandler {
 		}
 	}
 
-    public ArrayList<Game> getGames(int i) {
+    public ArrayList<Game> getGames(int i, String attr, String term) {
         ArrayList<Game> list = new ArrayList<>();
         try {
-            String query = "SELECT * FROM GAME";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            String query;
+            PrintablePreparedStatement ps;
+            if (attr.equals("")) {
+                query = "SELECT * FROM GAME ORDER BY day DESC FETCH FIRST ? ROWS ONLY";
+                ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+                ps.setInt(1, i);
+            } else if (attr.equals("team")) {
+                query = "SELECT * FROM GAME WHERE rtID = ? OR btID = ? ORDER BY day DESC FETCH FIRST ? ROWS ONLY";
+                ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+                ps.setInt(1, Integer.parseInt(term));
+                ps.setInt(2, Integer.parseInt(term));
+                ps.setInt(3, i);
+            } else {
+                query = "SELECT * FROM GAME WHERE " + attr + " = ? ORDER BY day DESC FETCH FIRST ? ROWS ONLY";
+                ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+//                ps.setString(1, attr);
+                ps.setInt(1, Integer.parseInt(term));
+                ps.setInt(2, i);
+            }
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 query = "SELECT season FROM SeasonDates WHERE day = ?";
@@ -106,7 +124,7 @@ public class DatabaseConnectionHandler {
                 ResultSet rs2 = ps.executeQuery();
                 rs2.next();
                 Game temp = new Game(rs.getInt("gID"), rs.getInt("rtID"), rs.getInt("btID"),
-                rs.getDate("day"), rs.getInt("aID"), rs2.getString("season"));
+                rs.getDate("day"), rs.getInt("aID"), rs2.getString("season"), rs.getDate("day").getYear() + 1900);
                 list.add(temp);
             }
             rs.close();

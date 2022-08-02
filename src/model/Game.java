@@ -8,15 +8,17 @@ public class Game {
     private int rtID;
     private Date day;
     private int aID;
+    private int year;
     private String season;
 
-    public Game(int gID, int btID, int rtID, Date day, int aID, String season) {
+    public Game(int gID, int btID, int rtID, Date day, int aID, String season, int year) {
         this.gID = gID;
         this.btID = btID;
         this.rtID = rtID;
         this.day = day;
         this.aID = aID;
         this.season = season;
+        this.year = year;
     }
 
     public int getgID() {
@@ -44,7 +46,7 @@ public class Game {
     }
 
     public String getDescription() {
-        String desc = season + " " + rtID + " vs. " + btID;
+        String desc = season + " " + year + " " + rtID + " vs. " + btID;
         return desc;
     }
 }

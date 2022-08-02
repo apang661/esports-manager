@@ -16,6 +16,10 @@ public class AbstractScreen extends JPanel {
     public static final Color TAB_COLOR = new Color(70, 70, 70);
     public static final Color TAB_HIGHLIGHTED = new Color(54,54,54 );
 
+    public static final Color MAIN_COLOR = new Color(47,49,54);
+    public static final Color SECOND_COLOR = new Color(55,57,63);
+    public static final Color TEXT_COLOR = new Color(231, 231, 199);
+
     JPanel tabBar;
     ArrayList<JPanel> tabPanels;
     int visibleTabIndex;
@@ -23,7 +27,7 @@ public class AbstractScreen extends JPanel {
 
     public AbstractScreen() {
         dbHandler = new DatabaseConnectionHandler();
-        visibleTabIndex = 0;
+        visibleTabIndex = -1;
         tabPanels = new ArrayList<>();
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         setBackground(HomeScreen.BACKGROUND_COLOR);
@@ -34,6 +38,14 @@ public class AbstractScreen extends JPanel {
 
     public DatabaseConnectionHandler getDbHandler() {
         return dbHandler;
+    }
+
+    public static void setColors(JComponent comp, String s) {
+        comp.setForeground(TEXT_COLOR);
+        if (s.equals("m"))
+            comp.setBackground(MAIN_COLOR);
+        else if (s.equals("s"))
+            comp.setBackground(SECOND_COLOR);
     }
 
     private JPanel setupContentPanel() {
@@ -116,7 +128,11 @@ public class AbstractScreen extends JPanel {
     }
 
     protected void displayTab(int index) {
-        if (visibleTabIndex != index) {
+        if (visibleTabIndex == -1) {
+            tabPanels.get(index).setVisible(true);
+            tabBar.getComponent(index).setBackground(TAB_HIGHLIGHTED);
+            visibleTabIndex = index;
+        } else if (visibleTabIndex != index) {
             tabPanels.get(visibleTabIndex).setVisible(false);
             tabBar.getComponent(visibleTabIndex).setBackground(TAB_COLOR);
             tabPanels.get(index).setVisible(true);
