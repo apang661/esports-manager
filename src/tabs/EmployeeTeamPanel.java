@@ -2,9 +2,11 @@ package tabs;
 
 import model.Team;
 import ui.AbstractScreen;
+import utils.CustomButton;
 import ui.HomeScreen;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -42,22 +44,23 @@ public class EmployeeTeamPanel extends Panel {
     private JPanel setupContentPanel() {
         contentPanel = new JPanel();
         contentPanel.setLayout(new OverlayLayout(contentPanel));
-        contentPanel.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH * 3 / 4, AbstractScreen.SCREEN_HEIGHT));
+        contentPanel.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, AbstractScreen.SCREEN_HEIGHT));
         contentPanel.setBackground(new Color(150, 150, 150));
         contentPanel.setAlignmentX(Box.RIGHT_ALIGNMENT);
         return contentPanel;
     }
 
     private JPanel setupTeamBar() {
+        JPanel sideBarParent = new JPanel(new BorderLayout());
         JPanel sideBar = new JPanel(new GridBagLayout());
-        sideBar.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 4, AbstractScreen.SCREEN_HEIGHT));
+        sideBar.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 4 - 30, AbstractScreen.SCREEN_HEIGHT - 60));
         sideBar.setBackground(AbstractScreen.TAB_COLOR);
 
         GridBagConstraints gbc = new GridBagConstraints();
 
         teamBar = new JPanel();
         teamBar.setLayout(new GridBagLayout());
-        teamBar.setPreferredSize(new Dimension( AbstractScreen.SCREEN_WIDTH / 4, AbstractScreen.SCREEN_HEIGHT));
+        teamBar.setPreferredSize(new Dimension( AbstractScreen.SCREEN_WIDTH / 4, AbstractScreen.SCREEN_HEIGHT - 60));
         teamBar.setBackground(AbstractScreen.TAB_COLOR);
 
         gbc.gridx = 0;
@@ -76,7 +79,16 @@ public class EmployeeTeamPanel extends Panel {
         JPanel panel = new JPanel();
         sideBar.add(panel, gbc);
         panel.setBackground(AbstractScreen.TAB_COLOR);
-        return sideBar;
+        JScrollPane scroll = new JScrollPane(sideBar, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setBorder( new LineBorder(AbstractScreen.MAIN_COLOR) );
+        sideBarParent.add(scroll, BorderLayout.NORTH);
+        JButton addTeam = new CustomButton("Add");
+        AbstractScreen.setColors(addTeam, "m");
+        addTeam.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 4 - 30, 60));
+        sideBarParent.add(addTeam, BorderLayout.SOUTH);
+        AbstractScreen.setColors(sideBarParent, "m");
+        return sideBarParent;
     }
 
     protected void addTab(String tabName, JPanel tabPanel) {

@@ -4,6 +4,7 @@ import model.Game;
 import model.Player;
 import popUps.AddGame;
 import ui.AbstractScreen;
+import utils.CustomButton;
 import ui.EmployeeScreen;
 
 import javax.swing.*;
@@ -50,7 +51,7 @@ public class EmployeeGamePanel extends Panel {
         AbstractScreen.setColors(bottom, "s");
         JPanel tools = new JPanel(new GridLayout(0, 1));
         AbstractScreen.setColors(tools, "s");
-        JButton deleteGame = new JButton("Delete Game");
+        JButton deleteGame = new CustomButton("Delete Game", "s");
         deleteGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -59,7 +60,7 @@ public class EmployeeGamePanel extends Panel {
         });
         deleteGame.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
         AbstractScreen.setColors(deleteGame, "s");
-        JButton addGame = new JButton("Add Game");
+        JButton addGame = new CustomButton("Add Game", "s");
         addGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -85,7 +86,7 @@ public class EmployeeGamePanel extends Panel {
         String[] filters = { "game ID", "arena", "team"};
         JPanel leftPanel = new JPanel(new BorderLayout());
         AbstractScreen.setColors(leftPanel, "m");
-        JButton all = new JButton("View all");
+        JButton all = new CustomButton("View all");
         all.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
