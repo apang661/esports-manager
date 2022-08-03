@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class HomeScreen extends JFrame {
-    public static final Color BACKGROUND_COLOR = new Color(30, 30, 30);
     public static final String DEFAULT_FONT_NAME = "Helvetica";
     private JPanel userSelect;
 
@@ -20,7 +19,7 @@ public class HomeScreen extends JFrame {
 
     private JPanel createUserSelect() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(BACKGROUND_COLOR);
+        panel.setBackground(AbstractScreen.MAIN_COLOR);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(30, 30, 30, 30);
@@ -31,7 +30,7 @@ public class HomeScreen extends JFrame {
 
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel(new GridLayout(4, 1, 0, 20));
-        panel.setBackground(BACKGROUND_COLOR);
+        panel.setBackground(AbstractScreen.MAIN_COLOR);
 
         JLabel instructionText = new JLabel("Please select a login type:");
         instructionText.setForeground(Color.white);

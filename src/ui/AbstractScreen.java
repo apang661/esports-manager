@@ -13,11 +13,11 @@ public class AbstractScreen extends JPanel {
     protected DatabaseConnectionHandler dbHandler = null;
     public static final int SCREEN_WIDTH = 800;
     public static final int SCREEN_HEIGHT = 600;
-    public static final Color TAB_COLOR = new Color(70, 70, 70);
-    public static final Color TAB_HIGHLIGHTED = new Color(54,54,54 );
+    public static final Color TAB_COLOR = new Color(30, 30, 30);
+    public static final Color TAB_HIGHLIGHTED = new Color(70, 70, 70);
 
-    public static final Color MAIN_COLOR = new Color(47,49,54);
-    public static final Color SECOND_COLOR = new Color(93, 93, 93);
+    public static final Color MAIN_COLOR = new Color(30, 30, 30);
+    public static final Color SECOND_COLOR = new Color(70, 70, 70);
     public static final Color TEXT_COLOR = Color.WHITE;
 
     JPanel tabBar;
@@ -30,7 +30,7 @@ public class AbstractScreen extends JPanel {
         visibleTabIndex = -1;
         tabPanels = new ArrayList<>();
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        setBackground(HomeScreen.BACKGROUND_COLOR);
+        setBackground(MAIN_COLOR);
         setLayout(new BorderLayout());
         add(setupTabBar(), BorderLayout.LINE_START);
         add(setupContentPanel(), BorderLayout.CENTER);
@@ -118,7 +118,7 @@ public class AbstractScreen extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         tabBar.add(tab, gbc);
 
-        HomeScreen.createBorder(tabPanel, Color.RED);
+//        HomeScreen.createBorder(tabPanel, Color.RED);
         if (tabPanels.size() != 0) {
             tabPanel.setVisible(false);
         }
