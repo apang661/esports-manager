@@ -84,7 +84,7 @@ public class EmployeeGamePanel extends Panel {
         search.setText("Search");
         String[] filters = { "game ID", "arena", "team"};
         JPanel leftPanel = new JPanel(new BorderLayout());
-        AbstractScreen.setColors(leftPanel, "s");
+        AbstractScreen.setColors(leftPanel, "m");
         JButton all = new JButton("View all");
         all.addActionListener(new ActionListener(){
             @Override
@@ -93,13 +93,14 @@ public class EmployeeGamePanel extends Panel {
             }
         });
         JComboBox filterList = new JComboBox(filters);
-        filterList.setSelectedIndex(0);
+
         filterList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 filter = (String) filterList.getSelectedItem();
             }
         });
+        filterList.setSelectedIndex(0);
         leftPanel.add(all, BorderLayout.WEST);
         leftPanel.add(filterList, BorderLayout.EAST);
         searchBar.add(leftPanel, BorderLayout.WEST);
@@ -139,7 +140,7 @@ public class EmployeeGamePanel extends Panel {
         rlist.setVisibleRowCount(5);
         AbstractScreen.setColors(rlist, "s");
         JScrollPane listScrollPane = new JScrollPane(rlist);
-        AbstractScreen.setColors(listScrollPane, "m");
+        AbstractScreen.setColors(listScrollPane, "s");
         listScrollPane.setPreferredSize(new Dimension( SCREEN_WIDTH * 3/4, SCREEN_HEIGHT/4));
         rlist.addListSelectionListener(new ListSelectionListener() {
             @Override
