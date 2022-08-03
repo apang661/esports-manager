@@ -1,5 +1,6 @@
 package tabs;
 
+import model.Team;
 import ui.AbstractScreen;
 import ui.HomeScreen;
 
@@ -17,15 +18,23 @@ public class EmployeeTeamPanel extends Panel {
 
     public EmployeeTeamPanel(AbstractScreen parent) {
         super(parent);
+        teamPanels = new ArrayList<>();
         panel.add(setupTeamBar(), BorderLayout.LINE_START);
         panel.add(setupContentPanel(), BorderLayout.CENTER);
-        addTab("Games", setupTeamMemberPanel());
+        addAllTeams();
     }
 
-    private JPanel setupTeamMemberPanel() {
+    private void addAllTeams() {
+        ArrayList<Team> teamNames =  parent.getDbHandler().getTeams();
+        for (Team team : teamNames) {
+            addTab(team.getName(), setupTeamMemberPanel(team));
+        }
+    }
+
+    private JPanel setupTeamMemberPanel(Team team) {
         JPanel panel = new JPanel();
         panel.setBackground(Color.GRAY);
-        JLabel test = new JLabel("test");
+        JLabel test = new JLabel(team.getName());
         panel.add(test);
         return panel;
     }

@@ -219,6 +219,26 @@ public class DatabaseConnectionHandler {
         return players;
     }
 
+    public ArrayList<Team> getTeams() {
+        ArrayList<Team> teams = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM team";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Team team = new Team(rs.getInt("tID"), rs.getString("name"), rs.getString("owner"));
+                teams.add(team);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+//            throw new RuntimeException(e.getMessage());
+        }
+        return teams;
+    }
+
 
 
 //	public void insertBranch(BranchModel model) {
@@ -361,4 +381,5 @@ public class DatabaseConnectionHandler {
     public void refundTicket(int ticketNum) {
         // TODO: make ticket available again and remove from viewer
     }
+
 }
