@@ -222,7 +222,7 @@ public class DatabaseConnectionHandler {
     public ArrayList<Team> getTeams() {
         ArrayList<Team> teams = new ArrayList<>();
         try {
-            String query = "SELECT * FROM team";
+            String query = "SELECT * FROM team ORDER BY name";
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
