@@ -46,7 +46,7 @@ public class Game {
     }
 
     public String getDescription() {
-        String desc = season + " " + year + " " + rtID + " vs. " + btID;
+        String desc = gID + ": " + season + " " + year + " " + rtID + " vs. " + btID;
         return desc;
     }
 }

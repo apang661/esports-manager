@@ -170,7 +170,8 @@ public class EmployeeGamePanel extends Panel {
         glistModel.clear();
         ArrayList<Game> games = parent.getDbHandler().getGames(DEF_ITEMS, attr, query);
         for (Game g : games) {
-            if (!glist.containsKey(g.getgID())) {
+            System.out.println(g.getgID());
+            if (!glist.containsKey(g.getDescription())) {
                 glist.put(g.getDescription(),g);
             }
             glistModel.addElement(g.getDescription());
