@@ -17,8 +17,8 @@ public class AbstractScreen extends JPanel {
     public static final Color TAB_HIGHLIGHTED = new Color(54,54,54 );
 
     public static final Color MAIN_COLOR = new Color(47,49,54);
-    public static final Color SECOND_COLOR = new Color(55,57,63);
-    public static final Color TEXT_COLOR = new Color(231, 231, 199);
+    public static final Color SECOND_COLOR = new Color(93, 93, 93);
+    public static final Color TEXT_COLOR = Color.WHITE;
 
     JPanel tabBar;
     ArrayList<JPanel> tabPanels;

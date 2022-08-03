@@ -2,6 +2,7 @@ package tabs;
 
 import model.Game;
 import model.Player;
+import popUps.AddGame;
 import ui.AbstractScreen;
 import ui.EmployeeScreen;
 
@@ -14,12 +15,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.sun.javafx.fxml.expression.Expression.add;
-import static java.awt.Component.BOTTOM_ALIGNMENT;
 import static ui.AbstractScreen.SCREEN_HEIGHT;
 import static ui.AbstractScreen.SCREEN_WIDTH;
 
-public class EmployeeGamePanel {
+public class EmployeeGamePanel extends Panel {
     public static final int DEF_ITEMS = 10;
     private DefaultListModel<String> glistModel;
     private HashMap<String, Game> glist;
@@ -27,21 +26,53 @@ public class EmployeeGamePanel {
 
     private Game selectedG;
 
-    private  JPanel panel;
 
-    private EmployeeScreen parent;
+
+
+
+
     private String filter;
     public EmployeeGamePanel(EmployeeScreen parent) {
-        this.parent = parent;
+        super(parent);
         selectedG = null;
-        panel = new JPanel(new BorderLayout());
-        panel.setBackground(AbstractScreen.MAIN_COLOR);
-        add(panel, BorderLayout.CENTER);
         glistModel = new DefaultListModel<>();
         glist = new HashMap<>();
+        updateMaxKey("gID", "Game");
         addSearchBar();
         addMainPanel();
-        displayGames();
+        addBottom();
+    }
+
+
+
+    private void addBottom() {
+        JPanel bottom = new JPanel(new BorderLayout());
+        AbstractScreen.setColors(bottom, "s");
+        JPanel tools = new JPanel(new GridLayout(0, 1));
+        AbstractScreen.setColors(tools, "s");
+        JButton deleteGame = new JButton("Delete Game");
+        deleteGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteGame();
+            }
+        });
+        deleteGame.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
+        AbstractScreen.setColors(deleteGame, "s");
+        JButton addGame = new JButton("Add Game");
+        addGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addGame();
+            }
+        });
+        addGame.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
+        AbstractScreen.setColors(addGame, "s");
+        bottom.add(displayGames(), BorderLayout.NORTH);
+        tools.add(deleteGame);
+        tools.add(addGame);
+        bottom.add(tools, BorderLayout.SOUTH);
+        panel.add(bottom, BorderLayout.SOUTH);
     }
 
     private void addSearchBar() {
@@ -103,7 +134,7 @@ public class EmployeeGamePanel {
         return panel;
     }
 
-    private void displayGames() {
+    private JScrollPane displayGames() {
         JList rlist = new JList(getGames("",""));
         rlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         rlist.setSelectedIndex(0);
@@ -111,9 +142,7 @@ public class EmployeeGamePanel {
         AbstractScreen.setColors(rlist, "s");
         JScrollPane listScrollPane = new JScrollPane(rlist);
         AbstractScreen.setColors(listScrollPane, "m");
-        panel.add(listScrollPane, BorderLayout.SOUTH);
-        listScrollPane.setPreferredSize(new Dimension( SCREEN_WIDTH * 3/4, SCREEN_HEIGHT/2));
-        listScrollPane.setAlignmentY(BOTTOM_ALIGNMENT);
+        listScrollPane.setPreferredSize(new Dimension( SCREEN_WIDTH * 3/4, SCREEN_HEIGHT/4));
         rlist.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -121,6 +150,7 @@ public class EmployeeGamePanel {
                 setGame(glist.get(selection));
             }
         });
+        return listScrollPane;
     }
     private void addMainPanel() {
         initializeMain();
@@ -175,5 +205,14 @@ public class EmployeeGamePanel {
     public void setGame(Game g) {
         selectedG = g;
         printGame();
+    }
+
+    public void deleteGame() {
+        parent.getDbHandler().deleteGame(selectedG.getgID());
+        printGame();
+    }
+
+    public void addGame() {
+        new AddGame(this);
     }
 }

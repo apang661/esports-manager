@@ -136,6 +136,26 @@ public class DatabaseConnectionHandler {
         return list;
     }
 
+    public Integer getMaxKey(String key, String table) {
+        Integer ans = null;
+        try {
+            String query;
+            PrintablePreparedStatement ps;
+            query = "SELECT " + key + " FROM " + table + " ORDER BY " + key + " DESC FETCH FIRST 1 ROWS ONLY";
+            ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ans = rs.getInt("gID");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return ans;
+    }
+
     public Arena getArena(int aID) {
         Arena arena = null;
         try {
@@ -194,6 +214,7 @@ public class DatabaseConnectionHandler {
         } catch (SQLException e) {
             System.out.println(EXCEPTION_TAG + " " + e.getMessage());
             rollbackConnection();
+            throw new RuntimeException(e.getMessage());
         }
         return players;
     }
@@ -295,6 +316,8 @@ public class DatabaseConnectionHandler {
 			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
 		}
 	}
+
+
 //
 //	public void databaseSetup() {
 //		dropBranchTableIfExists();
