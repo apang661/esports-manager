@@ -66,7 +66,6 @@ public class AbstractScreen extends JPanel {
 
         tabBar = new JPanel();
         tabBar.setLayout(new GridBagLayout());
-        tabBar.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, SCREEN_HEIGHT));
         tabBar.setBackground(TAB_COLOR);
 
         gbc.gridx = 0;
