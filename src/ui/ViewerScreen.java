@@ -1,5 +1,7 @@
 package ui;
 
+import tabs.ViewerTicketsPanel;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -23,11 +25,8 @@ public class ViewerScreen extends AbstractScreen {
     }
 
     private JPanel setupTicketsPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.RED);
-        JLabel test = new JLabel("test");
-        panel.add(test);
-        return panel;
+        ViewerTicketsPanel panel = new ViewerTicketsPanel(this);
+        return panel.getPanel();
     }
 
     private JPanel setupSchedulePanel() {
