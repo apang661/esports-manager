@@ -382,4 +382,23 @@ public class DatabaseConnectionHandler {
         // TODO: make ticket available again and remove from viewer
     }
 
+    public ArrayList<Player> getPlayers(Team team) {
+        ArrayList<Player> players = new ArrayList<>();
+//        try {
+//            String query = "SELECT * FROM  WHERE "; // players part of current roster
+//            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                Player player = new Player(rs.getInt("tmID"), rs.getString("position"), rs.getString("alias"));
+//                players.add(player);
+//            }
+//            rs.close();
+//            ps.close();
+//        } catch (SQLException e) {
+//            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+//            rollbackConnection();
+////            throw new RuntimeException(e.getMessage());
+//        }
+        return players;
+    }
 }
