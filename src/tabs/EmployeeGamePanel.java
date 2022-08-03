@@ -131,9 +131,7 @@ public class EmployeeGamePanel extends Panel {
                 break;
         }
     }
-    public JPanel getPanel() {
-        return panel;
-    }
+
 
     private JScrollPane displayGames() {
         JList rlist = new JList(getGames("",""));

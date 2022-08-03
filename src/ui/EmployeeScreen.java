@@ -1,6 +1,7 @@
 package ui;
 
 import tabs.EmployeeGamePanel;
+import tabs.EmployeeTeamPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,10 +54,7 @@ public class EmployeeScreen extends AbstractScreen {
 
 
     private JPanel setupTeamsPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.BLUE);
-        JLabel test = new JLabel("test");
-        panel.add(test);
-        return panel;
+        EmployeeTeamPanel panel = new EmployeeTeamPanel(this);
+        return panel.getPanel();
     }
 }
