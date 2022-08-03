@@ -357,4 +357,8 @@ public class DatabaseConnectionHandler {
 //			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
 //		}
 //	}
+
+    public void refundTicket(int ticketNum) {
+        // TODO: make ticket available again and remove from viewer
+    }
 }
