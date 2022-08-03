@@ -1,7 +1,7 @@
 package tabs;
 
 import model.Ticket;
-import popUps.buyTicket;
+import popUps.BuyTicket;
 import ui.AbstractScreen;
 
 import javax.swing.*;
@@ -17,6 +17,8 @@ public class ViewerTicketsPanel extends Panel {
 
     public ViewerTicketsPanel(AbstractScreen parent) {
         super(parent);
+        // TODO: display tickets with arena/team names/seat number
+        // make selectable
         addToolbar();
     }
 
@@ -47,7 +49,7 @@ public class ViewerTicketsPanel extends Panel {
     }
 
     public void buyTicket() {
-        new buyTicket(this);
+        new BuyTicket(this);
     }
 
     public void refundTicket() {
