@@ -34,4 +34,8 @@ public class Panel {
         return maxKey;
     }
 
+    public JPanel getPanel() {
+        return panel;
+    }
+
 }
