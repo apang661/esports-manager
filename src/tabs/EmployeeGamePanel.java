@@ -4,6 +4,7 @@ import model.Game;
 import model.Player;
 import model.Team;
 import popUps.AddGamePopup;
+import popUps.AddLanguagePopup;
 import ui.AbstractScreen;
 import ui.EmployeeScreen;
 import utils.CustomButton;
@@ -17,8 +18,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static ui.AbstractScreen.SCREEN_HEIGHT;
-import static ui.AbstractScreen.SCREEN_WIDTH;
+import static ui.AbstractScreen.*;
 
 public class EmployeeGamePanel extends Panel {
     public static final int DEF_ITEMS = 10;
@@ -29,7 +29,7 @@ public class EmployeeGamePanel extends Panel {
     JPanel redTeam;
     JPanel blueTeam;
     JLabel arena;
-    JScrollPane languages;
+    DefaultListModel<String> languages;
 
     private Game selectedG;
 
@@ -45,6 +45,9 @@ public class EmployeeGamePanel extends Panel {
         addBottom();
     }
 
+    public Game getSelectedG() {
+        return selectedG;
+    }
 
     private void addBottom() {
         JPanel bottom = new JPanel(new BorderLayout());
@@ -135,7 +138,8 @@ public class EmployeeGamePanel extends Panel {
 
 
     private JScrollPane displayGames() {
-        JList rlist = new JList(getGames("",""));
+        JList rlist = new JList(glistModel);
+        getGames("", "");
         rlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         rlist.setSelectedIndex(0);
         rlist.setVisibleRowCount(5);
@@ -161,7 +165,8 @@ public class EmployeeGamePanel extends Panel {
     }
 
     private void initializeMain() {
-        main = new JPanel(new BorderLayout());
+        main = new JPanel(new BorderLayout(5, 5));
+        main.setBackground(MAIN_COLOR);
         title = new JLabel("No Game Selected");
         title.setHorizontalAlignment(SwingConstants.CENTER);
         main.add(title, BorderLayout.NORTH);
@@ -173,54 +178,96 @@ public class EmployeeGamePanel extends Panel {
         centreScreen.add(redTeam, BorderLayout.LINE_START);
         centreScreen.add(blueTeam, BorderLayout.LINE_END);
         JPanel lanes = new JPanel(new GridLayout(0,1));
-        String[] lanelist = {"Teams", "Top", "Jg", "Mid", "ADC", "SUP"};
-        for (String l : lanelist) {
-            JLabel lane = new JLabel(l);
-            lane.setHorizontalAlignment(SwingConstants.CENTER);
-            lanes.add(lane);
-        }
-        lanes.setPreferredSize(new Dimension(50, 150));
-        lanes.setMaximumSize(new Dimension(50, 150));
-        centreScreen.add(lanes, BorderLayout.CENTER);
         main.add(centreScreen, BorderLayout.CENTER);
-        JPanel centreLower = new JPanel();
-        centreLower.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
-        centreLower.setMaximumSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
-        arena = new JLabel("Arena: ");
-        arena.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, 50));
+        JPanel arenaContainer = new JPanel(new BorderLayout());
+        JLabel arenaLabel = new JLabel("Arena");
+        setColors(arenaLabel, "m");
+        arenaLabel.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, 50));
+        arena = new JLabel();
+        setColors(arena, "s");
+        JPanel arenaPanel = new JPanel(new BorderLayout());
+        arenaPanel.add(arena, BorderLayout.CENTER);
+        setColors(arenaPanel, "s");
         arena.setHorizontalAlignment(SwingConstants.LEFT);
-        centreLower.add(arena, BorderLayout.LINE_START);
+        arenaContainer.add(arenaLabel, BorderLayout.NORTH);
+        arenaContainer.add(arenaPanel, BorderLayout.CENTER);
+        arenaContainer.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, 75));
         JPanel languageContainer = new JPanel(new BorderLayout());
-        languages = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        JLabel languageLabel = new JLabel("Languages:");
-        languageLabel.setPreferredSize(new Dimension(SCREEN_WIDTH / 5, 50));
-        languageLabel.setMaximumSize(new Dimension(SCREEN_WIDTH / 5, 50));
-        languageContainer.add(languageLabel, BorderLayout.LINE_START);
-        languageContainer.add(languages, BorderLayout.LINE_END);
-        languageContainer.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/8 , 50));
-        centreLower.add(languageContainer, BorderLayout.LINE_END);
-        main.add(centreLower, BorderLayout.SOUTH);
-        AbstractScreen.setColors(lanes, "s");
+        languages = new DefaultListModel<>();
+        JList languagelist = new JList(languages);
+        JScrollPane languageScroll = new JScrollPane(languagelist);
+        languageScroll.setBorder(BorderFactory.createEmptyBorder());
+        setColors(languagelist, "s");
+        languageContainer.add(languageScroll, BorderLayout.CENTER);
+        JLabel languageLabel = new JLabel("Languages");
+        setColors(languageLabel, "m");
+        languageLabel.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, 50));
+        languageLabel.setMaximumSize(new Dimension(SCREEN_WIDTH / 4, 50));
+        languageContainer.add(languageLabel, BorderLayout.NORTH);
+        languageContainer.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, 125));
+        JButton addLanguage = new CustomButton("Add Language", "m");
+        addLanguage.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, 50));
+        addLanguage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AddLanguagePopup(getThis());
+                printGame();
+            }
+        });
+        languageContainer.add(addLanguage, BorderLayout.SOUTH);
+        JPanel rightContainer = new JPanel(new BorderLayout(5, 5));
+        rightContainer.add(arenaContainer, BorderLayout.NORTH);
+        rightContainer.add(languageContainer, BorderLayout.CENTER);
+        rightContainer.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, 200));
+        main.add(rightContainer, BorderLayout.LINE_END);
+        AbstractScreen.setColors(lanes, "m");
         AbstractScreen.setColors(redTeam, "s");
         AbstractScreen.setColors(blueTeam, "s");
-        AbstractScreen.setColors(lanes, "s");
-        AbstractScreen.setColors(main, "s");
-        AbstractScreen.setColors(title, "s");
-        AbstractScreen.setColors(arena, "s");
-        AbstractScreen.setColors(centreLower, "s");
-        AbstractScreen.setColors(languageContainer, "s");
+        AbstractScreen.setColors(title, "m");
+        AbstractScreen.setColors(arenaContainer, "m");
+        AbstractScreen.setColors(languageContainer, "m");
+        AbstractScreen.setColors(rightContainer, "m");
+        arenaLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        arena.setHorizontalAlignment(SwingConstants.CENTER);
+        languageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        setColors(main, "m");
+
 
     }
 
     private void initTeam(JPanel team) {
-        team.setPreferredSize(new Dimension((SCREEN_WIDTH * 3/4 - 50) / 2, 150 ));
+        team.setPreferredSize(new Dimension( SCREEN_WIDTH / 4, 200 ));
         for (int i = 0; i < 6; i++) {
-            JLabel temp = new JLabel();
+            JButton temp;
+            if (i == 0) {
+                temp = new CustomButton("");
+                temp.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        int teamind = 0;
+                        ListModel teamList = ((JList) ((JViewport) ((JScrollPane) ((JPanel) parent.getTabPanels().get(1).getComponent(0))
+                                .getComponent(1)).getComponent(0)).getComponent(0)).getModel();
+                        for (int i = 0; i < teamList.getSize(); i++) {
+                            if (temp.getText().equals(teamList.getElementAt(i)))
+                                teamind = i;
+                        }
+                        parent.displayTab(1);
+                        ((JList) ((JViewport) ((JScrollPane) ((JPanel) parent.getTabPanels().get(1).getComponent(0))
+                                .getComponent(1)).getComponent(0)).getComponent(0)).setSelectedIndex(teamind);
+
+
+                    }
+                });
+            } else {
+                temp = new CustomButton("", "s");
+            }
+
+            temp.setHorizontalTextPosition(SwingConstants.CENTER);
             team.add(temp);
         }
     }
 
-    public DefaultListModel<String> getGames(String attr, String query) {
+    public void getGames(String attr, String query) {
         glistModel.clear();
         ArrayList<Game> games = parent.getDbHandler().getGames(DEF_ITEMS, attr, query);
         for (Game g : games) {
@@ -230,8 +277,6 @@ public class EmployeeGamePanel extends Panel {
             }
             glistModel.addElement(g.getDescription());
         }
-
-        return glistModel;
     }
 
     private void printGame() {
@@ -243,24 +288,28 @@ public class EmployeeGamePanel extends Panel {
             getPlayers(rtemp, redTeam);
             Team btemp = parent.getDbHandler().getTeam(selectedG.getBtID());
             getPlayers(btemp, blueTeam);
-            arena.setText("Arena: " + parent.getDbHandler().getArena(selectedG.getaID()).getName());
+            arena.setText(parent.getDbHandler().getArena(selectedG.getaID()).getName());
+            for (String lang : parent.getDbHandler().getGameCasts(selectedG.getgID())) {
+                languages.addElement(lang);
+            }
         }
     }
 
     private void clearGame() {
         title.setText("No Game Selected :(");
-        arena.setText("Arena: ");
+        arena.setText("");
+        languages.clear();
         for (int i = 0; i < 6; i++) {
-            ((JLabel) blueTeam.getComponent(0)).setText("");
-            ((JLabel) redTeam.getComponent(0)).setText("");
+            ((JButton) blueTeam.getComponent(0)).setText("");
+            ((JButton) redTeam.getComponent(0)).setText("");
         }
     }
 
-    private void getPlayers(Team rtemp, JPanel team) {
-        ArrayList<Player> players = parent.getDbHandler().getRosterPlayers(rtemp.getTeamID(), selectedG.getSeason(),selectedG.getDay().getYear());
-        ((JLabel) team.getComponent(0)).setText(rtemp.getName());
+    private void getPlayers(Team temp, JPanel team) {
+        ArrayList<Player> players = parent.getDbHandler().getRosterPlayers(temp.getTeamID(), selectedG.getSeason(),selectedG.getDay().getYear());
+        ((JButton) team.getComponent(0)).setText(temp.getName());
         for (Player p : players) {
-            ((JLabel) team.getComponent(p.getRoleNum() + 1)).setText(p.getAlias());
+            ((JButton) team.getComponent(p.getRoleNum() + 1)).setText(p.getAlias());
         }
     }
 
@@ -272,10 +321,16 @@ public class EmployeeGamePanel extends Panel {
 
     public void deleteGame() {
         parent.getDbHandler().deleteGame(selectedG.getgID());
+        selectedG = null;
         printGame();
+        getGames("", "");
     }
 
     public void addGame() {
         new AddGamePopup(this);
+    }
+
+    public EmployeeGamePanel getThis() {
+        return this;
     }
 }

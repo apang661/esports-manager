@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 
 // Represent frames who edit a restaurant in a MainFrame
 public abstract class Popup extends JFrame implements ActionListener {
+    protected static final int POPUP_WIDTH = 250;
+    protected static final int POPUP_HEIGHT = 200;
     protected tabs.Panel editor;
     protected JPanel main;
     protected int sequence;
@@ -28,7 +30,7 @@ public abstract class Popup extends JFrame implements ActionListener {
         main = new JPanel();
         add(main, BorderLayout.CENTER);
         AbstractScreen.setColors(main, "m");
-        setSize(new Dimension(250, 200));
+        setSize(new Dimension(POPUP_WIDTH, POPUP_HEIGHT));
         setResizable(false);
         setVisible(true);
         setDefaultCloseOperation(Popup.DISPOSE_ON_CLOSE);

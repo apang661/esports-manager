@@ -28,6 +28,10 @@ public class EmployeeTeamPanel extends Panel {
         addAllTeams();
     }
 
+    public DefaultListModel<String> getTeamNames() {
+        return teamNames;
+    }
+
     private void addAllTeams() {
         ArrayList<Team> teamNames =  parent.getDbHandler().getTeams();
         for (Team team : teamNames) {

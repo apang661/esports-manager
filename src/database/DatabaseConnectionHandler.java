@@ -136,6 +136,26 @@ public class DatabaseConnectionHandler {
         return list;
     }
 
+    public ArrayList<String> getGameCasts(int gID) {
+        ArrayList<String> languages = new ArrayList<>();
+        try {
+            String query = "SELECT DISTINCT language FROM CASTS WHERE gid = ?";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, gID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                languages.add(rs.getString("language"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+            throw new RuntimeException(e.getMessage());
+        }
+        return languages;
+    }
+
     public Integer getMaxKey(String key, String table) {
         Integer ans = null;
         try {
@@ -146,6 +166,26 @@ public class DatabaseConnectionHandler {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ans = rs.getInt(key);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return ans;
+    }
+
+    public ArrayList<Integer> getKeys(String key, String table) {
+        ArrayList<Integer> ans = new ArrayList<>();
+        try {
+            String query;
+            PrintablePreparedStatement ps;
+            query = "SELECT " + key + " FROM " + table + " ORDER BY " + key;
+            ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ans.add(rs.getInt(key));
             }
             rs.close();
             ps.close();
@@ -400,5 +440,22 @@ public class DatabaseConnectionHandler {
 ////            throw new RuntimeException(e.getMessage());
 //        }
         return players;
+    }
+
+
+    public void addCasts(Integer gID, Integer cID, String lang) {
+        try {
+            String query = "INSERT INTO Casts VALUES (?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, gID);
+            ps.setInt(2, cID);
+            ps.setString(3, lang);
+            ps.executeUpdate();
+            connection.commit();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
     }
 }

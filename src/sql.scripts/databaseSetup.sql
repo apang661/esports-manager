@@ -83,7 +83,8 @@ CREATE TABLE PlaysIn (
     gID INTEGER,
     pID INTEGER,
     PRIMARY KEY (gID, pID),
-    FOREIGN KEY (gID) REFERENCES Game (gID),
+    FOREIGN KEY (gID) REFERENCES Game (gID)
+        ON DELETE CASCADE,
     FOREIGN KEY (pID) REFERENCES Player (tmID)
 );
 
@@ -108,6 +109,7 @@ CREATE TABLE Casts (
     PRIMARY KEY (cID, gID),
     FOREIGN KEY (cID) REFERENCES Caster (cID),
     FOREIGN KEY (gID) REFERENCES Game (gID)
+                   ON DELETE CASCADE
 );
 
 
@@ -133,7 +135,8 @@ CREATE TABLE Ticket (
     aID       INTEGER NOT NULL,
     seatNum   INTEGER NOT NULL,
     FOREIGN KEY (vID) REFERENCES Viewer (vID),
-    FOREIGN KEY (gID) REFERENCES Game (gID),
+    FOREIGN KEY (gID) REFERENCES Game (gID)
+        ON DELETE CASCADE,
     FOREIGN KEY (aID, seatNum) REFERENCES Seat (aID, seatNum),
     UNIQUE (gID, seatNum)
 );
@@ -262,3 +265,4 @@ INSERT INTO PlaysIn VALUES (2, 2);
 INSERT INTO PlaysIn VALUES (3, 3);
 INSERT INTO PlaysIn VALUES (4, 4);
 INSERT INTO PlaysIn VALUES (5, 5);
+commit
