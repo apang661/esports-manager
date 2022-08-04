@@ -1,4 +1,4 @@
-package popUps;
+package popups;
 
 import tabs.EmployeeGamePanel;
 import tabs.Panel;
@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
-public class AddLanguagePopup extends Popup{
+public class AddLanguagePopup extends Popup {
     JTextField language;
     JComboBox casters;
 
