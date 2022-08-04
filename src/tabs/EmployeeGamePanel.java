@@ -28,7 +28,7 @@ public class EmployeeGamePanel extends Panel {
     JLabel title;
     JPanel redTeam;
     JPanel blueTeam;
-    JLabel arena;
+    JButton arena;
     DefaultListModel<String> languages;
 
     private Game selectedG;
@@ -183,7 +183,7 @@ public class EmployeeGamePanel extends Panel {
         JLabel arenaLabel = new JLabel("Arena");
         setColors(arenaLabel, "m");
         arenaLabel.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, 50));
-        arena = new JLabel();
+        arena = new CustomButton("", "s");
         setColors(arena, "s");
         JPanel arenaPanel = new JPanel(new BorderLayout());
         arenaPanel.add(arena, BorderLayout.CENTER);
@@ -279,7 +279,7 @@ public class EmployeeGamePanel extends Panel {
         }
     }
 
-    private void printGame() {
+    public void printGame() {
         clearGame();
         if (selectedG == null) {
         } else {

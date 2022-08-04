@@ -6,10 +6,7 @@ import model.Player;
 import model.Team;
 import utils.PrintablePreparedStatement;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 
@@ -50,15 +47,9 @@ public class DatabaseConnectionHandler {
 	public void insertGame(Game game) {
 //        INSERT INTO Game VALUES (1, 1, 2, '10-OCT-22', 1)
 		try {
-            String query = "INSERT INTO SeasonDates VALUES (?, ?)";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setDate(1, game.getDay());
-            ps.setString(2, game.getSeason());
-            ps.executeUpdate();
-            connection.commit();
 
-            query = "INSERT INTO Game VALUES (?, ?, ?, ?, ?)";
-			ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            String query = "INSERT INTO Game VALUES (?, ?, ?, ?, ?)";
+			PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
 			ps.setInt(1, game.getgID());
             ps.setInt(2, game.getBtID());
             ps.setInt(3, game.getRtID());
@@ -66,6 +57,13 @@ public class DatabaseConnectionHandler {
             ps.setInt(5, game.getaID());
             ps.executeUpdate();
 			connection.commit();
+
+            query = "INSERT INTO SeasonDates VALUES (?, ?)";
+            ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setDate(1, game.getDay());
+            ps.setString(2, game.getSeason());
+            ps.executeUpdate();
+            connection.commit();
 
 			ps.close();
 		} catch (SQLException e) {
@@ -157,7 +155,7 @@ public class DatabaseConnectionHandler {
     }
 
     public Integer getMaxKey(String key, String table) {
-        Integer ans = null;
+        Integer ans = 0;
         try {
             String query;
             PrintablePreparedStatement ps;
@@ -204,7 +202,7 @@ public class DatabaseConnectionHandler {
             ps.setInt(1, aID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                arena = new Arena(rs.getInt("aID"), rs.getString("name"), rs.getString("city"));
+                arena = new Arena(rs.getInt("aID"), rs.getString("name"), rs.getString("city"), rs.getInt("capacity"));
             }
             rs.close();
             ps.close();
@@ -447,9 +445,31 @@ public class DatabaseConnectionHandler {
         try {
             String query = "INSERT INTO Casts VALUES (?, ?, ?)";
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setInt(1, gID);
-            ps.setInt(2, cID);
+            ps.setInt(1, cID);
+            ps.setInt(2, gID);
             ps.setString(3, lang);
+            ps.executeUpdate();
+            connection.commit();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void addTicket(int ticketnum, int vID, int gID, int aId, int seatNum) {
+        try {
+            String query = "INSERT INTO Ticket VALUES (?, ?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, ticketnum);
+            if (vID >= 0) {
+                ps.setInt(2, vID);
+            } else {
+                ps.setNull(2, Types.INTEGER);
+            }
+            ps.setInt(3, gID);
+            ps.setInt(4, aId);
+            ps.setInt(5, seatNum);
             ps.executeUpdate();
             connection.commit();
             ps.close();
