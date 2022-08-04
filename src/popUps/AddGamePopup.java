@@ -9,9 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 
-public class AddGame extends Popup{
+public class AddGamePopup extends Popup{
     private JTextField[] fields;
-    public AddGame(Panel e) {
+    public AddGamePopup(Panel e) {
         super(e, "Add Game");
     }
 

@@ -145,7 +145,7 @@ public class DatabaseConnectionHandler {
             ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ans = rs.getInt("gID");
+                ans = rs.getInt(key);
             }
             rs.close();
             ps.close();
