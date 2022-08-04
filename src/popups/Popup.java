@@ -1,4 +1,4 @@
-package popUps;
+package popups;
 
 import tabs.Panel;
 import ui.AbstractScreen;
