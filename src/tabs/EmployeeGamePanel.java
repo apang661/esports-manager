@@ -300,8 +300,8 @@ public class EmployeeGamePanel extends Panel {
         arena.setText("");
         languages.clear();
         for (int i = 0; i < 6; i++) {
-            ((JButton) blueTeam.getComponent(0)).setText("");
-            ((JButton) redTeam.getComponent(0)).setText("");
+            ((JButton) blueTeam.getComponent(i)).setText("");
+            ((JButton) redTeam.getComponent(i)).setText("");
         }
     }
 
@@ -315,6 +315,7 @@ public class EmployeeGamePanel extends Panel {
 
 
     public void setGame(Game g) {
+        clearGame();
         selectedG = g;
         printGame();
     }
