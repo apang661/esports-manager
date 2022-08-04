@@ -458,4 +458,22 @@ public class DatabaseConnectionHandler {
             rollbackConnection();
         }
     }
+
+    public ArrayList<String> getAvailTickets(int getgID, int viewerID) {
+        // TODO: query for gid = gid and vid = null
+        // for ()
+            // add string
+        return new ArrayList();
+    }
+
+    public ArrayList<Integer> getTicketNums(int getgID, int viewerID) {
+        // TODO: query for gid = gid and vid = null
+        // for ()
+            // add ticketnum
+        return new ArrayList();
+    }
+
+    public void bookTicket(int selectedTicket, int viewerID) {
+        // TODO: change viewerID from null to vid for ticket in tickets table
+    }
 }
