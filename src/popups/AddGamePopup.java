@@ -1,4 +1,4 @@
-package popUps;
+package popups;
 
 import model.Game;
 import tabs.Panel;
@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 
-public class AddGamePopup extends Popup{
+public class AddGamePopup extends Popup {
     private JTextField[] fields;
     public AddGamePopup(Panel e) {
         super(e, "Add Game");
