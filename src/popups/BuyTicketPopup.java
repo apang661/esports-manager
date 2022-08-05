@@ -6,6 +6,7 @@ import utils.CustomButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class BuyTicketPopup extends Popup {
@@ -21,11 +22,24 @@ public class BuyTicketPopup extends Popup {
         main.setLayout(new BorderLayout());
         ArrayList<String> ticketTexts = editor.getParent().getDbHandler().getAvailTickets(gameID);
         ticketNums = editor.getParent().getDbHandler().getTicketNums(gameID);
-        ticketsCB = new JComboBox(ticketTexts.toArray());
-        main.add(ticketsCB, BorderLayout.LINE_END);
-        JButton purchaseButton = new CustomButton("Purchase Ticket", "s");
-        purchaseButton.addActionListener(this);
-        main.add(purchaseButton, BorderLayout.SOUTH);
+        if (ticketNums.isEmpty()) {
+            JLabel soldOutLabel = new JLabel("All sold out!");
+            main.add(soldOutLabel, BorderLayout.CENTER);
+        } else {
+            ticketsCB = new JComboBox(ticketTexts.toArray());
+            main.add(ticketsCB, BorderLayout.CENTER);
+            JButton purchaseButton = new CustomButton("Purchase Ticket", "s");
+            purchaseButton.addActionListener(this);
+            main.add(purchaseButton, BorderLayout.SOUTH);
+        }
+        JButton cancelButton = new CustomButton("Cancel", "s");
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+        main.add(cancelButton, BorderLayout.SOUTH);
     }
 
     @Override
