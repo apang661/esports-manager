@@ -1,5 +1,6 @@
 package tabs;
 
+import model.Roster;
 import model.Team;
 import ui.AbstractScreen;
 import ui.HomeScreen;
@@ -35,25 +36,42 @@ public class EmployeeTeamPanel extends Panel {
     private void addAllTeams() {
         ArrayList<Team> teamNames =  parent.getDbHandler().getTeams();
         for (Team team : teamNames) {
-            addTab(team.getName(), setupTeamMemberPanel(team));
+            addTab(team.getName(), setupTeamPanel(team));
             System.out.println(team.getTeamID());
         }
     }
 
-    private JPanel setupTeamMemberPanel(Team team) {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.GRAY);
-        JLabel test = new JLabel(team.getName());
-        panel.add(test);
+    private JPanel setupTeamPanel(Team team) {
+        JPanel panel = new JPanel(new BorderLayout());
+        AbstractScreen.setColors(panel, "m");
+        JLabel title = new JLabel(team.getName());
+        title.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 80));
+        title.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 18));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        AbstractScreen.setColors(title, "m");
+        AbstractScreen.setColors(panel, "m");
+        panel.add(title, BorderLayout.NORTH);
+        ArrayList<Roster> rosters = parent.getDbHandler().getRosters(team.getTeamID());
+        addRosters(panel, rosters);
         return panel;
+    }
+
+    private void addRosters(JPanel panel, ArrayList<Roster> rosters) {
+        JPanel rosterContainer = new JPanel(new GridLayout(0,1));
+        for (Roster r: rosters) {
+            JPanel rosterPanel = new JPanel(new BorderLayout());
+            JLabel title = new JLabel(r.getSeason() + " " + r.getYear());
+            title.setHorizontalAlignment(SwingConstants.CENTER);
+            rosterPanel.add(title, BorderLayout.NORTH);
+            rosterContainer.add(rosterPanel);
+        }
+        panel.add(rosterContainer, BorderLayout.CENTER);
     }
 
     private JPanel setupContentPanel() {
         contentPanel = new JPanel();
-        contentPanel.setLayout(new OverlayLayout(contentPanel));
         contentPanel.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, AbstractScreen.SCREEN_HEIGHT));
-        contentPanel.setBackground(new Color(150, 150, 150));
-        contentPanel.setAlignmentX(Box.RIGHT_ALIGNMENT);
+        AbstractScreen.setColors(contentPanel, "m");
         return contentPanel;
     }
 

@@ -1,9 +1,6 @@
 package database;
 
-import model.Arena;
-import model.Game;
-import model.Player;
-import model.Team;
+import model.*;
 import utils.PrintablePreparedStatement;
 
 import java.sql.*;
@@ -255,6 +252,28 @@ public class DatabaseConnectionHandler {
             throw new RuntimeException(e.getMessage());
         }
         return players;
+    }
+
+    public ArrayList<Roster> getRosters(int tID) {
+        ArrayList<Roster> rosters = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM Roster WHERE tID = ?";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, tID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Roster r = new Roster(rs.getInt("tID"), rs.getString("season"), rs.getInt("year"),
+                        rs.getInt("wins"), rs.getInt("losses"));
+                rosters.add(r);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+            throw new RuntimeException(e.getMessage());
+        }
+        return rosters;
     }
 
     public ArrayList<Team> getTeams() {

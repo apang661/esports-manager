@@ -1,11 +1,11 @@
 CREATE TABLE Team (
     tID   INTEGER PRIMARY KEY,
-    name  CHAR(32) UNIQUE NOT NULL,
-    owner CHAR(32)
+    name  VARCHAR(32) UNIQUE NOT NULL,
+    owner VARCHAR(32)
 );
 
 CREATE TABLE Achievement (
-    season    CHAR(6),
+    season    VARCHAR(6),
     year      INTEGER,
     placement INTEGER,
     tID       INTEGER NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE Achievement (
 
 CREATE TABLE Roster (
     tID    INTEGER,
-    season CHAR(6),
+    season VARCHAR(6),
     year   INTEGER,
     wins   INTEGER NOT NULL,
     losses INTEGER NOT NULL,
@@ -27,14 +27,14 @@ CREATE TABLE Roster (
 
 CREATE TABLE TeamMember (
     tmID INTEGER PRIMARY KEY,
-    name CHAR(32),
+    name VARCHAR(32),
     age  INTEGER
 );
 
 
 
 CREATE TABLE PartOfRoster (
-    season CHAR(6),
+    season VARCHAR(6),
     year   INTEGER,
     tID    INTEGER,
     tmID   INTEGER,
@@ -45,23 +45,23 @@ CREATE TABLE PartOfRoster (
 
 CREATE TABLE Player (
     tmID     INTEGER PRIMARY KEY,
-    position CHAR(7),
-    alias    CHAR(20) UNIQUE NOT NULL,
+    position VARCHAR(7),
+    alias    VARCHAR(20) UNIQUE NOT NULL,
     FOREIGN KEY (tmID) REFERENCES TeamMember (tmID)
 );
 
 
 CREATE TABLE Staff (
     tmID INTEGER PRIMARY KEY,
-    role CHAR(20),
+    role VARCHAR(20),
     FOREIGN KEY (tmID) REFERENCES TeamMember
 );
 
 
 CREATE TABLE Arena (
     aID  INTEGER PRIMARY KEY,
-    name CHAR(64) NOT NULL,
-    city CHAR(32) NOT NULL,
+    name VARCHAR(64) NOT NULL,
+    city VARCHAR(32) NOT NULL,
     capacity INTEGER NOT NULL,
     UNIQUE (name, city)
 );
@@ -92,13 +92,13 @@ CREATE TABLE PlaysIn (
 
 CREATE TABLE SeasonDates (
     day    DATE PRIMARY KEY,
-    season CHAR(6)
+    season VARCHAR(6)
 );
 
 
 CREATE TABLE Caster (
     cID  INTEGER PRIMARY KEY,
-    name CHAR(32) NOT NULL
+    name VARCHAR(32) NOT NULL
 );
 
 
@@ -106,7 +106,7 @@ CREATE TABLE Caster (
 CREATE TABLE Casts (
     cID      INTEGER,
     gID      INTEGER,
-    language CHAR(20) NOT NULL,
+    language VARCHAR(20) NOT NULL,
     PRIMARY KEY (cID, gID),
     FOREIGN KEY (cID) REFERENCES Caster (cID),
     FOREIGN KEY (gID) REFERENCES Game (gID)
@@ -116,7 +116,7 @@ CREATE TABLE Casts (
 
 CREATE TABLE Viewer (
     vID  INTEGER PRIMARY KEY,
-    name CHAR(32)
+    name VARCHAR(32)
 );
 
 
