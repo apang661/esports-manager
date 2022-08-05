@@ -437,9 +437,6 @@ public class DatabaseConnectionHandler {
 //		}
 //	}
 
-    public void refundTicket(int ticketNum) {
-        // TODO: make ticket available again and remove from viewer
-    }
 
     public ArrayList<Player> getPlayers(Team team) {
         ArrayList<Player> players = new ArrayList<>();
@@ -597,21 +594,72 @@ public class DatabaseConnectionHandler {
         return arenaSalesList;
     }
 
-    public ArrayList<String> getAvailTickets(int getgID, int viewerID) {
-        // TODO: query for gid = gid and vid = null
-        // for ()
-            // add string
-        return new ArrayList();
+    public ArrayList<String> getAvailTickets(int gID) {
+        ArrayList<String> availTickets = new ArrayList<>();
+        try {
+            String query = "SELECT seatNum, price " +
+                    "FROM Ticket NATURAL JOIN Seat " +
+                    "WHERE Ticket.gID = " + gID + " AND Ticket.vID IS NULL";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                availTickets.add("Seat " + rs.getInt("seatNum") + ": $" + rs.getDouble("price"));
+                System.out.println("Added ticket: Seat " + rs.getInt("seatNum") + ": $" + rs.getDouble("price"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+
+        return availTickets;
     }
 
-    public ArrayList<Integer> getTicketNums(int getgID, int viewerID) {
-        // TODO: query for gid = gid and vid = null
-        // for ()
-            // add ticketnum
-        return new ArrayList();
+    public ArrayList<Integer> getTicketNums(int gID) {
+        ArrayList<Integer> ticketNums = new ArrayList<>();
+        try {
+            String query = "SELECT ticketNum " +
+                    "FROM Ticket NATURAL JOIN Seat " +
+                    "WHERE Ticket.gID = " + gID + " AND Ticket.vID IS NULL";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ticketNums.add(rs.getInt("ticketNum"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+
+        return ticketNums;
     }
 
-    public void bookTicket(int selectedTicket, int viewerID) {
-        // TODO: change viewerID from null to vid for ticket in tickets table
+    public void bookTicket(int selectedTicketNum, int viewerID) {
+        try {
+            String query = "UPDATE Ticket " + "SET vID = " + viewerID + " WHERE ticketNum = " + selectedTicketNum;
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.executeUpdate();
+            connection.commit();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void unbookTicket(int ticketNum) {
+        try {
+            String query = "UPDATE Ticket " + "SET vID = NULL WHERE ticketNum = " + ticketNum;
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.executeUpdate();
+            connection.commit();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
     }
 }

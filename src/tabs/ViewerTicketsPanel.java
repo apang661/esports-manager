@@ -39,7 +39,7 @@ public class ViewerTicketsPanel extends Panel {
     }
 
     public void refundTicket() {
-        parent.getDbHandler().refundTicket(selectedTicket.getTicketNum());
+        parent.getDbHandler().unbookTicket(selectedTicket.getTicketNum());
     }
 
 }

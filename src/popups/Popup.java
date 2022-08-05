@@ -14,6 +14,8 @@ public abstract class Popup extends JFrame implements ActionListener {
     protected tabs.Panel editor;
     protected JPanel main;
     protected int sequence;
+    protected int gameID;
+    protected int viewerID;
 
     // REQUIRES: editor.getSelectedR != null
     // EFFECTS: constructs a RestaurantEditor gui with a given MainFrame editor that operates on editor's mainList
@@ -21,6 +23,16 @@ public abstract class Popup extends JFrame implements ActionListener {
         super(name);
         this.editor = e;
         sequence = 0;
+        initializeGraphics();
+    }
+
+    // used by BuyTicketPopup
+    public Popup(Panel e, String name, int gameID, int viewerID) {
+        super(name);
+        this.editor = e;
+        sequence = 0;
+        this.gameID = gameID;
+        this.viewerID = viewerID;
         initializeGraphics();
     }
 

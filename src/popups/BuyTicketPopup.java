@@ -1,6 +1,5 @@
 package popups;
 
-import model.Game;
 import tabs.ViewerGamePanel;
 import utils.CustomButton;
 
@@ -10,25 +9,18 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 public class BuyTicketPopup extends Popup {
-    private Game game;
-    private int viewerID;
     JComboBox ticketsCB;
     private ArrayList<Integer> ticketNums;
 
-    public BuyTicketPopup(ViewerGamePanel viewerGamePanel, Game game, int viewerID) {
-        super(viewerGamePanel, "Buy Ticket");
-        this.game = game;
-        this.viewerID = viewerID;
-        // query for all tickets with gid = gameID and vID = NULL into a list
-        // display seatnum and price
-        // purchase button assigns this vID to the ticket
+    public BuyTicketPopup(ViewerGamePanel viewerGamePanel, int gameID, int viewerID) {
+        super(viewerGamePanel, "Buy Ticket", gameID, viewerID);
     }
 
     @Override
     protected void initializePrompts() {
         main.setLayout(new BorderLayout());
-        ArrayList<String> ticketTexts = editor.getParent().getDbHandler().getAvailTickets(game.getgID(), viewerID);
-        ticketNums = editor.getParent().getDbHandler().getTicketNums(game.getgID(), viewerID);
+        ArrayList<String> ticketTexts = editor.getParent().getDbHandler().getAvailTickets(gameID);
+        ticketNums = editor.getParent().getDbHandler().getTicketNums(gameID);
         ticketsCB = new JComboBox(ticketTexts.toArray());
         main.add(ticketsCB, BorderLayout.LINE_END);
         JButton purchaseButton = new CustomButton("Purchase Ticket", "s");
@@ -38,8 +30,8 @@ public class BuyTicketPopup extends Popup {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        int selectedTicket = ticketNums.get(ticketsCB.getSelectedIndex());
-        editor.getParent().getDbHandler().bookTicket(selectedTicket, viewerID);
+        int selectedTicketNum = ticketNums.get(ticketsCB.getSelectedIndex());
+        editor.getParent().getDbHandler().bookTicket(selectedTicketNum, viewerID);
         dispose();
     }
 }

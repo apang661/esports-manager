@@ -3,7 +3,6 @@ package tabs;
 import model.Game;
 import model.Player;
 import model.Team;
-import popups.AddGamePopup;
 import popups.AddLanguagePopup;
 import popups.BuyTicketPopup;
 import ui.AbstractScreen;
@@ -61,7 +60,7 @@ public class ViewerGamePanel extends Panel {
         buyTicketButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new BuyTicketPopup(getThis(), getSelectedG(), viewerID);
+                new BuyTicketPopup(getThis(), getSelectedG().getgID(), viewerID);
             }
         });
         buyTicketButton.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
@@ -306,22 +305,10 @@ public class ViewerGamePanel extends Panel {
         }
     }
 
-
     public void setGame(Game g) {
         clearGame();
         selectedG = g;
         printGame();
-    }
-
-    public void deleteGame() {
-        parent.getDbHandler().deleteGame(selectedG.getgID());
-        selectedG = null;
-        printGame();
-        getGames("", "");
-    }
-
-    public void addGame() {
-        new AddGamePopup(this);
     }
 
     public ViewerGamePanel getThis() {
