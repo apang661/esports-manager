@@ -80,7 +80,7 @@ public class AnalystSalesPanel extends JPanel {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        AbstractScreen.setBoldFont(firstLabel, 13);
+        AbstractScreen.setBoldFont(firstLabel, AnalystScreen.LIST_FONT_SIZE);
         gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.weightx = 0.8;
@@ -89,21 +89,21 @@ public class AnalystSalesPanel extends JPanel {
         gbc.insets = new Insets(15, 15, 5, 5);
         listPanelContent.add(firstLabel, gbc);
 
-        AbstractScreen.setBoldFont(secondLabel, 13);
+        AbstractScreen.setBoldFont(secondLabel, AnalystScreen.LIST_FONT_SIZE);
         gbc.gridx = 1;
         gbc.weightx = 0.2;
         gbc.insets = new Insets(15, 5, 5, 5);
         listPanelContent.add(secondLabel, gbc);
 
         JLabel totalViewers = new JLabel("Viewers: ");
-        AbstractScreen.setBoldFont(totalViewers, 13);
+        AbstractScreen.setBoldFont(totalViewers, AnalystScreen.LIST_FONT_SIZE);
         gbc.gridx = 2;
         gbc.weightx = 0.2;
         gbc.insets = new Insets(15, 5, 5, 5);
         listPanelContent.add(totalViewers, gbc);
 
         JLabel totalSales = new JLabel("Sales: ");
-        AbstractScreen.setBoldFont(totalSales, 13);
+        AbstractScreen.setBoldFont(totalSales, AnalystScreen.LIST_FONT_SIZE);
         gbc.gridx = 3;
         gbc.weightx = 0.2;
         gbc.insets = new Insets(15, 5, 5, 15);
@@ -127,7 +127,7 @@ public class AnalystSalesPanel extends JPanel {
         viewBar.add(viewInnerBar);
 
         JLabel viewText = new JLabel("View By:");
-        viewText.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 14));
+        viewText.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, AnalystScreen.HEADER_FONT_SIZE));
         viewText.setForeground(Color.BLACK);
         viewInnerBar.add(viewText);
 
@@ -135,7 +135,7 @@ public class AnalystSalesPanel extends JPanel {
         JComboBox<String> viewSelect = new JComboBox<>(views);
         viewSelect.setEditable(false);
         viewSelect.setForeground(Color.BLACK);
-        viewSelect.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 12));
+        viewSelect.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, AnalystScreen.SELECT_FONT_SIZE));
         viewSelect.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -188,7 +188,7 @@ public class AnalystSalesPanel extends JPanel {
                 }
 
                 JLabel labelOne = new JLabel(stringOne);
-                AbstractScreen.setDefaultFont(labelOne, 13);
+                AbstractScreen.setDefaultFont(labelOne, AnalystScreen.LIST_FONT_SIZE);
                 gbc.gridy = i + 2;
                 gbc.gridx = 0;
                 gbc.gridwidth = 1;
@@ -200,14 +200,14 @@ public class AnalystSalesPanel extends JPanel {
                 listPanelContent.add(labelOne, gbc);
 
                 JLabel labelTwo = new JLabel(stringTwo);
-                AbstractScreen.setDefaultFont(labelTwo, 13);
+                AbstractScreen.setDefaultFont(labelTwo, AnalystScreen.LIST_FONT_SIZE);
                 gbc.gridx = 1;
                 gbc.weightx = 0.2;
                 gbc.insets = new Insets(5, 5, 5, 5);
                 listPanelContent.add(labelTwo, gbc);
 
                 JLabel totalViewers = new JLabel(String.valueOf(sale.getTotalViewers()));
-                AbstractScreen.setDefaultFont(totalViewers, 13);
+                AbstractScreen.setDefaultFont(totalViewers, AnalystScreen.LIST_FONT_SIZE);
                 gbc.gridy = i + 2;
                 gbc.gridx = 2;
                 gbc.insets = new Insets(5, 5, 5, 5);
@@ -217,7 +217,7 @@ public class AnalystSalesPanel extends JPanel {
                 DecimalFormat format = new DecimalFormat("#.00");
                 String salesString = "$" + format.format(sale.getTotalSales());
                 JLabel totalSales = new JLabel(salesString);
-                AbstractScreen.setDefaultFont(totalSales, 13);
+                AbstractScreen.setDefaultFont(totalSales, AnalystScreen.LIST_FONT_SIZE);
                 gbc.gridx = 3;
                 gbc.insets = new Insets(5, 5, 5, 15);
                 listPanelContent.add(totalSales, gbc);

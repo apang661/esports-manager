@@ -1,7 +1,6 @@
 package database;
 
 import model.*;
-
 import tabs.AnalystSalesPanel;
 import utils.PrintablePreparedStatement;
 
@@ -661,5 +660,75 @@ public class DatabaseConnectionHandler {
             System.out.println(EXCEPTION_TAG + " " + e.getMessage());
             rollbackConnection();
         }
+    }
+
+    public Integer[] getYears() {
+        ArrayList<Integer> yearList = new ArrayList<>();
+        try {
+            String query = "SELECT DISTINCT year FROM Roster";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                yearList.add(rs.getInt("year"));
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        System.out.println(yearList);
+        return yearList.toArray(new Integer[0]);
+    }
+
+    public String[] getSeasons(Integer year) {
+        ArrayList<String> seasonList = new ArrayList<>();
+        String query = "SELECT DISTINCT season FROM Roster WHERE year = ?";
+
+        try {
+            PreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query);
+            ps.setInt(1, year);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                seasonList.add(rs.getString("season"));
+            }
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+
+        System.out.println(seasonList);
+        return seasonList.toArray(new String[0]);
+    }
+
+    public ArrayList<RosterStruct> getRostersBySeasonYear(Integer year, String season) {
+        ArrayList<RosterStruct> rosters = new ArrayList<>();
+        String query = "SELECT * FROM Roster " +
+                "INNER JOIN Team ON Team.tID = Roster.tID " +
+                "WHERE year = ? AND season = ? " +
+                "ORDER BY wins DESC";
+
+        try {
+            PreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query);
+            ps.setInt(1, year);
+            ps.setString(2, season);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                rosters.add(new RosterStruct(
+                        rs.getString("name"),
+                        season,
+                        year,
+                        rs.getInt("wins"),
+                        rs.getInt("losses")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+
+        return rosters;
     }
 }
