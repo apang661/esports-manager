@@ -36,6 +36,10 @@ public class AbstractScreen extends JPanel {
         add(setupContentPanel(), BorderLayout.CENTER);
     }
 
+    public ArrayList<JPanel> getTabPanels() {
+        return tabPanels;
+    }
+
     public DatabaseConnectionHandler getDbHandler() {
         return dbHandler;
     }
@@ -126,7 +130,7 @@ public class AbstractScreen extends JPanel {
         contentPanel.add(tabPanel);
     }
 
-    protected void displayTab(int index) {
+    public void displayTab(int index) {
         if (visibleTabIndex == -1) {
             tabPanels.get(index).setVisible(true);
             tabBar.getComponent(index).setBackground(TAB_HIGHLIGHTED);

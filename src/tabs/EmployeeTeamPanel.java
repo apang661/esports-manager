@@ -1,20 +1,23 @@
 package tabs;
 
+import model.Roster;
 import model.Team;
 import ui.AbstractScreen;
-import utils.CustomButton;
 import ui.HomeScreen;
+import utils.CustomButton;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class EmployeeTeamPanel extends Panel {
     ArrayList<JPanel> teamPanels;
-    JPanel teamBar;
+    JList teamBar;
+
+    DefaultListModel<String> teamNames;
     int visibleTabIndex;
     JPanel contentPanel;
 
@@ -26,100 +29,95 @@ public class EmployeeTeamPanel extends Panel {
         addAllTeams();
     }
 
+    public DefaultListModel<String> getTeamNames() {
+        return teamNames;
+    }
+
     private void addAllTeams() {
         ArrayList<Team> teamNames =  parent.getDbHandler().getTeams();
         for (Team team : teamNames) {
-            addTab(team.getName(), setupTeamMemberPanel(team));
+            addTab(team.getName(), setupTeamPanel(team));
+            System.out.println(team.getTeamID());
         }
     }
 
-    private JPanel setupTeamMemberPanel(Team team) {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.GRAY);
-        JLabel test = new JLabel(team.getName());
-        panel.add(test);
+    private JPanel setupTeamPanel(Team team) {
+        JPanel panel = new JPanel(new BorderLayout());
+        AbstractScreen.setColors(panel, "m");
+        JLabel title = new JLabel(team.getName());
+        title.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 80));
+        title.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 18));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        AbstractScreen.setColors(title, "m");
+        AbstractScreen.setColors(panel, "m");
+        panel.add(title, BorderLayout.NORTH);
+        ArrayList<Roster> rosters = parent.getDbHandler().getRosters(team.getTeamID());
+        addRosters(panel, rosters);
         return panel;
+    }
+
+    private void addRosters(JPanel panel, ArrayList<Roster> rosters) {
+        JPanel rosterContainer = new JPanel(new GridLayout(0,1));
+        for (Roster r: rosters) {
+            JPanel rosterPanel = new JPanel(new BorderLayout());
+            JLabel title = new JLabel(r.getSeason() + " " + r.getYear());
+            title.setHorizontalAlignment(SwingConstants.CENTER);
+            rosterPanel.add(title, BorderLayout.NORTH);
+            rosterContainer.add(rosterPanel);
+        }
+        panel.add(rosterContainer, BorderLayout.CENTER);
     }
 
     private JPanel setupContentPanel() {
         contentPanel = new JPanel();
-        contentPanel.setLayout(new OverlayLayout(contentPanel));
         contentPanel.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, AbstractScreen.SCREEN_HEIGHT));
-        contentPanel.setBackground(new Color(150, 150, 150));
-        contentPanel.setAlignmentX(Box.RIGHT_ALIGNMENT);
+        AbstractScreen.setColors(contentPanel, "m");
         return contentPanel;
     }
 
     private JPanel setupTeamBar() {
         JPanel sideBarParent = new JPanel(new BorderLayout());
-        JPanel sideBar = new JPanel(new GridBagLayout());
-        sideBar.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 4 - 30, AbstractScreen.SCREEN_HEIGHT - 60));
-        sideBar.setBackground(AbstractScreen.TAB_COLOR);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        teamBar = new JPanel();
-        teamBar.setLayout(new GridBagLayout());
-        teamBar.setPreferredSize(new Dimension( AbstractScreen.SCREEN_WIDTH / 4, AbstractScreen.SCREEN_HEIGHT - 60));
-        teamBar.setBackground(AbstractScreen.TAB_COLOR);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1;
-        gbc.insets = new Insets(10, 0, 0, 0);
-        gbc.fill = GridBagConstraints.BOTH;
-        sideBar.add(teamBar, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.fill = GridBagConstraints.BOTH;
-        JPanel panel = new JPanel();
-        sideBar.add(panel, gbc);
+        initTeamBar();
         panel.setBackground(AbstractScreen.TAB_COLOR);
-        JScrollPane scroll = new JScrollPane(sideBar, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        JScrollPane scroll = new JScrollPane(teamBar, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder( new LineBorder(AbstractScreen.MAIN_COLOR) );
-        sideBarParent.add(scroll, BorderLayout.NORTH);
+        scroll.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 4 - 30, AbstractScreen.SCREEN_HEIGHT - 50));
+        JPanel filler = new JPanel();
+        AbstractScreen.setColors(filler, "m");
+        filler.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 4 - 30, 9));
+        sideBarParent.add(filler, BorderLayout.NORTH);
+        sideBarParent.add(scroll, BorderLayout.LINE_START);
         JButton addTeam = new CustomButton("Add");
         AbstractScreen.setColors(addTeam, "m");
-        addTeam.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 4 - 30, 60));
+        addTeam.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 4 - 30, 50));
         sideBarParent.add(addTeam, BorderLayout.SOUTH);
         AbstractScreen.setColors(sideBarParent, "m");
         return sideBarParent;
     }
 
-    protected void addTab(String tabName, JPanel tabPanel) {
-        JPanel tab = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        JLabel text = new JLabel(tabName);
-        text.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 14));
-        text.setForeground(Color.WHITE);
-        tab.setBackground(AbstractScreen.TAB_COLOR);
-
-        int currentSize = teamPanels.size();
-        tab.addMouseListener(new MouseAdapter() {
+    private void initTeamBar() {
+        teamNames = new DefaultListModel<>();
+        teamBar = new JList(teamNames);
+        teamBar.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        teamBar.setSelectedIndex(0);
+        teamBar.setVisibleRowCount(10);
+        teamBar.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 14));
+        teamBar.setFixedCellHeight(55);
+        teamBar.setSelectionBackground(AbstractScreen.TAB_HIGHLIGHTED);
+        AbstractScreen.setColors(teamBar, "m");
+        teamBar.addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                displayTab(currentSize);
+            public void valueChanged(ListSelectionEvent e) {
+                Integer selection = teamBar.getSelectedIndex();
+                displayTab(selection);
             }
         });
+    }
 
-        gbc.gridx = 0;
-        gbc.gridy = GridBagConstraints.RELATIVE;
-        gbc.weightx = 1;
-        gbc.anchor = GridBagConstraints.LINE_START;
-        gbc.insets = new Insets(20, 20, 20, 0);
-        tab.add(text, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = GridBagConstraints.RELATIVE;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.weightx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        teamBar.add(tab, gbc);
+    protected void addTab(String tabName, JPanel tabPanel) {
+        teamNames.addElement(tabName);
+        GridBagConstraints gbc = new GridBagConstraints();
 
 //        HomeScreen.createBorder(tabPanel, Color.RED);
         if (teamPanels.size() != 0) {
@@ -133,13 +131,10 @@ public class EmployeeTeamPanel extends Panel {
     protected void displayTab(int index) {
         if (visibleTabIndex == -1) {
             teamPanels.get(index).setVisible(true);
-            teamBar.getComponent(index).setBackground(AbstractScreen.TAB_HIGHLIGHTED);
             visibleTabIndex = index;
         } else if (visibleTabIndex != index) {
             teamPanels.get(visibleTabIndex).setVisible(false);
-            teamBar.getComponent(visibleTabIndex).setBackground(AbstractScreen.TAB_COLOR);
             teamPanels.get(index).setVisible(true);
-            teamBar.getComponent(index).setBackground(AbstractScreen.TAB_HIGHLIGHTED);
             visibleTabIndex = index;
         }
     }
