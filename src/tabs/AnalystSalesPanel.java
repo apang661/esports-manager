@@ -3,6 +3,7 @@ package tabs;
 import database.DatabaseConnectionHandler;
 import model.SalesStruct;
 import ui.AbstractScreen;
+import ui.AnalystScreen;
 import ui.HomeScreen;
 
 import javax.swing.*;
@@ -15,14 +16,15 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class AnalystSalesPanel extends JPanel {
-
     public static final int NO_SETTING = 0;
     public static final int GAME_SETTING = 1;
     public static final int TEAM_SETTING = 2;
     public static final int ARENA_SETTING = 3;
+
     private DatabaseConnectionHandler dbHandler;
     private int currentView;
     private JPanel listPanelContent;
+
     public AnalystSalesPanel(DatabaseConnectionHandler dbHandler) {
         currentView = NO_SETTING;
         this.dbHandler = dbHandler;
@@ -32,12 +34,9 @@ public class AnalystSalesPanel extends JPanel {
     }
 
     private JPanel setupListPanel() {
-
         JPanel listPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-
         listPanel.setForeground(AbstractScreen.TEXT_COLOR);
-
+        GridBagConstraints gbc = new GridBagConstraints();
 
         listPanelContent = new JPanel(new GridBagLayout());
         listPanelContent.setBackground(AbstractScreen.SECOND_COLOR);
@@ -47,7 +46,6 @@ public class AnalystSalesPanel extends JPanel {
 
         JScrollPane listPanelScroller = new JScrollPane(listPanelContent);
         listPanelScroller.setBorder(new EmptyBorder(0, 0, 0, 0));
-
         gbc.gridy = 0;
         gbc.weightx = 1;
         gbc.weighty = 0;
@@ -66,10 +64,8 @@ public class AnalystSalesPanel extends JPanel {
     }
 
     private void setupListPanelHeader(int setting) {
-
-
-        JLabel firstLabel = new JLabel("Game: ");
-        JLabel secondLabel = new JLabel("Date: ");
+        JLabel firstLabel;
+        JLabel secondLabel;
 
         if (setting == GAME_SETTING) {
             firstLabel = new JLabel("Game: ");
@@ -83,6 +79,7 @@ public class AnalystSalesPanel extends JPanel {
         }
 
         GridBagConstraints gbc = new GridBagConstraints();
+
         AbstractScreen.setBoldFont(firstLabel, 13);
         gbc.gridy = 0;
         gbc.gridx = 0;
@@ -91,7 +88,6 @@ public class AnalystSalesPanel extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(15, 15, 5, 5);
         listPanelContent.add(firstLabel, gbc);
-
 
         AbstractScreen.setBoldFont(secondLabel, 13);
         gbc.gridx = 1;
@@ -102,11 +98,14 @@ public class AnalystSalesPanel extends JPanel {
         JLabel totalViewers = new JLabel("Viewers: ");
         AbstractScreen.setBoldFont(totalViewers, 13);
         gbc.gridx = 2;
+        gbc.weightx = 0.2;
+        gbc.insets = new Insets(15, 5, 5, 5);
         listPanelContent.add(totalViewers, gbc);
 
         JLabel totalSales = new JLabel("Sales: ");
         AbstractScreen.setBoldFont(totalSales, 13);
         gbc.gridx = 3;
+        gbc.weightx = 0.2;
         gbc.insets = new Insets(15, 5, 5, 15);
         listPanelContent.add(totalSales, gbc);
 
@@ -119,13 +118,18 @@ public class AnalystSalesPanel extends JPanel {
     }
 
     private JPanel setupViewSelection() {
-        JPanel viewBar = new JPanel(new FlowLayout());
-        viewBar.setBackground(new Color(200,200,200));
+        JPanel viewBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        viewBar.setBackground(AnalystScreen.SELECT_COLOR);
+
+        JPanel viewInnerBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 8));
+        viewInnerBar.setBackground(AnalystScreen.SELECT_COLOR);
+
+        viewBar.add(viewInnerBar);
 
         JLabel viewText = new JLabel("View By:");
         viewText.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 14));
         viewText.setForeground(Color.BLACK);
-        viewBar.add(viewText);
+        viewInnerBar.add(viewText);
 
         String[] views = {"Game", "Team", "Arena"};
         JComboBox<String> viewSelect = new JComboBox<>(views);
@@ -146,7 +150,7 @@ public class AnalystSalesPanel extends JPanel {
             }
         });
 
-        viewBar.add(viewSelect);
+        viewInnerBar.add(viewSelect);
 
         return viewBar;
     }
