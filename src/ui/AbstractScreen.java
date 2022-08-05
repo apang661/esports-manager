@@ -143,4 +143,14 @@ public class AbstractScreen extends JPanel {
             visibleTabIndex = index;
         }
     }
+
+    public static void setDefaultFont(JComponent comp, int fontSize) {
+        comp.setForeground(AbstractScreen.TEXT_COLOR);
+        comp.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, fontSize));
+    }
+
+    public static void setBoldFont(JComponent comp, int fontSize) {
+        comp.setForeground(AbstractScreen.TEXT_COLOR);
+        comp.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.BOLD, fontSize));
+    }
 }
