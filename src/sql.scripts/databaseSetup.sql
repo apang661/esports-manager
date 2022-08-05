@@ -62,10 +62,7 @@ CREATE TABLE Arena (
     aID  INTEGER PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
     city VARCHAR(32) NOT NULL,
-<<<<<<< Updated upstream
     capacity INTEGER NOT NULL,
-=======
->>>>>>> Stashed changes
     UNIQUE (name, city)
 );
 
