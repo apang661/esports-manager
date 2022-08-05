@@ -1,7 +1,7 @@
 package ui;
 
 import tabs.AnalystTeamsPanel;
-import tabs.AnalystTicketsPanel;
+import tabs.AnalystSalesPanel;
 import tabs.AnalystViewersPanel;
 
 import javax.swing.*;
@@ -9,13 +9,13 @@ import javax.swing.*;
 public class AnalystScreen extends AbstractScreen {
     public AnalystScreen() {
         super();
-        addTab("Tickets", setupTicketsPanel());
+        addTab("Sales", setupTicketsPanel());
 //        addTab("Team Performances", setupTeamsPanel());
 //        addTab("Top Viewers", setupViewersPanel());
     }
 
     private JPanel setupTicketsPanel() {
-        return new AnalystTicketsPanel(dbHandler);
+        return new AnalystSalesPanel(dbHandler);
     }
 
 

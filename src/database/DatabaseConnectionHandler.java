@@ -2,7 +2,7 @@ package database;
 
 import model.*;
 
-import tabs.AnalystTicketsPanel;
+import tabs.AnalystSalesPanel;
 import utils.PrintablePreparedStatement;
 
 import java.sql.*;
@@ -491,7 +491,7 @@ public class DatabaseConnectionHandler {
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                AnalystTicketsPanel.GameSalesStruct gameSales = new AnalystTicketsPanel.GameSalesStruct(
+                AnalystSalesPanel.GameSalesStruct gameSales = new AnalystSalesPanel.GameSalesStruct(
                         rs.getString("rtName") + " vs. " + rs.getString("btName"),
                         rs.getDate("day"),
                         rs.getInt("totalViewers"),
@@ -548,7 +548,7 @@ public class DatabaseConnectionHandler {
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                AnalystTicketsPanel.TeamSalesStruct teamSales = new AnalystTicketsPanel.TeamSalesStruct(
+                AnalystSalesPanel.TeamSalesStruct teamSales = new AnalystSalesPanel.TeamSalesStruct(
                         rs.getString("name"),
                         rs.getInt("totalGames"),
                         rs.getInt("totalViewers"),
@@ -563,5 +563,37 @@ public class DatabaseConnectionHandler {
             rollbackConnection();
         }
         return teamSalesList;
+    }
+
+    public ArrayList<SalesStruct> getArenaSales() {
+        ArrayList<SalesStruct> arenaSalesList = new ArrayList<>();
+        try {
+            String query =
+                    "SELECT Arena.name, Arena.city, COUNT(ticketNum) AS totalViewers, SUM(price) AS totalSales " +
+                            "FROM Arena " +
+                            "INNER JOIN Game ON Game.aID = Arena.aID " +
+                            "INNER JOIN Ticket ON Game.gID = Ticket.gID " +
+                            "INNER JOIN Seat ON Ticket.aID = Seat.aID AND Ticket.seatNum = Seat.seatNum " +
+                            "WHERE Ticket.vID IS NOT NULL " +
+                            "GROUP BY Arena.name, Arena.city " +
+                            "ORDER BY totalViewers DESC, totalSales DESC";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                AnalystSalesPanel.ArenaSalesStruct teamSales = new AnalystSalesPanel.ArenaSalesStruct(
+                        rs.getString("name"),
+                        rs.getString("city"),
+                        rs.getInt("totalViewers"),
+                        rs.getInt("totalSales")
+                );
+                arenaSalesList.add(teamSales);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return arenaSalesList;
     }
 }

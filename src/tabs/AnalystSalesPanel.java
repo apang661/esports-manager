@@ -14,7 +14,7 @@ import java.sql.Date;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class AnalystTicketsPanel extends JPanel {
+public class AnalystSalesPanel extends JPanel {
 
     public static final int NO_SETTING = 0;
     public static final int GAME_SETTING = 1;
@@ -23,7 +23,8 @@ public class AnalystTicketsPanel extends JPanel {
     private DatabaseConnectionHandler dbHandler;
     private int currentView;
     private JPanel listPanelContent;
-    public AnalystTicketsPanel(DatabaseConnectionHandler dbHandler) {
+    public AnalystSalesPanel(DatabaseConnectionHandler dbHandler) {
+        currentView = NO_SETTING;
         this.dbHandler = dbHandler;
         setLayout(new BorderLayout());
         add(setupViewSelection(), BorderLayout.PAGE_START);
@@ -41,7 +42,6 @@ public class AnalystTicketsPanel extends JPanel {
         listPanelContent = new JPanel(new GridBagLayout());
         listPanelContent.setBackground(AbstractScreen.SECOND_COLOR);
         listPanelContent.setForeground(AbstractScreen.TEXT_COLOR);
-//        HomeScreen.createBorder(listPanelContent, Color.GREEN);
 
         switchView(GAME_SETTING);
 
@@ -78,7 +78,8 @@ public class AnalystTicketsPanel extends JPanel {
             firstLabel = new JLabel("Team: ");
             secondLabel = new JLabel("Total Games: ");
         } else {
-
+            firstLabel = new JLabel("Arena: ");
+            secondLabel = new JLabel("Location: ");
         }
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -154,71 +155,57 @@ public class AnalystTicketsPanel extends JPanel {
         if (currentView != view) {
             ArrayList<SalesStruct> salesList;
             listPanelContent.removeAll();
+            GridBagConstraints gbc = new GridBagConstraints();
+
             if (view == GAME_SETTING) {
                 salesList = dbHandler.getGameSales();
-                GridBagConstraints gbc = new GridBagConstraints();
-                setupListPanelHeader(GAME_SETTING);
-                for (int i = 0; i < salesList.size(); i++) {
-                    GameSalesStruct gameSale = (GameSalesStruct) salesList.get(i);
-
-                    JLabel gameName = new JLabel(gameSale.getGameName());
-                    AbstractScreen.setDefaultFont(gameName, 13);
-                    gbc.gridy = i + 2;
-                    gbc.gridx = 0;
-                    gbc.gridwidth = 1;
-                    gbc.gridheight = 1;
-                    gbc.weightx = 0.8;
-                    gbc.anchor = GridBagConstraints.PAGE_START;
-                    gbc.fill = GridBagConstraints.BOTH;
-                    gbc.insets = new Insets(10, 15, 10, 5);
-                    listPanelContent.add(gameName, gbc);
-
-                    JLabel day = new JLabel(gameSale.getDay().toString());
-                    AbstractScreen.setDefaultFont(day, 13);
-                    gbc.gridx = 1;
-                    gbc.weightx = 0.2;
-                    gbc.insets = new Insets(5, 5, 5, 5);
-                    listPanelContent.add(day, gbc);
-                }
             } else if (view == TEAM_SETTING) {
                 salesList = dbHandler.getTeamSales();
-                GridBagConstraints gbc = new GridBagConstraints();
-                setupListPanelHeader(TEAM_SETTING);
-                for (int i = 0; i < salesList.size(); i++) {
-                    TeamSalesStruct gameSale = (TeamSalesStruct) salesList.get(i);
-
-                    JLabel teamName = new JLabel(gameSale.getTeamName());
-                    AbstractScreen.setDefaultFont(teamName, 13);
-                    gbc.gridy = i + 2;
-                    gbc.gridx = 0;
-                    gbc.gridwidth = 1;
-                    gbc.gridheight = 1;
-                    gbc.weightx = 0.8;
-                    gbc.anchor = GridBagConstraints.PAGE_START;
-                    gbc.fill = GridBagConstraints.BOTH;
-                    gbc.insets = new Insets(10, 15, 10, 5);
-                    listPanelContent.add(teamName, gbc);
-
-                    JLabel totalGames = new JLabel(String.valueOf(gameSale.getTotalGames()));
-                    AbstractScreen.setDefaultFont(totalGames, 13);
-                    gbc.gridx = 1;
-                    gbc.weightx = 0.2;
-                    gbc.insets = new Insets(5, 5, 5, 5);
-                    listPanelContent.add(totalGames, gbc);
-                }
             } else {
-                salesList = dbHandler.getGameSales();
+                salesList = dbHandler.getArenaSales();
             }
+
+            setupListPanelHeader(view);
 
             for (int i = 0; i < salesList.size(); i++) {
                 SalesStruct sale = salesList.get(i);
-                GridBagConstraints gbc = new GridBagConstraints();
+                String stringOne;
+                String stringTwo;
+
+                if (view == GAME_SETTING) {
+                    stringOne = ((GameSalesStruct) sale).getGameName();
+                    stringTwo = ((GameSalesStruct) sale).getDay().toString();
+                } else if (view == TEAM_SETTING) {
+                    stringOne = ((TeamSalesStruct) sale).getTeamName();
+                    stringTwo = String.valueOf(((TeamSalesStruct) sale).getTotalGames());
+                } else {
+                    stringOne = ((ArenaSalesStruct) sale).getArenaName();
+                    stringTwo = ((ArenaSalesStruct) sale).getCity();
+                }
+
+                JLabel labelOne = new JLabel(stringOne);
+                AbstractScreen.setDefaultFont(labelOne, 13);
+                gbc.gridy = i + 2;
+                gbc.gridx = 0;
+                gbc.gridwidth = 1;
+                gbc.gridheight = 1;
+                gbc.weightx = 0.8;
+                gbc.anchor = GridBagConstraints.PAGE_START;
+                gbc.fill = GridBagConstraints.BOTH;
+                gbc.insets = new Insets(10, 15, 10, 5);
+                listPanelContent.add(labelOne, gbc);
+
+                JLabel labelTwo = new JLabel(stringTwo);
+                AbstractScreen.setDefaultFont(labelTwo, 13);
+                gbc.gridx = 1;
+                gbc.weightx = 0.2;
+                gbc.insets = new Insets(5, 5, 5, 5);
+                listPanelContent.add(labelTwo, gbc);
 
                 JLabel totalViewers = new JLabel(String.valueOf(sale.getTotalViewers()));
                 AbstractScreen.setDefaultFont(totalViewers, 13);
                 gbc.gridy = i + 2;
                 gbc.gridx = 2;
-                gbc.weightx = 0.2;
                 gbc.insets = new Insets(5, 5, 5, 5);
                 gbc.fill = GridBagConstraints.BOTH;
                 listPanelContent.add(totalViewers, gbc);
@@ -227,19 +214,21 @@ public class AnalystTicketsPanel extends JPanel {
                 String salesString = "$" + format.format(sale.getTotalSales());
                 JLabel totalSales = new JLabel(salesString);
                 AbstractScreen.setDefaultFont(totalSales, 13);
-
                 gbc.gridx = 3;
                 gbc.insets = new Insets(5, 5, 5, 15);
                 listPanelContent.add(totalSales, gbc);
             }
-
-            listPanelContent.repaint();
-            listPanelContent.revalidate();
         }
+
+        revalidate();
+        repaint();
+
+        currentView = view;
     }
 
 
-    // Class for converting SQL query result to gameName, totalViewers, totalSales
+    // Start of SalesStruct implementations
+    // SalesStruct is a class used for organizing query information for easier transport
     public static class GameSalesStruct extends SalesStruct {
         private final String gameName;
         private final Date day;
@@ -259,7 +248,6 @@ public class AnalystTicketsPanel extends JPanel {
         }
     }
 
-    // Class for converting SQL query result to teamName, totalGames, totalViewers, totalSales
     public static class TeamSalesStruct extends SalesStruct {
         private final String teamName;
         private final int totalGames;
@@ -276,6 +264,25 @@ public class AnalystTicketsPanel extends JPanel {
 
         public int getTotalGames() {
             return totalGames;
+        }
+    }
+
+    public static class ArenaSalesStruct extends SalesStruct {
+        private final String arenaName;
+        private final String city;
+
+        public ArenaSalesStruct(String arenaName, String city, int totalViewers, float totalSales) {
+            super(totalViewers, totalSales);
+            this.arenaName = arenaName;
+            this.city = city;
+        }
+
+        public String getArenaName() {
+            return arenaName;
+        }
+
+        public String getCity() {
+            return city;
         }
     }
 }
