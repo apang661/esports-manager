@@ -16,7 +16,7 @@ public class ViewerScreen extends AbstractScreen {
         addTab("Account", setupAccountPanel());
         addTab("Tickets", setupTicketsPanel());
         addTab("Schedule", setupSchedulePanel());
-        addTab("Standings", setupGamePanel());
+        addTab("Games", setupGamePanel());
         addTab("Teams", setupTeamPanel());
         displayTab(0);
     }
