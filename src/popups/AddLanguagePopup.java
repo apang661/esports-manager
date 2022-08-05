@@ -8,6 +8,7 @@ import utils.CustomInputField;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class AddLanguagePopup extends Popup {
@@ -36,6 +37,7 @@ public class AddLanguagePopup extends Popup {
     public void actionPerformed(ActionEvent e) {
         editor.getParent().getDbHandler().addCasts(((EmployeeGamePanel) editor).getSelectedG().getgID(),
                 (Integer) casters.getSelectedItem(), language.getText());
+        ((EmployeeGamePanel) editor).printGame();
         dispose();
     }
 }

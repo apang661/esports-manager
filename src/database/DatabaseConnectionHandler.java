@@ -1,15 +1,11 @@
 package database;
 
-import model.Arena;
-import model.Game;
-import model.Player;
-import model.Team;
+import model.*;
+
+import tabs.AnalystSalesPanel;
 import utils.PrintablePreparedStatement;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 
@@ -27,7 +23,7 @@ public class DatabaseConnectionHandler {
 	private Connection connection = null;
 
 	public DatabaseConnectionHandler() {
-        login("ora_dennis34", "a94349206");
+        login("ora_apang11 ", "a23413743");
 		try {
 			// Load the Oracle JDBC driver
 			// Note that the path could change for new drivers
@@ -50,15 +46,9 @@ public class DatabaseConnectionHandler {
 	public void insertGame(Game game) {
 //        INSERT INTO Game VALUES (1, 1, 2, '10-OCT-22', 1)
 		try {
-            String query = "INSERT INTO SeasonDates VALUES (?, ?)";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setDate(1, game.getDay());
-            ps.setString(2, game.getSeason());
-            ps.executeUpdate();
-            connection.commit();
 
-            query = "INSERT INTO Game VALUES (?, ?, ?, ?, ?)";
-			ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            String query = "INSERT INTO Game VALUES (?, ?, ?, ?, ?)";
+			PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
 			ps.setInt(1, game.getgID());
             ps.setInt(2, game.getBtID());
             ps.setInt(3, game.getRtID());
@@ -66,6 +56,13 @@ public class DatabaseConnectionHandler {
             ps.setInt(5, game.getaID());
             ps.executeUpdate();
 			connection.commit();
+
+            query = "INSERT INTO SeasonDates VALUES (?, ?)";
+            ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setDate(1, game.getDay());
+            ps.setString(2, game.getSeason());
+            ps.executeUpdate();
+            connection.commit();
 
 			ps.close();
 		} catch (SQLException e) {
@@ -157,7 +154,7 @@ public class DatabaseConnectionHandler {
     }
 
     public Integer getMaxKey(String key, String table) {
-        Integer ans = null;
+        Integer ans = 0;
         try {
             String query;
             PrintablePreparedStatement ps;
@@ -204,7 +201,7 @@ public class DatabaseConnectionHandler {
             ps.setInt(1, aID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                arena = new Arena(rs.getInt("aID"), rs.getString("name"), rs.getString("city"));
+                arena = new Arena(rs.getInt("aID"), rs.getString("name"), rs.getString("city"), rs.getInt("capacity"));
             }
             rs.close();
             ps.close();
@@ -257,6 +254,28 @@ public class DatabaseConnectionHandler {
             throw new RuntimeException(e.getMessage());
         }
         return players;
+    }
+
+    public ArrayList<Roster> getRosters(int tID) {
+        ArrayList<Roster> rosters = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM Roster WHERE tID = ?";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, tID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Roster r = new Roster(rs.getInt("tID"), rs.getString("season"), rs.getInt("year"),
+                        rs.getInt("wins"), rs.getInt("losses"));
+                rosters.add(r);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+            throw new RuntimeException(e.getMessage());
+        }
+        return rosters;
     }
 
     public ArrayList<Team> getTeams() {
@@ -442,14 +461,67 @@ public class DatabaseConnectionHandler {
         return players;
     }
 
-
     public void addCasts(Integer gID, Integer cID, String lang) {
         try {
             String query = "INSERT INTO Casts VALUES (?, ?, ?)";
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setInt(1, gID);
-            ps.setInt(2, cID);
+            ps.setInt(1, cID);
+            ps.setInt(2, gID);
             ps.setString(3, lang);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public ArrayList<SalesStruct> getGameSales() {
+        ArrayList<SalesStruct> gameSalesList = new ArrayList<>();
+        try {
+            String query = "SELECT Game.gID, day, Team1.name AS btName, Team2.name AS rtName, COUNT(ticketNum) AS totalViewers, SUM(price) AS totalSales " +
+                    "FROM Game " +
+                    "INNER JOIN Ticket ON Game.gID = Ticket.gID " +
+                    "INNER JOIN Seat ON Ticket.aID = Seat.aID AND Ticket.seatNum = Seat.seatNum " +
+                    "INNER JOIN Team Team1 ON Game.btID = Team1.tID " +
+                    "INNER JOIN Team Team2 ON Game.rtID = Team2.tID " +
+                    "WHERE Ticket.vID IS NOT NULL " +
+                    "GROUP BY Game.gID, day, Team1.name, Team2.name " +
+                    "ORDER BY totalViewers DESC, totalSales DESC";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                AnalystSalesPanel.GameSalesStruct gameSales = new AnalystSalesPanel.GameSalesStruct(
+                        rs.getString("rtName") + " vs. " + rs.getString("btName"),
+                        rs.getDate("day"),
+                        rs.getInt("totalViewers"),
+                        rs.getInt("totalSales")
+                );
+                gameSalesList.add(gameSales);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+
+        return gameSalesList;
+    }
+
+    public void addTicket(int ticketnum, int vID, int gID, int aId, int seatNum) {
+        try {
+            String query = "INSERT INTO Ticket VALUES (?, ?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, ticketnum);
+            if (vID >= 0) {
+                ps.setInt(2, vID);
+            } else {
+                ps.setNull(2, Types.INTEGER);
+            }
+            ps.setInt(3, gID);
+            ps.setInt(4, aId);
+            ps.setInt(5, seatNum);
             ps.executeUpdate();
             connection.commit();
             ps.close();
@@ -457,6 +529,72 @@ public class DatabaseConnectionHandler {
             System.out.println(EXCEPTION_TAG + " " + e.getMessage());
             rollbackConnection();
         }
+    }
+
+    public ArrayList<SalesStruct> getTeamSales() {
+        ArrayList<SalesStruct> teamSalesList = new ArrayList<>();
+        try {
+            String query =
+                    "SELECT Team.name, COUNT(Game.gID) AS totalGames, COUNT(ticketNum) AS totalViewers, SUM(price) AS totalSales " +
+                            "FROM Team " +
+                            "INNER JOIN Game ON Game.btID = Team.tID OR Game.rtID = Team.tID " +
+                            "INNER JOIN Ticket ON Game.gID = Ticket.gID " +
+                            "INNER JOIN Seat ON Ticket.aID = Seat.aID AND Ticket.seatNum = Seat.seatNum " +
+                            "INNER JOIN Team Team1 ON Game.btID = Team1.tID " +
+                            "INNER JOIN Team Team2 ON Game.rtID = Team2.tID " +
+                            "WHERE Ticket.vID IS NOT NULL " +
+                            "GROUP BY Team.name " +
+                            "ORDER BY totalViewers DESC, totalSales DESC";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                AnalystSalesPanel.TeamSalesStruct teamSales = new AnalystSalesPanel.TeamSalesStruct(
+                        rs.getString("name"),
+                        rs.getInt("totalGames"),
+                        rs.getInt("totalViewers"),
+                        rs.getInt("totalSales")
+                );
+                teamSalesList.add(teamSales);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return teamSalesList;
+    }
+
+    public ArrayList<SalesStruct> getArenaSales() {
+        ArrayList<SalesStruct> arenaSalesList = new ArrayList<>();
+        try {
+            String query =
+                    "SELECT Arena.name, Arena.city, COUNT(ticketNum) AS totalViewers, SUM(price) AS totalSales " +
+                            "FROM Arena " +
+                            "INNER JOIN Game ON Game.aID = Arena.aID " +
+                            "INNER JOIN Ticket ON Game.gID = Ticket.gID " +
+                            "INNER JOIN Seat ON Ticket.aID = Seat.aID AND Ticket.seatNum = Seat.seatNum " +
+                            "WHERE Ticket.vID IS NOT NULL " +
+                            "GROUP BY Arena.name, Arena.city " +
+                            "ORDER BY totalViewers DESC, totalSales DESC";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                AnalystSalesPanel.ArenaSalesStruct teamSales = new AnalystSalesPanel.ArenaSalesStruct(
+                        rs.getString("name"),
+                        rs.getString("city"),
+                        rs.getInt("totalViewers"),
+                        rs.getInt("totalSales")
+                );
+                arenaSalesList.add(teamSales);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return arenaSalesList;
     }
 
     public ArrayList<String> getAvailTickets(int getgID, int viewerID) {

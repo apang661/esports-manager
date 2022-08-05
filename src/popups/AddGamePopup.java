@@ -1,12 +1,14 @@
 package popups;
 
+import model.Arena;
 import model.Game;
+import tabs.EmployeeGamePanel;
 import tabs.Panel;
 import ui.AbstractScreen;
+import utils.CustomInputField;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Date;
 
 public class AddGamePopup extends Popup {
@@ -28,9 +30,12 @@ public class AddGamePopup extends Popup {
             JLabel l = new JLabel(labels[i], JLabel.TRAILING);
             main.add(l);
             AbstractScreen.setColors(l, "s");
-            JTextField textField = new JTextField(10);
+            JTextField textField;
+            if (labels[i].equals("Date: "))
+                textField  = new CustomInputField("YYYY-MM-DD");
+            else
+                textField  = new CustomInputField("");
             l.setLabelFor(textField);
-            AbstractScreen.setColors(textField, "s");
             main.add(textField);
             fields[i] = textField;
             if (i == 0) {
@@ -49,14 +54,7 @@ public class AddGamePopup extends Popup {
 
         }
         JButton create = new JButton("Create Game");
-        create.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Game game = new Game(editor.updateMaxKey("gID", "Game") + 1,Integer.parseInt(fields[1].getText()),
-                        Integer.parseInt(fields[2].getText()), Date.valueOf(fields[0].getText()),Integer.parseInt(fields[3].getText()), fields[4].getText(),Integer.parseInt(fields[0].getText().substring(0, 2)));
-                editor.getParent().getDbHandler().insertGame(game);
-            }
-        });
+        create.addActionListener(this);
         AbstractScreen.setColors(create, "s");
         main.add(create);
         layout.putConstraint(SpringLayout.NORTH, create, 10, SpringLayout.SOUTH, aboveLabel);
@@ -65,6 +63,16 @@ public class AddGamePopup extends Popup {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        int aId = Integer.parseInt(fields[2].getText());
+        Game game = new Game(editor.updateMaxKey("gID", "Game") + 1,Integer.parseInt(fields[1].getText()),
+                aId, Date.valueOf(fields[0].getText()),Integer.parseInt(fields[3].getText()), fields[4].getText(),Integer.parseInt(fields[0].getText().substring(0, 2)));
+        editor.getParent().getDbHandler().insertGame(game);
+        ((EmployeeGamePanel) editor).getGames("","");
+        Arena a = editor.getParent().getDbHandler().getArena(aId);
+        int minTicket = editor.updateMaxKey("ticketnum", "ticket");
+        for (int i = 1; i < a.getCapacity() + 1; i++) {
+            editor.getParent().getDbHandler().addTicket(minTicket + i, -1, game.getgID(), aId, i);
+        }
         dispose();
     }
 

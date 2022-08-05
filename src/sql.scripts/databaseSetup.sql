@@ -1,11 +1,11 @@
 CREATE TABLE Team (
     tID   INTEGER PRIMARY KEY,
-    name  CHAR(32) UNIQUE NOT NULL,
-    owner CHAR(32)
+    name  VARCHAR(32) UNIQUE NOT NULL,
+    owner VARCHAR(32)
 );
 
 CREATE TABLE Achievement (
-    season    CHAR(6),
+    season    VARCHAR(6),
     year      INTEGER,
     placement INTEGER,
     tID       INTEGER NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE Achievement (
 
 CREATE TABLE Roster (
     tID    INTEGER,
-    season CHAR(6),
+    season VARCHAR(6),
     year   INTEGER,
     wins   INTEGER NOT NULL,
     losses INTEGER NOT NULL,
@@ -27,14 +27,14 @@ CREATE TABLE Roster (
 
 CREATE TABLE TeamMember (
     tmID INTEGER PRIMARY KEY,
-    name CHAR(32),
+    name VARCHAR(32),
     age  INTEGER
 );
 
 
 
 CREATE TABLE PartOfRoster (
-    season CHAR(6),
+    season VARCHAR(6),
     year   INTEGER,
     tID    INTEGER,
     tmID   INTEGER,
@@ -45,23 +45,24 @@ CREATE TABLE PartOfRoster (
 
 CREATE TABLE Player (
     tmID     INTEGER PRIMARY KEY,
-    position CHAR(7),
-    alias    CHAR(20) UNIQUE NOT NULL,
+    position VARCHAR(7),
+    alias    VARCHAR(20) UNIQUE NOT NULL,
     FOREIGN KEY (tmID) REFERENCES TeamMember (tmID)
 );
 
 
 CREATE TABLE Staff (
     tmID INTEGER PRIMARY KEY,
-    role CHAR(20),
+    role VARCHAR(20),
     FOREIGN KEY (tmID) REFERENCES TeamMember
 );
 
 
 CREATE TABLE Arena (
     aID  INTEGER PRIMARY KEY,
-    name CHAR(64) NOT NULL,
-    city CHAR(32) NOT NULL,
+    name VARCHAR(64) NOT NULL,
+    city VARCHAR(32) NOT NULL,
+    capacity INTEGER NOT NULL,
     UNIQUE (name, city)
 );
 
@@ -91,13 +92,13 @@ CREATE TABLE PlaysIn (
 
 CREATE TABLE SeasonDates (
     day    DATE PRIMARY KEY,
-    season CHAR(6)
+    season VARCHAR(6)
 );
 
 
 CREATE TABLE Caster (
     cID  INTEGER PRIMARY KEY,
-    name CHAR(32) NOT NULL
+    name VARCHAR(32) NOT NULL
 );
 
 
@@ -105,7 +106,7 @@ CREATE TABLE Caster (
 CREATE TABLE Casts (
     cID      INTEGER,
     gID      INTEGER,
-    language CHAR(20) NOT NULL,
+    language VARCHAR(20) NOT NULL,
     PRIMARY KEY (cID, gID),
     FOREIGN KEY (cID) REFERENCES Caster (cID),
     FOREIGN KEY (gID) REFERENCES Game (gID)
@@ -115,7 +116,7 @@ CREATE TABLE Casts (
 
 CREATE TABLE Viewer (
     vID  INTEGER PRIMARY KEY,
-    name CHAR(32)
+    name VARCHAR(32)
 );
 
 
@@ -196,11 +197,11 @@ INSERT INTO Staff VALUES	(9, 'Sports Psychologist');
 INSERT INTO Staff VALUES	(10, 'Positional Coach');
 
 
-INSERT INTO Arena VALUES (1, 'Rogers Arena', 'Vancouver');
-INSERT INTO Arena VALUES (2, 'LCS Arena', 'Los Angeles');
-INSERT INTO Arena VALUES (3, 'LEC Studio', 'Berlin');
-INSERT INTO Arena VALUES (4, 'LPL Stadium', 'Shanghai');
-INSERT INTO Arena VALUES (5, 'LOL Park', 'Seoul');
+INSERT INTO Arena VALUES (1, 'Rogers Arena', 'Vancouver', 10);
+INSERT INTO Arena VALUES (2, 'LCS Arena', 'Los Angeles', 20);
+INSERT INTO Arena VALUES (3, 'LEC Studio', 'Berlin', 10);
+INSERT INTO Arena VALUES (4, 'LPL Stadium', 'Shanghai', 5);
+INSERT INTO Arena VALUES (5, 'LOL Park', 'Seoul', 20);
 
 INSERT INTO Game VALUES (1, 1, 2, '22-OCT-10', 1);
 INSERT INTO Game VALUES (2, 2, 3, '22-JAN-23', 3);
@@ -249,20 +250,82 @@ INSERT INTO Viewer VALUES (4, 'Sam');
 INSERT INTO Viewer VALUES (5, 'Rob');
 
 INSERT INTO Seat VALUES (1, 1, 1.00);
-INSERT INTO Seat VALUES (2, 2, 2.00);
-INSERT INTO Seat VALUES (3, 3, 3.00);
-INSERT INTO Seat VALUES (4, 4, 4.00);
-INSERT INTO Seat VALUES (5, 5, 5.00);
+INSERT INTO Seat VALUES (1, 2, 1.00);
+INSERT INTO Seat VALUES (1, 3, 1.00);
+INSERT INTO Seat VALUES (1, 4, 1.00);
+INSERT INTO Seat VALUES (1, 5, 1.00);
+INSERT INTO Seat VALUES (1, 6, 2.00);
+INSERT INTO Seat VALUES (1, 7, 2.00);
+INSERT INTO Seat VALUES (1, 8, 2.00);
+INSERT INTO Seat VALUES (1, 9, 2.00);
+INSERT INTO Seat VALUES (1, 10, 2.00);
 
-INSERT INTO Ticket VALUES (1, 1, 1, 1, 1);
-INSERT INTO Ticket VALUES (2, 2, 2, 2, 2);
-INSERT INTO Ticket VALUES (3, 3, 3, 3, 3);
-INSERT INTO Ticket VALUES (4, 4, 4, 4, 4);
-INSERT INTO Ticket VALUES (5, 5, 5, 5, 5);
+INSERT INTO Seat VALUES (2, 1, 1.00);
+INSERT INTO Seat VALUES (2, 2, 1.00);
+INSERT INTO Seat VALUES (2, 3, 1.00);
+INSERT INTO Seat VALUES (2, 4, 1.00);
+INSERT INTO Seat VALUES (2, 5, 1.00);
+INSERT INTO Seat VALUES (2, 6, 1.00);
+INSERT INTO Seat VALUES (2, 7, 1.00);
+INSERT INTO Seat VALUES (2, 8, 1.00);
+INSERT INTO Seat VALUES (2, 9, 1.00);
+INSERT INTO Seat VALUES (2, 10, 5.00);
+INSERT INTO Seat VALUES (2, 11, 5.00);
+INSERT INTO Seat VALUES (2, 12, 5.00);
+INSERT INTO Seat VALUES (2, 13, 5.00);
+INSERT INTO Seat VALUES (2, 14, 5.00);
+INSERT INTO Seat VALUES (2, 15, 5.00);
+INSERT INTO Seat VALUES (2, 16, 5.00);
+INSERT INTO Seat VALUES (2, 17, 5.00);
+INSERT INTO Seat VALUES (2, 18, 5.00);
+INSERT INTO Seat VALUES (2, 19, 5.00);
+INSERT INTO Seat VALUES (2, 20, 5.00);
+
+INSERT INTO Seat VALUES (3, 1, 1.00);
+INSERT INTO Seat VALUES (3, 2, 1.00);
+INSERT INTO Seat VALUES (3, 3, 1.00);
+INSERT INTO Seat VALUES (3, 4, 1.00);
+INSERT INTO Seat VALUES (3, 5, 1.00);
+INSERT INTO Seat VALUES (3, 6, 2.00);
+INSERT INTO Seat VALUES (3, 7, 2.00);
+INSERT INTO Seat VALUES (3, 8, 2.00);
+INSERT INTO Seat VALUES (3, 9, 2.00);
+INSERT INTO Seat VALUES (3, 10, 2.00);
+
+INSERT INTO Seat VALUES (4, 1, 100.00);
+INSERT INTO Seat VALUES (4, 2, 100.00);
+INSERT INTO Seat VALUES (4, 3, 100.00);
+INSERT INTO Seat VALUES (4, 4, 100.00);
+INSERT INTO Seat VALUES (4, 5, 100.00);
+
+INSERT INTO Seat VALUES (5, 1, 10.00);
+INSERT INTO Seat VALUES (5, 2, 10.00);
+INSERT INTO Seat VALUES (5, 3, 10.00);
+INSERT INTO Seat VALUES (5, 4, 10.00);
+INSERT INTO Seat VALUES (5, 5, 10.00);
+INSERT INTO Seat VALUES (5, 6, 10.00);
+INSERT INTO Seat VALUES (5, 7, 10.00);
+INSERT INTO Seat VALUES (5, 8, 10.00);
+INSERT INTO Seat VALUES (5, 9, 10.00);
+INSERT INTO Seat VALUES (5, 10, 50.00);
+INSERT INTO Seat VALUES (5, 11, 50.00);
+INSERT INTO Seat VALUES (5, 12, 50.00);
+INSERT INTO Seat VALUES (5, 13, 50.00);
+INSERT INTO Seat VALUES (5, 14, 50.00);
+INSERT INTO Seat VALUES (5, 15, 50.00);
+INSERT INTO Seat VALUES (5, 16, 50.00);
+INSERT INTO Seat VALUES (5, 17, 50.00);
+INSERT INTO Seat VALUES (5, 18, 50.00);
+INSERT INTO Seat VALUES (5, 19, 50.00);
+INSERT INTO Seat VALUES (5, 20, 50.00);
+
+
+
 
 INSERT INTO PlaysIn VALUES (1, 1);
 INSERT INTO PlaysIn VALUES (2, 2);
 INSERT INTO PlaysIn VALUES (3, 3);
 INSERT INTO PlaysIn VALUES (4, 4);
 INSERT INTO PlaysIn VALUES (5, 5);
+
 commit
