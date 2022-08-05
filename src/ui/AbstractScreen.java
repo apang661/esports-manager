@@ -124,6 +124,9 @@ public class AbstractScreen extends JPanel {
 //        HomeScreen.createBorder(tabPanel, Color.RED);
         if (tabPanels.size() != 0) {
             tabPanel.setVisible(false);
+        } else {
+            tab.setBackground(TAB_HIGHLIGHTED);
+            visibleTabIndex = 0;
         }
 
         tabPanels.add(tabPanel);
@@ -131,11 +134,7 @@ public class AbstractScreen extends JPanel {
     }
 
     public void displayTab(int index) {
-        if (visibleTabIndex == -1) {
-            tabPanels.get(index).setVisible(true);
-            tabBar.getComponent(index).setBackground(TAB_HIGHLIGHTED);
-            visibleTabIndex = index;
-        } else if (visibleTabIndex != index) {
+        if (visibleTabIndex != index) {
             tabPanels.get(visibleTabIndex).setVisible(false);
             tabBar.getComponent(visibleTabIndex).setBackground(TAB_COLOR);
             tabPanels.get(index).setVisible(true);
