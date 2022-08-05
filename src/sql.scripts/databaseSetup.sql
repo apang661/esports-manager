@@ -142,7 +142,8 @@ CREATE TABLE Ticket (
     UNIQUE (gID, seatNum)
 );
 
-
+INSERT INTO Ticket VALUES (6, null, 1, 1, 2);
+INSERT INTO Ticket VALUES (7, null, 1, 1, 3);
 
 INSERT INTO Team VALUES (1, 'Cloud9', 'Jack Etienne');
 INSERT INTO Team VALUES (2, '100 Thieves', 'Matthew Haag');
@@ -318,6 +319,7 @@ INSERT INTO Seat VALUES (5, 17, 50.00);
 INSERT INTO Seat VALUES (5, 18, 50.00);
 INSERT INTO Seat VALUES (5, 19, 50.00);
 INSERT INTO Seat VALUES (5, 20, 50.00);
+
 
 
 

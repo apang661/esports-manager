@@ -1,4 +1,4 @@
-package popUps;
+package popups;
 
 import model.Arena;
 import model.Game;
@@ -11,7 +11,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.sql.Date;
 
-public class AddGamePopup extends Popup{
+public class AddGamePopup extends Popup {
     private JTextField[] fields;
     public AddGamePopup(Panel e) {
         super(e, "Add Game");

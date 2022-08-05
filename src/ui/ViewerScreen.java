@@ -1,5 +1,6 @@
 package ui;
 
+import tabs.ViewerGamePanel;
 import tabs.ViewerTeamPanel;
 import tabs.ViewerTicketsPanel;
 
@@ -7,12 +8,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ViewerScreen extends AbstractScreen {
+    private int viewerID;
+
     public ViewerScreen(int viewerID) {
         super();
+        this.viewerID = viewerID;
         addTab("Account", setupAccountPanel());
         addTab("Tickets", setupTicketsPanel());
         addTab("Schedule", setupSchedulePanel());
-        addTab("Standings", setupStandingsPanel());
+        addTab("Games", setupGamePanel());
         addTab("Teams", setupTeamPanel());
         displayTab(0);
     }
@@ -38,12 +42,9 @@ public class ViewerScreen extends AbstractScreen {
         return panel;
     }
 
-    private JPanel setupStandingsPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.RED);
-        JLabel test = new JLabel("test");
-        panel.add(test);
-        return panel;
+    private JPanel setupGamePanel() {
+        ViewerGamePanel panel = new ViewerGamePanel(this, viewerID);
+        return panel.getPanel();
     }
 
     private JPanel setupTeamPanel() {

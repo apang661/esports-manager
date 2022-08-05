@@ -3,10 +3,10 @@ package tabs;
 import model.Game;
 import model.Player;
 import model.Team;
-import popups.AddGamePopup;
 import popups.AddLanguagePopup;
+import popups.BuyTicketPopup;
 import ui.AbstractScreen;
-import ui.EmployeeScreen;
+import ui.ViewerScreen;
 import utils.CustomButton;
 
 import javax.swing.*;
@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 import static ui.AbstractScreen.*;
 
-public class EmployeeGamePanel extends Panel {
+public class ViewerGamePanel extends Panel {
     public static final int DEF_ITEMS = 10;
     private DefaultListModel<String> glistModel;
     private HashMap<String, Game> glist;
@@ -28,14 +28,16 @@ public class EmployeeGamePanel extends Panel {
     JLabel title;
     JPanel redTeam;
     JPanel blueTeam;
-    JButton arena;
+    JLabel arena;
     DefaultListModel<String> languages;
 
     private Game selectedG;
+    private int viewerID;
 
     private String filter;
-    public EmployeeGamePanel(EmployeeScreen parent) {
+    public ViewerGamePanel(ViewerScreen parent, int viewerID) {
         super(parent);
+        this.viewerID = viewerID;
         selectedG = null;
         glistModel = new DefaultListModel<>();
         glist = new HashMap<>();
@@ -54,27 +56,17 @@ public class EmployeeGamePanel extends Panel {
         AbstractScreen.setColors(bottom, "s");
         JPanel tools = new JPanel(new GridLayout(0, 1));
         AbstractScreen.setColors(tools, "s");
-        JButton deleteGame = new CustomButton("Delete Game", "s");
-        deleteGame.addActionListener(new ActionListener() {
+        JButton buyTicketButton = new CustomButton("Buy Ticket", "s");
+        buyTicketButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                deleteGame();
+                new BuyTicketPopup(getThis(), getSelectedG().getgID(), viewerID);
             }
         });
-        deleteGame.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
-        AbstractScreen.setColors(deleteGame, "s");
-        JButton addGameButton = new CustomButton("Add Game", "s");
-        addGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addGame();
-            }
-        });
-        addGameButton.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
-        AbstractScreen.setColors(addGameButton, "s");
+        buyTicketButton.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
+        AbstractScreen.setColors(buyTicketButton, "s");
         bottom.add(displayGames(), BorderLayout.NORTH);
-        tools.add(deleteGame);
-        tools.add(addGameButton);
+        tools.add(buyTicketButton);
         bottom.add(tools, BorderLayout.SOUTH);
         panel.add(bottom, BorderLayout.SOUTH);
     }
@@ -183,7 +175,7 @@ public class EmployeeGamePanel extends Panel {
         JLabel arenaLabel = new JLabel("Arena");
         setColors(arenaLabel, "m");
         arenaLabel.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, 50));
-        arena = new CustomButton("", "s");
+        arena = new JLabel();
         setColors(arena, "s");
         JPanel arenaPanel = new JPanel(new BorderLayout());
         arenaPanel.add(arena, BorderLayout.CENTER);
@@ -279,7 +271,7 @@ public class EmployeeGamePanel extends Panel {
         }
     }
 
-    public void printGame() {
+    private void printGame() {
         clearGame();
         if (selectedG == null) {
         } else {
@@ -313,25 +305,13 @@ public class EmployeeGamePanel extends Panel {
         }
     }
 
-
     public void setGame(Game g) {
         clearGame();
         selectedG = g;
         printGame();
     }
 
-    public void deleteGame() {
-        parent.getDbHandler().deleteGame(selectedG.getgID());
-        selectedG = null;
-        printGame();
-        getGames("", "");
-    }
-
-    public void addGame() {
-        new AddGamePopup(this);
-    }
-
-    public EmployeeGamePanel getThis() {
+    public ViewerGamePanel getThis() {
         return this;
     }
 }
