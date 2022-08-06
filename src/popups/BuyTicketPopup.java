@@ -21,7 +21,7 @@ public class BuyTicketPopup extends Popup {
     protected void initializePrompts() {
         main.setLayout(new BorderLayout());
         ArrayList<String> ticketTexts = editor.getParent().getDbHandler().getAvailTickets(gameID);
-        ticketNums = editor.getParent().getDbHandler().getTicketNums(gameID);
+        ticketNums = editor.getParent().getDbHandler().getAvailTicketNums(gameID);
         JPanel buttons = new JPanel(new GridLayout(0, 1));
         if (ticketNums.isEmpty()) {
             JLabel soldOutLabel = new JLabel("All sold out!");
