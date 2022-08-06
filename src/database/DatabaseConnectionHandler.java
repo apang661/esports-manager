@@ -615,7 +615,7 @@ public class DatabaseConnectionHandler {
         return availTickets;
     }
 
-    public ArrayList<Integer> getTicketNums(int gID) {
+    public ArrayList<Integer> getAvailTicketNums(int gID) {
         ArrayList<Integer> ticketNums = new ArrayList<>();
         try {
             String query = "SELECT ticketNum " +
@@ -730,5 +730,57 @@ public class DatabaseConnectionHandler {
         }
 
         return rosters;
+    }
+
+    public ArrayList<String> getViewerTickets(int viewerID) {
+        ArrayList<String> viewerTickets = new ArrayList<>();
+        try {
+            String query = "SELECT ticketNum, BT.name AS btName, RT.name AS rtName, " +
+                    "Arena.name AS arenaName, seatNum " +
+                    "FROM Ticket NATURAL JOIN Seat " +
+                    "INNER JOIN Game ON Game.gID = Ticket.gID " +
+                    "INNER JOIN Arena ON Arena.aID = Game.aID " +
+                    "INNER JOIN Team BT ON Game.btID = BT.tID " +
+                    "INNER JOIN Team RT ON Game.rtID = RT.tID " +
+                    "WHERE Ticket.vID = " + viewerID + " " +
+                    "ORDER BY ticketNum ASC";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                viewerTickets.add("Ticket " + rs.getInt("ticketNum") + " | " +
+                        rs.getString("btName") + " vs " + rs.getString("rtName") +
+                        " at " + rs.getString("arenaName") + " | " +
+                        "Seat " + rs.getInt("seatNum"));
+                System.out.println("Ticket " + rs.getInt("ticketNum") + " | " +
+                        rs.getString("btName") + " vs " + rs.getString("rtName") +
+                        " at " + rs.getString("arenaName") + " | " +
+                        "Seat " + rs.getInt("seatNum"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return viewerTickets;
+    }
+
+    public ArrayList<Integer> getViewerTicketNums(int viewerID) {
+        ArrayList<Integer> ticketNums = new ArrayList<>();
+        try {
+            String query = "SELECT ticketNum FROM Ticket " +
+                    "WHERE Ticket.vID = " + viewerID + " ORDER BY ticketNum ASC";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ticketNums.add(rs.getInt("ticketNum"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return ticketNums;
     }
 }
