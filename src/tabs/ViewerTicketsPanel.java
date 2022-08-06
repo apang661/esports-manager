@@ -21,6 +21,7 @@ public class ViewerTicketsPanel extends Panel {
     private JList<Ticket> ticketList;
     private int viewerID;
     private ArrayList<Integer> ticketNums;
+    private JScrollPane ticketSP;
 
     public ViewerTicketsPanel(AbstractScreen parent, int viewerID) {
         super(parent);
@@ -32,18 +33,18 @@ public class ViewerTicketsPanel extends Panel {
 
     private void displayTickets() {
         ticketList = new JList(tListModel);
-        getTickets();
         ticketList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ticketList.setSelectedIndex(0);
         ticketList.setVisibleRowCount(10);
         AbstractScreen.setColors(ticketList, "s");
-        JScrollPane ticketSP = new JScrollPane(ticketList);
+        ticketSP = new JScrollPane(ticketList);
         AbstractScreen.setColors(ticketSP, "s");
         ticketSP.setPreferredSize(new Dimension( SCREEN_WIDTH * 3/4, SCREEN_HEIGHT/4));
         ticketList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                selectedTicketNum = ticketNums.get(ticketList.getSelectedIndex());
+                updateSelection();
+                System.out.println(selectedTicketNum);
             }
         });
         panel.add(ticketSP);
@@ -77,8 +78,21 @@ public class ViewerTicketsPanel extends Panel {
 
     public void refundTicket() {
         parent.getDbHandler().unbookTicket(selectedTicketNum);
-//        ((ViewerScreen) parent).refreshTicketPanel();
+        updateTickets();
     }
 
+    public void updateTickets() {
+        panel.remove(ticketSP);
+        getTickets();
+        displayTickets();
+        panel.repaint();
+        panel.revalidate();
+        ticketList.setSelectedIndex(0);
+        if (!ticketNums.isEmpty()) updateSelection();
+    }
+
+    public void updateSelection() {
+        selectedTicketNum = ticketNums.get(ticketList.getSelectedIndex());
+    }
 
 }
