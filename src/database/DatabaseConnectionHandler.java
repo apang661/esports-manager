@@ -22,7 +22,7 @@ public class DatabaseConnectionHandler {
 	private Connection connection = null;
 
 	public DatabaseConnectionHandler() {
-        login("ora_apang11 ", "a23413743");
+        login("ora_dennis34 ", "a94349206");
 		try {
 			// Load the Oracle JDBC driver
 			// Note that the path could change for new drivers
@@ -200,6 +200,13 @@ public class DatabaseConnectionHandler {
             ps.setInt(1, aID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+
+                System.out.println(rs.getInt("aID"));
+
+                System.out.println(rs.getString("name"));
+                System.out.println(rs);
+                rs.getInt("capacity");
+                System.out.println("d");
                 arena = new Arena(rs.getInt("aID"), rs.getString("name"), rs.getString("city"), rs.getInt("capacity"));
             }
             rs.close();
@@ -239,7 +246,7 @@ public class DatabaseConnectionHandler {
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
             ps.setString(1, season);
             ps.setInt(2, tmID);
-            ps.setInt(3, year + 1900);
+            ps.setInt(3, year);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Player temp = new Player(rs.getInt("tmID"), rs.getString("position"), rs.getString("alias"));
@@ -255,10 +262,34 @@ public class DatabaseConnectionHandler {
         return players;
     }
 
+    public ArrayList<Staff> getRosterStaff(int tID, String season, int year) {
+        ArrayList<Staff> staff = new ArrayList<>();
+        try {
+            String query = "SELECT m.tmid, name, role FROM Staff s, TeamMember m WHERE s.tmid = m.tmid AND m.tmid IN (SELECT tmid FROM partofroster WHERE season = ? AND year = ? AND tid = ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setString(1, season);
+            ps.setInt(2, year);
+            ps.setInt(3, tID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                System.out.println("staff");
+                Staff temp = new Staff(rs.getInt("tmid"), rs.getString("name"), rs.getString("role") );
+                staff.add(temp);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+            throw new RuntimeException(e.getMessage());
+        }
+        return staff;
+    }
+
     public ArrayList<Roster> getRosters(int tID) {
         ArrayList<Roster> rosters = new ArrayList<>();
         try {
-            String query = "SELECT * FROM Roster WHERE tID = ?";
+            String query = "SELECT * FROM Roster WHERE tID = ? ORDER BY year DESC, season ASC";
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
             ps.setInt(1, tID);
             ResultSet rs = ps.executeQuery();
@@ -464,6 +495,20 @@ public class DatabaseConnectionHandler {
             ps.setInt(1, cID);
             ps.setInt(2, gID);
             ps.setString(3, lang);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void updateTeamOwner(String owner, int teamID) {
+        try {
+            String query = "UPDATE TEAM SET owner = ? WHERE tID = ?";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setString(1, owner);
+            ps.setInt(2, teamID);
             ps.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
@@ -730,5 +775,27 @@ public class DatabaseConnectionHandler {
         }
 
         return rosters;
+    }
+
+    public ArrayList<Achievement> getTeamAchievements(int teamID) {
+        ArrayList<Achievement> achievements = new ArrayList<>();
+        String query = "SELECT * FROM Achievement " +
+                "WHERE tID = ?" +
+                "ORDER BY year DESC, Season";
+
+        try {
+            PreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query);
+            ps.setInt(1, teamID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                achievements.add(new Achievement(rs.getString("season"),rs.getInt("year"), rs.getInt("placement"), rs.getInt("tID")));
+            }
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+
+        return achievements;
     }
 }

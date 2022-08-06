@@ -1,7 +1,6 @@
 package tabs;
 
-import model.Roster;
-import model.Team;
+import model.*;
 import ui.AbstractScreen;
 import ui.HomeScreen;
 import utils.CustomButton;
@@ -11,6 +10,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 public class EmployeeTeamPanel extends Panel {
@@ -44,26 +45,137 @@ public class EmployeeTeamPanel extends Panel {
     private JPanel setupTeamPanel(Team team) {
         JPanel panel = new JPanel(new BorderLayout());
         AbstractScreen.setColors(panel, "m");
+        JPanel titleContainer = new JPanel(new BorderLayout());
+        AbstractScreen.setColors(titleContainer, "m");
         JLabel title = new JLabel(team.getName());
         title.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 80));
         title.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 18));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         AbstractScreen.setColors(title, "m");
         AbstractScreen.setColors(panel, "m");
-        panel.add(title, BorderLayout.NORTH);
+        JPanel ownerContainer = new JPanel(new BorderLayout());
+        ownerContainer.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 50));
+        JLabel owner = new JLabel("Owner:");
+        owner.setHorizontalAlignment(SwingConstants.RIGHT);
+        owner.setPreferredSize(new Dimension(150, 50));
+        owner.setForeground(AbstractScreen.TEXT_COLOR);
+        AbstractScreen.setColors(ownerContainer, "m");
+        JTextField ownerName = new JTextField(team.getOwner());
+        ownerName.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int key = e.getKeyCode();
+                if (key == KeyEvent.VK_ENTER) {
+                    parent.getDbHandler().updateTeamOwner(ownerName.getText(), team.getTeamID());
+                    team.setOwner(ownerName.getText());
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+        AbstractScreen.setColors(ownerName, "s");
+        ownerContainer.add(owner, BorderLayout.LINE_START);
+        ownerContainer.add(ownerName, BorderLayout.CENTER);
+        titleContainer.add(title, BorderLayout.NORTH);
+        titleContainer.add(ownerContainer, BorderLayout.SOUTH);
+
+        panel.add(titleContainer, BorderLayout.NORTH);
         ArrayList<Roster> rosters = parent.getDbHandler().getRosters(team.getTeamID());
-        addRosters(panel, rosters);
+        JPanel mainInfo = new JPanel(new BorderLayout());
+        ArrayList<Achievement> tempA = parent.getDbHandler().getTeamAchievements(team.getTeamID());
+        DefaultListModel<JPanel> achievements = new DefaultListModel<>();
+        for (Achievement a : tempA) {
+            JPanel temp = new JPanel(new BorderLayout());
+            AbstractScreen.setColors(temp, "s");
+            JPanel tempT = new JPanel();
+            JLabel season = new JLabel(a.getSeason() + " " + a.getYear());
+            season.setHorizontalAlignment(SwingConstants.CENTER);
+            season.setForeground(AbstractScreen.TEXT_COLOR);
+            tempT.add(season);
+            AbstractScreen.setColors(tempT, "m");
+            temp.add(tempT, BorderLayout.NORTH);
+            JLabel placement = new JLabel("Placement: " + String.valueOf(a.getPlacement()));
+            placement.setHorizontalAlignment(SwingConstants.CENTER);
+            placement.setVerticalAlignment(SwingConstants.CENTER);
+            placement.setForeground(AbstractScreen.TEXT_COLOR);
+            temp.add(placement, BorderLayout.SOUTH);
+            achievements.addElement(temp);
+        }
+        JList<JPanel> tempList = new JList(achievements);
+        tempList.setFixedCellHeight(80);
+        tempList.setFixedCellWidth(100);
+        tempList.setSelectedIndex(-1);
+        tempList.setLayoutOrientation(JList.VERTICAL_WRAP);
+        tempList.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 80));
+        tempList.setCellRenderer(new ListCellRenderer<JPanel>() {
+            @Override
+            public Component getListCellRendererComponent(JList<? extends JPanel> list, JPanel value, int index, boolean isSelected, boolean cellHasFocus) {
+                return value;
+            }
+        });
+        JScrollPane achievementList = new JScrollPane(tempList, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER , ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tempList.setBackground(new Color(52, 52, 52));
+        achievementList.setBorder(new LineBorder(AbstractScreen.MAIN_COLOR));
+        mainInfo.add(achievementList, BorderLayout.NORTH);
+        panel.add(mainInfo, BorderLayout.CENTER);
+        addRosters(mainInfo, rosters);
         return panel;
     }
 
     private void addRosters(JPanel panel, ArrayList<Roster> rosters) {
         JPanel rosterContainer = new JPanel(new GridLayout(0,1));
+        rosterContainer.setBorder(new LineBorder(AbstractScreen.MAIN_COLOR, 10));
         for (Roster r: rosters) {
             JPanel rosterPanel = new JPanel(new BorderLayout());
             JLabel title = new JLabel(r.getSeason() + " " + r.getYear());
             title.setHorizontalAlignment(SwingConstants.CENTER);
-            rosterPanel.add(title, BorderLayout.NORTH);
             rosterContainer.add(rosterPanel);
+            JLabel wins = new JLabel("Wins: " + r.getWins());
+            AbstractScreen.setColors(wins, "s");
+            JPanel winsContainer = new JPanel();
+            winsContainer.add(wins);
+            winsContainer.setBackground(new Color(0, 105, 0));
+            JLabel losses = new JLabel("Losses: " + r.getLosses());
+            AbstractScreen.setColors(losses, "s");
+            JPanel lossContainer = new JPanel();
+            lossContainer.add(losses);
+            lossContainer.setBackground(new Color(134, 8, 8));
+            JPanel wl = new JPanel(new GridLayout(0, 2));
+            wl.add(winsContainer);
+            wl.add(lossContainer);
+            JPanel topPanel = new JPanel(new BorderLayout());
+            topPanel.add(title, BorderLayout.NORTH);
+            topPanel.add(wl, BorderLayout.SOUTH);
+            rosterPanel.add(topPanel, BorderLayout.NORTH);
+
+            JPanel memberPanel = new JPanel(new GridLayout(0, 3));
+            String[] labels = {"ID", "Name/Alias", "Role"};
+            for (String l : labels) {
+                JLabel temp = new JLabel(l);
+                memberPanel.add(temp);
+            }
+            ArrayList<Player> players = parent.getDbHandler().getRosterPlayers(r.getTeamID(), r.getSeason(), r.getYear());
+            for (Player p : players) {
+                JLabel tempI = new JLabel(String.valueOf(p.getTeamMemberID()));
+                memberPanel.add(tempI);
+                JLabel tempA = new JLabel(p.getAlias());
+                memberPanel.add(tempA);
+                JLabel tempP = new JLabel(p.getPosition());
+                memberPanel.add(tempP);
+            }
+            ArrayList<Staff> staff = parent.getDbHandler().getRosterStaff(r.getTeamID(), r.getSeason(), r.getYear());
+            for (Staff s : staff) {
+                JLabel tempI = new JLabel(String.valueOf(s.getTeamMemberID()));
+                memberPanel.add(tempI);
+                JLabel tempN = new JLabel(s.getName());
+                memberPanel.add(tempN);
+                JLabel tempR = new JLabel(s.getRole());
+                memberPanel.add(tempR);
+            }
+            rosterPanel.add(memberPanel, BorderLayout.CENTER);
         }
         panel.add(rosterContainer, BorderLayout.CENTER);
     }

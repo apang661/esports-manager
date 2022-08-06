@@ -142,9 +142,6 @@ CREATE TABLE Ticket (
     UNIQUE (gID, seatNum)
 );
 
-INSERT INTO Ticket VALUES (6, null, 1, 1, 2);
-INSERT INTO Ticket VALUES (7, null, 1, 1, 3);
-
 INSERT INTO Team VALUES (1, 'Cloud9', 'Jack Etienne');
 INSERT INTO Team VALUES (2, '100 Thieves', 'Matthew Haag');
 INSERT INTO Team VALUES (3, 'Team Liquid', 'Steve Arhancet');
@@ -224,6 +221,11 @@ INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 2);
 INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 3);
 INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 4);
 INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 5);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 6);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 2, 7);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 3, 8);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 4, 9);
+INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 10);
 INSERT INTO PartOfRoster VALUES ('Spring', 2022, 2, 11);
 INSERT INTO PartOfRoster VALUES ('Spring', 2022, 2, 12);
 INSERT INTO PartOfRoster VALUES ('Spring', 2022, 2, 13);
@@ -320,14 +322,13 @@ INSERT INTO Seat VALUES (5, 18, 50.00);
 INSERT INTO Seat VALUES (5, 19, 50.00);
 INSERT INTO Seat VALUES (5, 20, 50.00);
 
-
-
-
-
 INSERT INTO PlaysIn VALUES (1, 1);
 INSERT INTO PlaysIn VALUES (2, 2);
 INSERT INTO PlaysIn VALUES (3, 3);
 INSERT INTO PlaysIn VALUES (4, 4);
 INSERT INTO PlaysIn VALUES (5, 5);
+
+INSERT INTO Ticket VALUES (6, null, 1, 1, 2);
+INSERT INTO Ticket VALUES (7, null, 1, 1, 3);
 
 commit

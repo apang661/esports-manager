@@ -152,4 +152,5 @@ public class AbstractScreen extends JPanel {
         comp.setForeground(AbstractScreen.TEXT_COLOR);
         comp.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.BOLD, fontSize));
     }
+
 }

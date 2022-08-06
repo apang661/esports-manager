@@ -119,10 +119,10 @@ public class AnalystSalesPanel extends JPanel {
 
     private JPanel setupViewSelection() {
         JPanel viewBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        viewBar.setBackground(AnalystScreen.SELECT_COLOR);
+        viewBar.setBackground(AbstractScreen.SECOND_COLOR);
 
         JPanel viewInnerBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 8));
-        viewInnerBar.setBackground(AnalystScreen.SELECT_COLOR);
+        viewInnerBar.setBackground(AbstractScreen.SECOND_COLOR);
 
         viewBar.add(viewInnerBar);
 
