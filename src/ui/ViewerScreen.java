@@ -9,11 +9,11 @@ import java.awt.*;
 
 public class ViewerScreen extends AbstractScreen {
     private int viewerID;
+    private ViewerTicketsPanel ticketsPanel;
 
     public ViewerScreen(int viewerID) {
         super();
         this.viewerID = viewerID;
-        addTab("Account", setupAccountPanel());
         addTab("Tickets", setupTicketsPanel());
         addTab("Schedule", setupSchedulePanel());
         addTab("Games", setupGamePanel());
@@ -21,17 +21,14 @@ public class ViewerScreen extends AbstractScreen {
         displayTab(0);
     }
 
-    private JPanel setupAccountPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.RED);
-        JLabel test = new JLabel("test");
-        panel.add(test);
-        return panel;
+    private JPanel setupTicketsPanel() {
+        ViewerTicketsPanel panel = new ViewerTicketsPanel(this, viewerID);
+        ticketsPanel = panel;
+        return panel.getPanel();
     }
 
-    private JPanel setupTicketsPanel() {
-        ViewerTicketsPanel panel = new ViewerTicketsPanel(this);
-        return panel.getPanel();
+    public ViewerTicketsPanel getTicketsPanel() {
+        return ticketsPanel;
     }
 
     private JPanel setupSchedulePanel() {
