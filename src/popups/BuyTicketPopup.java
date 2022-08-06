@@ -1,6 +1,7 @@
 package popups;
 
 import tabs.ViewerGamePanel;
+import ui.ViewerScreen;
 import utils.CustomButton;
 
 import javax.swing.*;
@@ -12,9 +13,11 @@ import java.util.ArrayList;
 public class BuyTicketPopup extends Popup {
     JComboBox ticketsCB;
     private ArrayList<Integer> ticketNums;
+    ViewerScreen parent;
 
-    public BuyTicketPopup(ViewerGamePanel viewerGamePanel, int gameID, int viewerID) {
+    public BuyTicketPopup(ViewerGamePanel viewerGamePanel, int gameID, int viewerID, ViewerScreen parent) {
         super(viewerGamePanel, "Buy Ticket", gameID, viewerID);
+        this.parent = parent;
     }
 
     @Override
@@ -38,6 +41,7 @@ public class BuyTicketPopup extends Popup {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                parent.getTicketsPanel().updateTickets();
                 dispose();
             }
         });
@@ -49,6 +53,7 @@ public class BuyTicketPopup extends Popup {
     public void actionPerformed(ActionEvent e) {
         int selectedTicketNum = ticketNums.get(ticketsCB.getSelectedIndex());
         editor.getParent().getDbHandler().bookTicket(selectedTicketNum, viewerID);
+        parent.getTicketsPanel().updateTickets();
         dispose();
     }
 }
