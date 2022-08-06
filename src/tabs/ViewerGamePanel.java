@@ -60,7 +60,7 @@ public class ViewerGamePanel extends Panel {
         buyTicketButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new BuyTicketPopup(getThis(), getSelectedG().getgID(), viewerID);
+                new BuyTicketPopup(getThis(), getSelectedG().getgID(), viewerID, (ViewerScreen) parent);
             }
         });
         buyTicketButton.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
