@@ -17,7 +17,7 @@ public class EmployeeScreen extends AbstractScreen {
         addTab("Games", setupGamesPanel());
         addTab("Teams", setupTeamsPanel());
         addTab("Achievements", setupAchievementsPanel());
-        addTab("Arena", setupArenasPanel());
+        addTab("Arenas", setupArenasPanel());
         displayTab(0);
     }
 
