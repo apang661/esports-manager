@@ -965,4 +965,36 @@ public class DatabaseConnectionHandler {
 
         return names.toArray(new String[0]);
     }
+
+    public void addAchievement(Achievement a) {
+            try {
+                String query = "INSERT INTO Achievement VALUES (?, ?, ?, ?, ?)";
+                PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+                ps.setInt(1, a.getTeamID());
+                ps.setString(2, a.getSeason());
+                ps.setInt(3, a.getYear());
+                ps.setInt(4, a.getTeamID());
+                ps.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+                rollbackConnection();
+            }
+        }
+
+    public void addTMRoster(int tmID, Roster r) {
+        try {
+            String query = "INSERT INTO partofroster VALUES (?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setString(1, r.getSeason());
+            ps.setInt(2, r.getYear());
+            ps.setInt(3, r.getTeamID());
+            ps.setInt(4, tmID);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
 }
