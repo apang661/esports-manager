@@ -723,7 +723,6 @@ public class DatabaseConnectionHandler {
             System.out.println(EXCEPTION_TAG + " " + e.getMessage());
             rollbackConnection();
         }
-        System.out.println(yearList);
         return yearList.toArray(new Integer[0]);
     }
 
@@ -744,7 +743,6 @@ public class DatabaseConnectionHandler {
             rollbackConnection();
         }
 
-        System.out.println(seasonList);
         return seasonList.toArray(new String[0]);
     }
 
