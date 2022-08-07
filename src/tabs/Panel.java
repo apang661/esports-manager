@@ -38,4 +38,8 @@ public class Panel {
         return panel;
     }
 
+    public Panel getThis() {
+        return this;
+    }
+
 }

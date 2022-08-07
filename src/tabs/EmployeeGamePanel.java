@@ -332,7 +332,5 @@ public class EmployeeGamePanel extends Panel {
         new AddGamePopup(this);
     }
 
-    public EmployeeGamePanel getThis() {
-        return this;
-    }
+
 }

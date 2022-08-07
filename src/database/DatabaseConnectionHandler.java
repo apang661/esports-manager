@@ -780,7 +780,7 @@ public class DatabaseConnectionHandler {
     public ArrayList<Achievement> getTeamAchievements(int teamID) {
         ArrayList<Achievement> achievements = new ArrayList<>();
         String query = "SELECT * FROM Achievement " +
-                "WHERE tID = ?" +
+                "WHERE tID = ? " +
                 "ORDER BY year DESC, Season";
 
         try {
@@ -797,5 +797,63 @@ public class DatabaseConnectionHandler {
         }
 
         return achievements;
+    }
+
+    public void updateRoster(String wls, int teamID, String season, int year, int wl) {
+        try {
+            String query = "UPDATE Roster SET " + wls + " = ? WHERE tID = ? AND season = ? and year = ?";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, wl);
+            ps.setInt(2, teamID);
+            ps.setString(3, season);
+            ps.setInt(4, year);
+            ps.executeUpdate();
+            connection.commit();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void addRoster(Roster r, String[] ids) {
+        try {
+            String query = "INSERT INTO Roster VALUES (?, ?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, r.getTeamID());
+            ps.setString(2, r.getSeason());
+            ps.setInt(3, r.getYear());
+            ps.setInt(4, r.getWins());
+            ps.setInt(5, r.getLosses());
+            ps.executeUpdate();
+            for (String s: ids) {
+                int id = Integer.parseInt(s);
+                query = "INSERT INTO PartofRoster VALUES (?, ?, ? ,?)";
+                PrintablePreparedStatement ps2 = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+                ps2.setString(1, r.getSeason());
+                ps2.setInt(2, r.getYear());
+                ps2.setInt(3, r.getTeamID());
+                ps2.setInt(4, id);
+                ps2.executeUpdate();
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+            }
+    }
+    public void addTeam(Integer id, String name) {
+        try {
+            String query = "INSERT INTO TEAM VALUES (?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, id);
+            ps.setString(2, name);
+            ps.setNull(3, Types.VARCHAR);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
     }
 }

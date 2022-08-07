@@ -15,7 +15,7 @@ public class HomeScreen extends JFrame {
         add(userSelect, BorderLayout.CENTER);
         pack();
         setVisible(true);
-        setResizable(false);
+
     }
 
     private JPanel createUserSelect() {
