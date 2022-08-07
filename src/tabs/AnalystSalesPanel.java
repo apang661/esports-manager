@@ -135,7 +135,7 @@ public class AnalystSalesPanel extends JPanel {
         JComboBox<String> viewSelect = new JComboBox<>(views);
         viewSelect.setEditable(false);
         viewSelect.setForeground(Color.BLACK);
-        viewSelect.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, AnalystScreen.SELECT_FONT_SIZE));
+        viewSelect.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, AnalystScreen.SELECTION_FONT_SIZE));
         viewSelect.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {

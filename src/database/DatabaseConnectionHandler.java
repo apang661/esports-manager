@@ -2,6 +2,7 @@ package database;
 
 import model.*;
 import tabs.AnalystSalesPanel;
+import tabs.AnalystViewersPanel;
 import utils.PrintablePreparedStatement;
 
 import java.sql.*;
@@ -789,15 +790,102 @@ public class DatabaseConnectionHandler {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                achievements.add(new Achievement(rs.getString("season"),rs.getInt("year"), rs.getInt("placement"), rs.getInt("tID")));
+                achievements.add(new Achievement(rs.getString("season"), rs.getInt("year"), rs.getInt("placement"), rs.getInt("tID")));
             }
+            ps.close();
+            rs.close();
         } catch (SQLException e) {
             System.out.println(EXCEPTION_TAG + " " + e.getMessage());
             rollbackConnection();
         }
-
         return achievements;
     }
+
+    public ArrayList<ViewerStatsStruct> getViewerStats(int setting, String settingConstraint) {
+        ArrayList<ViewerStatsStruct> viewerList = new ArrayList<>();
+        String query;
+        PreparedStatement ps;
+
+        try {
+            if (setting == AnalystViewersPanel.OVERALL_SETTING) {
+                query = "SELECT Viewer.name, COUNT(DISTINCT Game.gID) AS gamesWatched, SUM(price) AS moneySpent " +
+                        "FROM Viewer " +
+                        "INNER JOIN Ticket ON Viewer.vID = Ticket.vID " +
+                        "INNER JOIN Game ON Game.gID = Ticket.gID " +
+                        "INNER JOIN Seat ON Seat.aID = Ticket.aID AND Seat.seatNum = Ticket.seatNum " +
+                        "GROUP BY Viewer.name " +
+                        "ORDER BY gamesWatched DESC";
+                ps = new PrintablePreparedStatement(connection.prepareStatement(query), query);
+            } else if (setting == AnalystViewersPanel.TEAM_SETTING) {
+                query = "SELECT Viewer.name, COUNT(DISTINCT Game.gID) AS gamesWatched, SUM(price) AS moneySpent " +
+                        "FROM Viewer " +
+                        "INNER JOIN Ticket ON Viewer.vID = Ticket.vID " +
+                        "INNER JOIN Game ON Game.gID = Ticket.gID " +
+                        "INNER JOIN Seat ON Seat.aID = Ticket.aID AND Seat.seatNum = Ticket.seatNum " +
+                        "INNER JOIN Team ON Team.tID = Game.rtID OR Team.tID = Game.btID " +
+                        "WHERE Team.name = ? " +
+                        "GROUP BY Viewer.name " +
+                        "ORDER BY gamesWatched DESC";
+                ps = new PrintablePreparedStatement(connection.prepareStatement(query), query);
+                ps.setString(1, settingConstraint);
+            } else if (setting == AnalystViewersPanel.ARENA_SETTING) {
+                query = "SELECT Viewer.name, COUNT(DISTINCT Game.gID) AS gamesWatched, SUM(price) AS moneySpent " +
+                        "FROM Viewer " +
+                        "INNER JOIN Ticket ON Viewer.vID = Ticket.vID " +
+                        "INNER JOIN Game ON Game.gID = Ticket.gID " +
+                        "INNER JOIN Seat ON Seat.aID = Ticket.aID AND Seat.seatNum = Ticket.seatNum " +
+                        "INNER JOIN Arena ON Game.aID = Arena.aID " +
+                        "WHERE Arena.name = ? " +
+                        "GROUP BY Viewer.name " +
+                        "ORDER BY gamesWatched DESC";
+                ps = new PrintablePreparedStatement(connection.prepareStatement(query), query);
+                ps.setString(1, settingConstraint);
+            } else {
+                query = "SELECT Viewer.name " +
+                        "FROM Viewer " +
+                        "WHERE NOT EXISTS (" +
+                        "SELECT Game.gID " +
+                        "FROM Game " +
+                        "INNER JOIN Team ON Game.rtID = Team.tID OR Game.btID = Team.tID " +
+                        "WHERE Team.name = ? " +
+                        "MINUS " +
+                        "SELECT Game.gID " +
+                        "FROM Game " +
+                        "INNER JOIN Team ON Game.rtID = Team.tID OR Game.btID = Team.tID " +
+                        "INNER JOIN Ticket ON Ticket.gID = Game.gID " +
+                        "WHERE Team.name = ? AND Viewer.vID = Ticket.vID)";
+                ps = new PrintablePreparedStatement(connection.prepareStatement(query), query);
+                ps.setString(1, settingConstraint);
+                ps.setString(2, settingConstraint);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                if (setting == AnalystViewersPanel.SUPERFAN_SETTING) {
+                    viewerList.add(new ViewerStatsStruct(
+                            rs.getString("name"),
+                            0,
+                            0
+                    ));
+                } else {
+                    viewerList.add(new ViewerStatsStruct(
+                            rs.getString("name"),
+                            rs.getInt("gamesWatched"),
+                            rs.getInt("moneySpent")
+                    ));
+                }
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return viewerList;
+    }
+
+
 
     public void updateRoster(String wls, int teamID, String season, int year, int wl) {
         try {
@@ -855,5 +943,25 @@ public class DatabaseConnectionHandler {
             System.out.println(EXCEPTION_TAG + " " + e.getMessage());
             rollbackConnection();
         }
+    }
+
+    public String[] getArenaNames() {
+        ArrayList<String> names = new ArrayList<>();
+        String query = "SELECT name FROM Arena";
+
+        try {
+            PreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                names.add(rs.getString("name"));
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+
+        return names.toArray(new String[0]);
     }
 }
