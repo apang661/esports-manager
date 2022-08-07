@@ -8,6 +8,7 @@ import popups.AddLanguagePopup;
 import ui.AbstractScreen;
 import ui.EmployeeScreen;
 import utils.CustomButton;
+import utils.CustomInputField;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -83,7 +84,7 @@ public class EmployeeGamePanel extends Panel {
         JPanel searchBar = new JPanel(new BorderLayout());
         AbstractScreen.setColors(searchBar, "m");
         searchBar.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
-        JTextField search = new JTextField();
+        JTextField search = new CustomInputField("Search");
         AbstractScreen.setColors(search, "s");
         search.setText("Search");
         String[] filters = { "game ID", "arena", "team"};
@@ -306,7 +307,7 @@ public class EmployeeGamePanel extends Panel {
     }
 
     private void getPlayers(Team temp, JPanel team) {
-        ArrayList<Player> players = parent.getDbHandler().getRosterPlayers(temp.getTeamID(), selectedG.getSeason(),selectedG.getDay().getYear());
+        ArrayList<Player> players = parent.getDbHandler().getRosterPlayers(temp.getTeamID(), selectedG.getSeason(),selectedG.getDay().getYear() + 1900);
         ((JButton) team.getComponent(0)).setText(temp.getName());
         for (Player p : players) {
             ((JButton) team.getComponent(p.getRoleNum() + 1)).setText(p.getAlias());
@@ -331,7 +332,5 @@ public class EmployeeGamePanel extends Panel {
         new AddGamePopup(this);
     }
 
-    public EmployeeGamePanel getThis() {
-        return this;
-    }
+
 }

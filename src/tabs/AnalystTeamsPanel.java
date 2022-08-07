@@ -42,7 +42,7 @@ public class AnalystTeamsPanel extends JPanel {
         yearSelectPanel.add(yearSelectText);
 
         yearSelectBox = new JComboBox<>(dbHandler.getYears());
-        yearSelectBox.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, AnalystScreen.SELECT_FONT_SIZE));
+        yearSelectBox.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, AnalystScreen.SELECTION_FONT_SIZE));
         yearSelectBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -70,7 +70,7 @@ public class AnalystTeamsPanel extends JPanel {
         seasonSelectPanel.add(seasonSelectText);
 
         seasonSelectBox = new JComboBox<>(dbHandler.getSeasons((Integer) yearSelectBox.getSelectedItem()));
-        seasonSelectBox.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, AnalystScreen.SELECT_FONT_SIZE));
+        seasonSelectBox.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, AnalystScreen.SELECTION_FONT_SIZE));
         seasonSelectBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
