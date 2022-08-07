@@ -322,13 +322,19 @@ INSERT INTO Seat VALUES (5, 18, 50.00);
 INSERT INTO Seat VALUES (5, 19, 50.00);
 INSERT INTO Seat VALUES (5, 20, 50.00);
 
+INSERT INTO Ticket VALUES (1, 1, 3, 1, 2);
+INSERT INTO Ticket VALUES (2, 1, 4, 1, 3);
+INSERT INTO Ticket VALUES (3, 2, 2, 1, 5);
+INSERT INTO Ticket VALUES (4, 2, 4, 1, 1);
+INSERT INTO Ticket VALUES (5, null, 1, 1, 4);
+INSERT INTO Ticket VALUES (6, null, 1, 1, 2);
+INSERT INTO Ticket VALUES (7, null, 1, 1, 3);
+
 INSERT INTO PlaysIn VALUES (1, 1);
 INSERT INTO PlaysIn VALUES (2, 2);
 INSERT INTO PlaysIn VALUES (3, 3);
 INSERT INTO PlaysIn VALUES (4, 4);
 INSERT INTO PlaysIn VALUES (5, 5);
 
-INSERT INTO Ticket VALUES (6, null, 1, 1, 2);
-INSERT INTO Ticket VALUES (7, null, 1, 1, 3);
 
 commit
