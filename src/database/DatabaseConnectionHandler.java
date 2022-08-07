@@ -856,4 +856,56 @@ public class DatabaseConnectionHandler {
             rollbackConnection();
         }
     }
+
+    public void addAchievement(Achievement a) {
+        try {
+            String query = "INSERT INTO ACHIEVEMENT VALUES (?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setString(1, a.getSeason());
+            ps.setInt(2, a.getYear());
+            ps.setInt(3, a.getPlacement());
+            ps.setInt(4, a.getTeamID());
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void addTMRoster(int tmID, Roster r) {
+        try {
+            String query = "INSERT INTO partofroster VALUES (?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setString(1, r.getSeason());
+            ps.setInt(2, r.getYear());
+            ps.setInt(3, r.getTeamID());
+            ps.setInt(4, tmID);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void getTeamMember(int tmID) {
+        try {
+            String query = "SELECT * FROM TeamMember m, Staff s, Player p WHERE (m.tmid = s.tmid OR p.tmid = m.tmid) AND m.tmid = ?";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, tmID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                if (!rs.getString("alias").isEmpty()) {
+
+                }
+            }
+
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
 }

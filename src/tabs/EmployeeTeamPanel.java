@@ -10,6 +10,7 @@ import utils.CustomInputField;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
@@ -49,12 +50,53 @@ public class EmployeeTeamPanel extends Panel {
 
     private JPanel setupTeamPanel(Team team) {
         JPanel panel = new JPanel(new BorderLayout());
+        JButton checkAchievements = new JButton();
+        panel.add(checkAchievements);
+        checkAchievements.setVisible(false);
         panel.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, AbstractScreen.SCREEN_HEIGHT-9));
         JPanel titleContainer = initTitle(team, panel);
         panel.add(titleContainer, BorderLayout.NORTH);
         JPanel mainInfo = new JPanel(new BorderLayout());
-        ArrayList<Achievement> tempA = parent.getDbHandler().getTeamAchievements(team.getTeamID());
         DefaultListModel<JPanel> achievements = new DefaultListModel<>();
+        initAchievements(team, achievements);
+        ArrayList<String> t = new ArrayList<>();
+        for (Achievement a : parent.getDbHandler().getTeamAchievements(team.getTeamID())) {
+            t.add(String.valueOf(a.getPlacement()));
+        }
+
+        JList<JPanel> tempList = new JList(achievements);
+        checkAchievements.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("pressed");
+                initAchievements(team, achievements);
+            }
+        });
+        tempList.setFixedCellHeight(80);
+        tempList.setFixedCellWidth(100);
+        tempList.setSelectedIndex(-1);
+        tempList.setVisibleRowCount(1);
+        tempList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        tempList.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 80));
+        tempList.setCellRenderer(new ListCellRenderer<JPanel>() {
+            @Override
+            public Component getListCellRendererComponent(JList<? extends JPanel> list, JPanel value, int index, boolean isSelected, boolean cellHasFocus) {
+                return value;
+            }
+        });
+        JScrollPane achievementList = new JScrollPane(tempList, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tempList.setBackground(new Color(52, 52, 52));
+        achievementList.setBorder(new LineBorder(AbstractScreen.MAIN_COLOR));
+        mainInfo.add(achievementList, BorderLayout.NORTH);
+        ArrayList<Roster> rosters = parent.getDbHandler().getRosters(team.getTeamID());
+        mainInfo.add(addRosters(rosters, team), BorderLayout.CENTER);
+        panel.add(mainInfo, BorderLayout.CENTER);
+        return panel;
+    }
+
+    private DefaultListModel<JPanel> initAchievements(Team team, DefaultListModel<JPanel> achievements) {
+        ArrayList<Achievement> tempA = parent.getDbHandler().getTeamAchievements(team.getTeamID());
+        achievements.clear();
         for (Achievement a : tempA) {
             JPanel temp = new JPanel(new BorderLayout());
             AbstractScreen.setColors(temp, "s");
@@ -72,26 +114,7 @@ public class EmployeeTeamPanel extends Panel {
             temp.add(placement, BorderLayout.CENTER);
             achievements.addElement(temp);
         }
-        JList<JPanel> tempList = new JList(achievements);
-        tempList.setFixedCellHeight(80);
-        tempList.setFixedCellWidth(100);
-        tempList.setSelectedIndex(-1);
-        tempList.setLayoutOrientation(JList.VERTICAL_WRAP);
-        tempList.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 80));
-        tempList.setCellRenderer(new ListCellRenderer<JPanel>() {
-            @Override
-            public Component getListCellRendererComponent(JList<? extends JPanel> list, JPanel value, int index, boolean isSelected, boolean cellHasFocus) {
-                return value;
-            }
-        });
-        JScrollPane achievementList = new JScrollPane(tempList, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER , ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        tempList.setBackground(new Color(52, 52, 52));
-        achievementList.setBorder(new LineBorder(AbstractScreen.MAIN_COLOR));
-        mainInfo.add(achievementList, BorderLayout.NORTH);
-        ArrayList<Roster> rosters = parent.getDbHandler().getRosters(team.getTeamID());
-        mainInfo.add(addRosters(rosters, team), BorderLayout.CENTER);
-        panel.add(mainInfo, BorderLayout.CENTER);
-        return panel;
+        return achievements;
     }
 
     private Component addRosters(ArrayList<Roster> rosters, Team team) {
@@ -105,23 +128,31 @@ public class EmployeeTeamPanel extends Panel {
         addRosterTitle.setHorizontalAlignment(SwingConstants.CENTER);
         addRosterPanel.add(addRosterTitle, BorderLayout.NORTH);
         AbstractScreen.setColors(addRosterPanel, "m");
-        JPanel addRosterInputs = new JPanel(new GridLayout(0, 2));
+        JPanel addRosterMain = new JPanel(new BorderLayout());
+        JPanel addRosterInputs = new JPanel(new GridLayout(0, 1));
+        JPanel addRosterLabels = new JPanel(new GridLayout(0, 1));
+        addRosterLabels.setPreferredSize(new Dimension(80, 60));
         AbstractScreen.setColors(addRosterInputs, "m");
+        AbstractScreen.setColors(addRosterLabels, "m");
         String[] inputs = {"Season", "Year", "Member IDs"};
         for (String i : inputs) {
             JLabel label = new JLabel(i);
             label.setForeground(AbstractScreen.TEXT_COLOR);
             label.setHorizontalAlignment(SwingConstants.RIGHT);
-            label.setMaximumSize(new Dimension(50, 20));
-            addRosterInputs.add(label);
+            label.setPreferredSize(new Dimension(100, 20));
+            addRosterLabels.add(label);
             JTextField input;
             if (i.equals("Member IDs"))
                 input = new CustomInputField("id1 id2 ...");
             else
                 input = new CustomInputField("");
+            input.setBorder(new MatteBorder(2, 10, 2, 20, AbstractScreen.MAIN_COLOR));
+            input.setPreferredSize(new Dimension(addRosterInputs.getWidth()-20, 20));
             addRosterInputs.add(input);
         }
-        addRosterPanel.add(addRosterInputs, BorderLayout.CENTER);
+        addRosterMain.add(addRosterLabels, BorderLayout.LINE_START);
+        addRosterMain.add(addRosterInputs, BorderLayout.CENTER);
+        addRosterPanel.add(addRosterMain, BorderLayout.CENTER);
         JPanel rosterPanel = printRosters(rosters);
         JScrollPane rosterScroll = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         rosterScroll.setViewportView(rosterPanel);
@@ -141,9 +172,6 @@ public class EmployeeTeamPanel extends Panel {
         });
         addRosterPanel.add(submitRoster, BorderLayout.SOUTH);
         rosterContainer.add(addRosterPanel, BorderLayout.NORTH);
-
-
-
         rosterContainer.add(rosterScroll, BorderLayout.CENTER);
         return rosterContainer;
     }
@@ -155,40 +183,52 @@ public class EmployeeTeamPanel extends Panel {
         rosterList.setSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, AbstractScreen.SCREEN_HEIGHT));
 
         for (Roster r: rosters) {
-            JPanel rosterPanel = initRosterDefault(rosterList, r);
-            JPanel memberPanel = new JPanel(new GridLayout(0, 3));
-            String[] labels = {"ID", "Name/Alias", "Role"};
-            for (String l : labels) {
-                JLabel temp = new JLabel(l);
-                memberPanel.add(temp);
-            }
-            ArrayList<Player> players = parent.getDbHandler().getRosterPlayers(r.getTeamID(), r.getSeason(), r.getYear());
-            for (Player p : players) {
-                JLabel tempI = new JLabel(String.valueOf(p.getTeamMemberID()));
-                memberPanel.add(tempI);
-                JLabel tempA = new JLabel(p.getAlias());
-                memberPanel.add(tempA);
-                JLabel tempP = new JLabel(p.getPosition());
-                memberPanel.add(tempP);
-            }
-            ArrayList<Staff> staff = parent.getDbHandler().getRosterStaff(r.getTeamID(), r.getSeason(), r.getYear());
-            for (Staff s : staff) {
-                JLabel tempI = new JLabel(String.valueOf(s.getTeamMemberID()));
-                memberPanel.add(tempI);
-                JLabel tempN = new JLabel(s.getName());
-                memberPanel.add(tempN);
-                JLabel tempR = new JLabel(s.getRole());
-                memberPanel.add(tempR);
-            }
-            int totalHeight = players.size()*40 + staff.size()*40 + 40*2;
-            rosterPanel.setMaximumSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2, totalHeight));
-            rosterPanel.add(memberPanel, BorderLayout.CENTER);
+            JPanel memberPanel = initRosterDefault(rosterList, r);
+            initRosterMembers(r, memberPanel);
         }
         return rosterList;
     }
 
+    private void initRosterMembers(Roster r, JPanel memberPanel) {
+        memberPanel.removeAll();
+        String[] labels = {"ID", "Name/Alias", "Role"};
+        for (String l : labels) {
+            JLabel temp = new JLabel(l);
+            memberPanel.add(temp);
+        }
+        ArrayList<Player> players = parent.getDbHandler().getRosterPlayers(r.getTeamID(), r.getSeason(), r.getYear());
+        for (Player p : players) {
+            JLabel tempI = new JLabel(String.valueOf(p.getTeamMemberID()));
+            memberPanel.add(tempI);
+            JLabel tempA = new JLabel(p.getAlias());
+            memberPanel.add(tempA);
+            JLabel tempP = new JLabel(p.getPosition());
+            memberPanel.add(tempP);
+        }
+        ArrayList<Staff> staff = parent.getDbHandler().getRosterStaff(r.getTeamID(), r.getSeason(), r.getYear());
+        for (Staff s : staff) {
+            JLabel tempI = new JLabel(String.valueOf(s.getTeamMemberID()));
+            memberPanel.add(tempI);
+            JLabel tempN = new JLabel(s.getName());
+            memberPanel.add(tempN);
+            JLabel tempR = new JLabel(s.getRole());
+            memberPanel.add(tempR);
+        }
+        int totalHeight = players.size()*30 + staff.size()*30 + 30*2;
+        memberPanel.setMaximumSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2, totalHeight));
+        memberPanel.revalidate();
+        memberPanel.repaint();
+    }
+
     private JPanel initRosterDefault(JPanel rosterList, Roster r) {
         JPanel rosterPanel = new JPanel(new BorderLayout());
+        JPanel memberPanel = new JPanel(new GridLayout(0, 3));
+        String[] labels = {"ID", "Name/Alias", "Role"};
+        for (String l : labels) {
+            JLabel temp = new JLabel(l);
+            memberPanel.add(temp);
+        }
+        rosterPanel.add(memberPanel, BorderLayout.CENTER);
         rosterPanel.setBorder(new LineBorder(AbstractScreen.MAIN_COLOR, 10));
         JLabel title = new JLabel(r.getSeason() + " " + r.getYear());
         title.setHorizontalAlignment(SwingConstants.CENTER);
@@ -224,7 +264,7 @@ public class EmployeeTeamPanel extends Panel {
             public void actionPerformed(ActionEvent e) {
                 r.setLosses(r.getLosses() + 1);
                 parent.getDbHandler().updateRoster("losses", r.getTeamID(), r.getSeason(), r.getYear(), r.getLosses());
-                wins.setText("Losses: " + r.getWins());
+                losses.setText("Losses: " + r.getWins());
             }
         });
 
@@ -234,7 +274,21 @@ public class EmployeeTeamPanel extends Panel {
         topPanel.add(title, BorderLayout.NORTH);
         topPanel.add(wl, BorderLayout.SOUTH);
         rosterPanel.add(topPanel, BorderLayout.NORTH);
-        return rosterPanel;
+        JPanel addTM = new JPanel(new BorderLayout());
+        JTextField addTMInput = new CustomInputField("Team Member ID");
+        JButton addTMButton = new CustomButton("+", "s");
+        addTMButton.setBorder(new LineBorder(Color.WHITE, 1));
+        addTMButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parent.getDbHandler().addTMRoster(Integer.parseInt(addTMInput.getText()), r);
+                initRosterMembers(r, memberPanel);
+            }
+        });
+        addTM.add(addTMInput, BorderLayout.NORTH);
+        addTM.add(addTMButton, BorderLayout.SOUTH);
+        rosterPanel.add(addTM, BorderLayout.SOUTH);
+        return memberPanel;
     }
 
     private JPanel initTitle(Team team, JPanel panel) {
@@ -248,10 +302,16 @@ public class EmployeeTeamPanel extends Panel {
         AbstractScreen.setColors(panel, "m");
         JPanel ownerContainer = new JPanel(new BorderLayout());
         ownerContainer.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 50));
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        AbstractScreen.setColors(leftPanel, "m");
         JLabel owner = new JLabel("Owner:");
         owner.setHorizontalAlignment(SwingConstants.RIGHT);
-        owner.setPreferredSize(new Dimension(150, 50));
+        owner.setPreferredSize(new Dimension(100, 50));
         owner.setForeground(AbstractScreen.TEXT_COLOR);
+        JLabel tid = new JLabel("   ID: " + team.getTeamID());
+        tid.setForeground(AbstractScreen.TEXT_COLOR);
+        leftPanel.add(tid, BorderLayout.LINE_START);
+        leftPanel.add(owner, BorderLayout.LINE_END);
         AbstractScreen.setColors(ownerContainer, "m");
         JTextField ownerName = new JTextField(team.getOwner());
         ownerName.addKeyListener(new KeyListener() {
@@ -270,7 +330,7 @@ public class EmployeeTeamPanel extends Panel {
             public void keyReleased(KeyEvent e) {}
         });
         AbstractScreen.setColors(ownerName, "s");
-        ownerContainer.add(owner, BorderLayout.LINE_START);
+        ownerContainer.add(leftPanel, BorderLayout.LINE_START);
         ownerContainer.add(ownerName, BorderLayout.CENTER);
         titleContainer.add(title, BorderLayout.NORTH);
         titleContainer.add(ownerContainer, BorderLayout.SOUTH);
@@ -351,6 +411,7 @@ public class EmployeeTeamPanel extends Panel {
         } else if (visibleTabIndex != index) {
             teamPanels.get(visibleTabIndex).setVisible(false);
             teamPanels.get(index).setVisible(true);
+            ((JButton) teamPanels.get(index).getComponent(0)).doClick();
             visibleTabIndex = index;
         }
     }

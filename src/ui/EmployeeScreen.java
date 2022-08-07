@@ -1,5 +1,6 @@
 package ui;
 
+import tabs.EmployeeAchievementPanel;
 import tabs.EmployeeGamePanel;
 import tabs.EmployeeTeamPanel;
 
@@ -7,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class EmployeeScreen extends AbstractScreen {
+    EmployeeTeamPanel teamPanel;
 
 
     public EmployeeScreen() {
@@ -14,18 +16,14 @@ public class EmployeeScreen extends AbstractScreen {
 
         addTab("Games", setupGamesPanel());
         addTab("Teams", setupTeamsPanel());
-        addTab("TeamMember", setupTeamMemberPanel());
+        addTab("Achievements", setupAchievementsPanel());
         addTab("Arena", setupArenasPanel());
-        addTab("Viewers", setupViewersPanel());
         displayTab(0);
     }
 
-    private JPanel setupViewersPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.RED);
-        JLabel test = new JLabel("test");
-        panel.add(test);
-        return panel;
+    private JPanel setupAchievementsPanel() {
+        EmployeeAchievementPanel panel = new EmployeeAchievementPanel(this, teamPanel);
+        return panel.getPanel();
     }
 
     private JPanel setupArenasPanel() {
@@ -36,13 +34,6 @@ public class EmployeeScreen extends AbstractScreen {
         return panel;
     }
 
-    private JPanel setupTeamMemberPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.GRAY);
-        JLabel test = new JLabel("test");
-        panel.add(test);
-        return panel;
-    }
 
 
     private JPanel setupGamesPanel() {
@@ -50,12 +41,8 @@ public class EmployeeScreen extends AbstractScreen {
         return panel.getPanel();
     }
 
-
-
-
-
     private JPanel setupTeamsPanel() {
-        EmployeeTeamPanel panel = new EmployeeTeamPanel(this);
-        return panel.getPanel();
+        teamPanel = new EmployeeTeamPanel(this);
+        return teamPanel.getPanel();
     }
 }
