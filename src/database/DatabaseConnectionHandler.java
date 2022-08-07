@@ -968,11 +968,11 @@ public class DatabaseConnectionHandler {
 
     public void addAchievement(Achievement a) {
             try {
-                String query = "INSERT INTO Achievement VALUES (?, ?, ?, ?, ?)";
+                String query = "INSERT INTO Achievement VALUES (?, ?, ?, ?)";
                 PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-                ps.setInt(1, a.getTeamID());
-                ps.setString(2, a.getSeason());
-                ps.setInt(3, a.getYear());
+                ps.setString(1, a.getSeason());
+                ps.setInt(2, a.getYear());
+                ps.setInt(3, a.getPlacement());
                 ps.setInt(4, a.getTeamID());
                 ps.executeUpdate();
                 connection.commit();

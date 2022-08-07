@@ -77,7 +77,8 @@ public class EmployeeTeamPanel extends Panel {
         tempList.setSelectedIndex(-1);
         tempList.setVisibleRowCount(1);
         tempList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        tempList.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 80));
+        tempList.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 120));
+        tempList.setBorder(new MatteBorder(20,0,20,0, AbstractScreen.MAIN_COLOR));
         tempList.setCellRenderer(new ListCellRenderer<JPanel>() {
             @Override
             public Component getListCellRendererComponent(JList<? extends JPanel> list, JPanel value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -120,10 +121,10 @@ public class EmployeeTeamPanel extends Panel {
     private Component addRosters(ArrayList<Roster> rosters, Team team) {
         JPanel rosterContainer = new JPanel(new BorderLayout());
         JPanel addRosterPanel = new JPanel(new BorderLayout());
-        addRosterPanel.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 3 + 30, 150));
-        addRosterPanel.setBorder(new LineBorder(AbstractScreen.SECOND_COLOR, 10));
+        addRosterPanel.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 3 + 30, 170));
+        addRosterPanel.setBorder(new MatteBorder(10, 0,0,10,AbstractScreen.MAIN_COLOR));
         JLabel addRosterTitle = new JLabel("Add Roster");
-        addRosterTitle.setPreferredSize(new Dimension( AbstractScreen.SCREEN_WIDTH / 3, 30));
+        addRosterTitle.setPreferredSize(new Dimension( AbstractScreen.SCREEN_WIDTH / 3, 40));
         addRosterTitle.setForeground(AbstractScreen.TEXT_COLOR);
         addRosterTitle.setHorizontalAlignment(SwingConstants.CENTER);
         addRosterPanel.add(addRosterTitle, BorderLayout.NORTH);
@@ -158,6 +159,7 @@ public class EmployeeTeamPanel extends Panel {
         rosterScroll.setViewportView(rosterPanel);
         rosterScroll.setBorder(new EmptyBorder(0,0,0,0));
         JButton submitRoster = new CustomButton("Add");
+        submitRoster.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 3, 40));
         submitRoster.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -295,7 +297,7 @@ public class EmployeeTeamPanel extends Panel {
         JPanel titleContainer = new JPanel(new BorderLayout());
         AbstractScreen.setColors(titleContainer, "m");
         JLabel title = new JLabel(team.getName());
-        title.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 50));
+        title.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH / 2 + 30, 31));
         title.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.PLAIN, 18));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         AbstractScreen.setColors(title, "m");
