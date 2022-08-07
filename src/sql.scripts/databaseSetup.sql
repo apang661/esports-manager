@@ -152,7 +152,7 @@ INSERT INTO Achievement VALUES ('Spring', 2022, 1, 1);
 INSERT INTO Achievement VALUES ('Spring', 2022, 2, 5);
 INSERT INTO Achievement VALUES ('Spring', 2022, 3, 4);
 INSERT INTO Achievement VALUES ('Spring', 2022, 4, 3);
-INSERT INTO Achievement VALUES ('Spring', 2022, 5, 2);
+INSERT INTO Achievement VALUES ('Spring', 2022, 5, 2);x
 
 INSERT INTO Roster VALUES (1, 'Spring', 2022, 10, 3);
 INSERT INTO Roster VALUES (2, 'Spring', 2022, 3, 10);
@@ -225,6 +225,8 @@ INSERT INTO SeasonDates VALUES ('22-JAN-23', 'Spring');
 INSERT INTO SeasonDates VALUES ('22-OCT-30', 'Spring');
 INSERT INTO SeasonDates VALUES ('22-FEB-27', 'Spring');
 INSERT INTO SeasonDates VALUES ('22-JUN-25', 'Summer');
+INSERT INTO SeasonDates VALUES ('22-FEB-21', 'Spring');
+INSERT INTO SeasonDates VALUES ('22-OCT-23', 'Summer');
 
 INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 1);
 INSERT INTO PartOfRoster VALUES ('Spring', 2022, 1, 2);
