@@ -14,7 +14,11 @@ public class RosterStruct {
         this.year = year;
         this.wins = wins;
         this.losses = losses;
-        this.winRate = (float) wins / (wins + losses);
+        if (losses != 0) {
+            this.winRate = (float) wins / (wins + losses);
+        } else {
+            this.winRate = 0;
+        }
     }
 
     public String getTeamName() {
