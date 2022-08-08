@@ -33,16 +33,8 @@ public class DatabaseConnectionHandler {
 		}
 	}
 
-	public void close() {
-		try {
-			if (connection != null) {
-				connection.close();
-			}
-		} catch (SQLException e) {
-			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-		}
-	}
 
+    // INSERT Statements
 	public void insertGame(Game game) {
 //        INSERT INTO Game VALUES (1, 1, 2, '10-OCT-22', 1)
 		try {
@@ -70,6 +62,149 @@ public class DatabaseConnectionHandler {
 			rollbackConnection();
 		}
 	}
+
+    public void addCasts(Integer gID, Integer cID, String lang) {
+        try {
+            String query = "INSERT INTO Casts VALUES (?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, cID);
+            ps.setInt(2, gID);
+            ps.setString(3, lang);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void addTicket(int ticketnum, int vID, int gID, int aId, int seatNum) {
+        try {
+            String query = "INSERT INTO Ticket VALUES (?, ?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, ticketnum);
+            if (vID >= 0) {
+                ps.setInt(2, vID);
+            } else {
+                ps.setNull(2, Types.INTEGER);
+            }
+            ps.setInt(3, gID);
+            ps.setInt(4, aId);
+            ps.setInt(5, seatNum);
+            ps.executeUpdate();
+            connection.commit();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void addRoster(Roster r, String[] ids) {
+        try {
+            String query = "INSERT INTO Roster VALUES (?, ?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, r.getTeamID());
+            ps.setString(2, r.getSeason());
+            ps.setInt(3, r.getYear());
+            ps.setInt(4, r.getWins());
+            ps.setInt(5, r.getLosses());
+            ps.executeUpdate();
+            for (String s: ids) {
+                int id = Integer.parseInt(s);
+                query = "INSERT INTO PartofRoster VALUES (?, ?, ? ,?)";
+                PrintablePreparedStatement ps2 = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+                ps2.setString(1, r.getSeason());
+                ps2.setInt(2, r.getYear());
+                ps2.setInt(3, r.getTeamID());
+                ps2.setInt(4, id);
+                ps2.executeUpdate();
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void addTeam(Integer id, String name) {
+        try {
+            String query = "INSERT INTO TEAM VALUES (?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, id);
+            ps.setString(2, name);
+            ps.setNull(3, Types.VARCHAR);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void addAchievement(Achievement a) {
+        try {
+            String query = "INSERT INTO Achievement VALUES (?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setString(1, a.getSeason());
+            ps.setInt(2, a.getYear());
+            ps.setInt(3, a.getPlacement());
+            ps.setInt(4, a.getTeamID());
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void addTMRoster(int tmID, Roster r) {
+        try {
+            String query = "INSERT INTO partofroster VALUES (?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setString(1, r.getSeason());
+            ps.setInt(2, r.getYear());
+            ps.setInt(3, r.getTeamID());
+            ps.setInt(4, tmID);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void addArena(Arena a) {
+        try {
+            String query = "INSERT INTO Arena VALUES (?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, a.getArenaID());
+            ps.setString(2, a.getName());
+            ps.setString(3, a.getCity());
+            ps.setInt(4, a.getCapacity());
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void addViewer(int newKey, String name) {
+        try {
+            String query = "INSERT INTO Viewer VALUES (?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, newKey);
+            ps.setString(2, name);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    // DELETE Statements
     public void deleteGame(int gID) {
 		try {
 			String query = "DELETE FROM Game WHERE gID = ?";
@@ -90,6 +225,65 @@ public class DatabaseConnectionHandler {
 		}
 	}
 
+    // UPDATE Statement
+    public void updateTeamOwner(String owner, int teamID) {
+        try {
+            String query = "UPDATE TEAM SET owner = ? WHERE tID = ?";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setString(1, owner);
+            ps.setInt(2, teamID);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void bookTicket(int selectedTicketNum, int viewerID) {
+        try {
+            String query = "UPDATE Ticket " + "SET vID = " + viewerID + " WHERE ticketNum = " + selectedTicketNum;
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.executeUpdate();
+            connection.commit();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void unbookTicket(int ticketNum) {
+        try {
+            String query = "UPDATE Ticket " + "SET vID = NULL WHERE ticketNum = " + ticketNum;
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.executeUpdate();
+            connection.commit();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void updateRoster(String wls, int teamID, String season, int year, int wl) {
+        try {
+            String query = "UPDATE Roster SET " + wls + " = ? WHERE tID = ? AND season = ? and year = ?";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, wl);
+            ps.setInt(2, teamID);
+            ps.setString(3, season);
+            ps.setInt(4, year);
+            ps.executeUpdate();
+            connection.commit();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    // OTHER
     public ArrayList<Game> getGames(int i, String attr, String term) {
         ArrayList<Game> list = new ArrayList<>();
         try {
@@ -324,199 +518,17 @@ public class DatabaseConnectionHandler {
         } catch (SQLException e) {
             System.out.println(EXCEPTION_TAG + " " + e.getMessage());
             rollbackConnection();
-//            throw new RuntimeException(e.getMessage());
         }
         return teams;
     }
 
 
 
-//	public void insertBranch(BranchModel model) {
-//		try {
-//			String query = "INSERT INTO branch VALUES (?,?,?,?,?)";
-//			PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-//			ps.setInt(1, model.getId());
-//			ps.setString(2, model.getName());
-//			ps.setString(3, model.getAddress());
-//			ps.setString(4, model.getCity());
-//			if (model.getPhoneNumber() == 0) {
-//				ps.setNull(5, java.sql.Types.INTEGER);
-//			} else {
-//				ps.setInt(5, model.getPhoneNumber());
-//			}
-//
-//			ps.executeUpdate();
-//			connection.commit();
-//
-//			ps.close();
-//		} catch (SQLException e) {
-//			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-//			rollbackConnection();
-//		}
-//	}
-//
-//	public BranchModel[] getBranchInfo() {
-//		ArrayList<BranchModel> result = new ArrayList<BranchModel>();
-//
-//		try {
-//			String query = "SELECT * FROM branch";
-//			PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-//			ResultSet rs = ps.executeQuery();
-//
-//			while(rs.next()) {
-//				BranchModel model = new BranchModel(rs.getString("branch_addr"),
-//						rs.getString("branch_city"),
-//						rs.getInt("branch_id"),
-//						rs.getString("branch_name"),
-//						rs.getInt("branch_phone"));
-//				result.add(model);
-//			}
-//
-//			rs.close();
-//			ps.close();
-//		} catch (SQLException e) {
-//			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-//		}
-//
-//		return result.toArray(new BranchModel[result.size()]);
-//	}
-//
-//	public void updateBranch(int id, String name) {
-//		try {
-//			String query = "UPDATE branch SET branch_name = ? WHERE branch_id = ?";
-//			PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-//			ps.setString(1, name);
-//			ps.setInt(2, id);
-//
-//			int rowCount = ps.executeUpdate();
-//			if (rowCount == 0) {
-//				System.out.println(WARNING_TAG + " Branch " + id + " does not exist!");
-//			}
-//
-//			connection.commit();
-//
-//			ps.close();
-//		} catch (SQLException e) {
-//			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-//			rollbackConnection();
-//		}
-//	}
-//
-	public boolean login(String username, String password) {
-		try {
-			if (connection != null) {
-				connection.close();
-			}
-
-			connection = DriverManager.getConnection(ORACLE_URL, username, password);
-			connection.setAutoCommit(false);
-
-			System.out.println("\nConnected to Oracle!");
-			return true;
-		} catch (SQLException e) {
-			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-			return false;
-		}
-	}
-//
-	private void rollbackConnection() {
-		try  {
-			connection.rollback();
-		} catch (SQLException e) {
-			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-		}
-	}
 
 
-//
-//	public void databaseSetup() {
-//		dropBranchTableIfExists();
-//
-//		try {
-//			String query = "CREATE TABLE branch (branch_id integer PRIMARY KEY, branch_name varchar2(20) not null, branch_addr varchar2(50), branch_city varchar2(20) not null, branch_phone integer)";
-//			PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-//			ps.executeUpdate();
-//			ps.close();
-//		} catch (SQLException e) {
-//			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-//		}
-//
-//		BranchModel branch1 = new BranchModel("123 Charming Ave", "Vancouver", 1, "First Branch", 1234567);
-//		insertBranch(branch1);
-//
-//		BranchModel branch2 = new BranchModel("123 Coco Ave", "Vancouver", 2, "Second Branch", 1234568);
-//		insertBranch(branch2);
-//	}
-//
-//	private void dropBranchTableIfExists() {
-//		try {
-//			String query = "select table_name from user_tables";
-//			PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-//			ResultSet rs = ps.executeQuery();
-//
-//			while(rs.next()) {
-//				if(rs.getString(1).toLowerCase().equals("branch")) {
-//					ps.execute("DROP TABLE branch");
-//					break;
-//				}
-//			}
-//
-//			rs.close();
-//			ps.close();
-//		} catch (SQLException e) {
-//			System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-//		}
-//	}
 
 
-    public ArrayList<Player> getPlayers(Team team) {
-        ArrayList<Player> players = new ArrayList<>();
-//        try {
-//            String query = "SELECT * FROM  WHERE "; // players part of current roster
-//            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-//            ResultSet rs = ps.executeQuery();
-//            while (rs.next()) {
-//                Player player = new Player(rs.getInt("tmID"), rs.getString("position"), rs.getString("alias"));
-//                players.add(player);
-//            }
-//            rs.close();
-//            ps.close();
-//        } catch (SQLException e) {
-//            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-//            rollbackConnection();
-////            throw new RuntimeException(e.getMessage());
-//        }
-        return players;
-    }
 
-    public void addCasts(Integer gID, Integer cID, String lang) {
-        try {
-            String query = "INSERT INTO Casts VALUES (?, ?, ?)";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setInt(1, cID);
-            ps.setInt(2, gID);
-            ps.setString(3, lang);
-            ps.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
-        }
-    }
-
-    public void updateTeamOwner(String owner, int teamID) {
-        try {
-            String query = "UPDATE TEAM SET owner = ? WHERE tID = ?";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setString(1, owner);
-            ps.setInt(2, teamID);
-            ps.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
-        }
-    }
 
     public ArrayList<SalesStruct> getGameSales() {
         ArrayList<SalesStruct> gameSalesList = new ArrayList<>();
@@ -551,27 +563,7 @@ public class DatabaseConnectionHandler {
         return gameSalesList;
     }
 
-    public void addTicket(int ticketnum, int vID, int gID, int aId, int seatNum) {
-        try {
-            String query = "INSERT INTO Ticket VALUES (?, ?, ?, ?, ?)";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setInt(1, ticketnum);
-            if (vID >= 0) {
-                ps.setInt(2, vID);
-            } else {
-                ps.setNull(2, Types.INTEGER);
-            }
-            ps.setInt(3, gID);
-            ps.setInt(4, aId);
-            ps.setInt(5, seatNum);
-            ps.executeUpdate();
-            connection.commit();
-            ps.close();
-        } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
-        }
-    }
+
 
     public ArrayList<SalesStruct> getTeamSales() {
         ArrayList<SalesStruct> teamSalesList = new ArrayList<>();
@@ -683,31 +675,7 @@ public class DatabaseConnectionHandler {
         return ticketNums;
     }
 
-    public void bookTicket(int selectedTicketNum, int viewerID) {
-        try {
-            String query = "UPDATE Ticket " + "SET vID = " + viewerID + " WHERE ticketNum = " + selectedTicketNum;
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.executeUpdate();
-            connection.commit();
-            ps.close();
-        } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
-        }
-    }
 
-    public void unbookTicket(int ticketNum) {
-        try {
-            String query = "UPDATE Ticket " + "SET vID = NULL WHERE ticketNum = " + ticketNum;
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.executeUpdate();
-            connection.commit();
-            ps.close();
-        } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
-        }
-    }
 
     public Integer[] getYears() {
         ArrayList<Integer> yearList = new ArrayList<>();
@@ -938,63 +906,9 @@ public class DatabaseConnectionHandler {
 
 
 
-    public void updateRoster(String wls, int teamID, String season, int year, int wl) {
-        try {
-            String query = "UPDATE Roster SET " + wls + " = ? WHERE tID = ? AND season = ? and year = ?";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setInt(1, wl);
-            ps.setInt(2, teamID);
-            ps.setString(3, season);
-            ps.setInt(4, year);
-            ps.executeUpdate();
-            connection.commit();
-            ps.close();
-        } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
-        }
-    }
 
-    public void addRoster(Roster r, String[] ids) {
-        try {
-            String query = "INSERT INTO Roster VALUES (?, ?, ?, ?, ?)";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setInt(1, r.getTeamID());
-            ps.setString(2, r.getSeason());
-            ps.setInt(3, r.getYear());
-            ps.setInt(4, r.getWins());
-            ps.setInt(5, r.getLosses());
-            ps.executeUpdate();
-            for (String s: ids) {
-                int id = Integer.parseInt(s);
-                query = "INSERT INTO PartofRoster VALUES (?, ?, ? ,?)";
-                PrintablePreparedStatement ps2 = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-                ps2.setString(1, r.getSeason());
-                ps2.setInt(2, r.getYear());
-                ps2.setInt(3, r.getTeamID());
-                ps2.setInt(4, id);
-                ps2.executeUpdate();
-            }
-            connection.commit();
-        } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
-        }
-    }
-    public void addTeam(Integer id, String name) {
-        try {
-            String query = "INSERT INTO TEAM VALUES (?, ?, ?)";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setInt(1, id);
-            ps.setString(2, name);
-            ps.setNull(3, Types.VARCHAR);
-            ps.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
-        }
-    }
+
+
 
     public String[] getArenaNames() {
         ArrayList<String> names = new ArrayList<>();
@@ -1016,53 +930,8 @@ public class DatabaseConnectionHandler {
         return names.toArray(new String[0]);
     }
 
-    public void addAchievement(Achievement a) {
-        try {
-            String query = "INSERT INTO Achievement VALUES (?, ?, ?, ?)";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setString(1, a.getSeason());
-            ps.setInt(2, a.getYear());
-            ps.setInt(3, a.getPlacement());
-            ps.setInt(4, a.getTeamID());
-            ps.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
-        }
-    }
 
-    public void addTMRoster(int tmID, Roster r) {
-        try {
-            String query = "INSERT INTO PartOfRoster VALUES (?, ?, ?, ?)";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setString(1, r.getSeason());
-            ps.setInt(2, r.getYear());
-            ps.setInt(3, r.getTeamID());
-            ps.setInt(4, tmID);
-            ps.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
-        }
-    }
 
-    public void addArena(Arena a) {
-        try {
-            String query = "INSERT INTO Arena VALUES (?, ?, ?, ?)";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setInt(1, a.getArenaID());
-            ps.setString(2, a.getName());
-            ps.setString(3, a.getCity());
-            ps.setInt(4, a.getCapacity());
-            ps.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
-        }
-    }
 
     public ArrayList<Arena> getArenas() {
         ArrayList<Arena> arenas = new ArrayList<>();
@@ -1085,17 +954,30 @@ public class DatabaseConnectionHandler {
         return arenas;
     }
 
-    public void addViewer(int newKey, String name) {
+    public boolean login(String username, String password) {
         try {
-            String query = "INSERT INTO Viewer VALUES (?, ?)";
-            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
-            ps.setInt(1, newKey);
-            ps.setString(2, name);
-            ps.executeUpdate();
-            connection.commit();
+            if (connection != null) {
+                connection.close();
+            }
+
+            connection = DriverManager.getConnection(ORACLE_URL, username, password);
+            connection.setAutoCommit(false);
+
+            System.out.println("\nConnected to Oracle!");
+            return true;
         } catch (SQLException e) {
             System.out.println(EXCEPTION_TAG + " " + e.getMessage());
-            rollbackConnection();
+            return false;
         }
     }
+    //
+    private void rollbackConnection() {
+        try  {
+            connection.rollback();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+        }
+    }
+
+
 }
