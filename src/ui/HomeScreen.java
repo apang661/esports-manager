@@ -61,7 +61,7 @@ public class HomeScreen extends JFrame {
                 createUserScreen("analyst");
             }
         });
-        JButton employeeButton = createUserSelectButton("Employee", new AbstractAction() {
+        JButton employeeButton = createUserSelectButton("Organizer", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 createUserScreen("employee");
