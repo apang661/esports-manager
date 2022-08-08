@@ -577,7 +577,7 @@ public class DatabaseConnectionHandler {
         ArrayList<SalesStruct> teamSalesList = new ArrayList<>();
         try {
             String query =
-                    "SELECT Team.name, COUNT(Game.gID) AS totalGames, COUNT(ticketNum) AS totalViewers, SUM(price) AS totalSales " +
+                    "SELECT Team.name, COUNT(DISTINCT Game.gID) AS totalGames, COUNT(ticketNum) AS totalViewers, SUM(price) AS totalSales " +
                             "FROM Team " +
                             "INNER JOIN Game ON Game.btID = Team.tID OR Game.rtID = Team.tID " +
                             "INNER JOIN Ticket ON Game.gID = Ticket.gID " +
