@@ -1083,4 +1083,18 @@ public class DatabaseConnectionHandler {
         }
         return arenas;
     }
+
+    public void addViewer(int newKey, String name) {
+        try {
+            String query = "INSERT INTO Viewer VALUES (?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, newKey);
+            ps.setString(2, name);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
 }

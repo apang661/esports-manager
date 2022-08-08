@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 // A screen GUI template that facilitates the addition of tabs and tab content
 public class AbstractScreen extends JPanel {
-    protected DatabaseConnectionHandler dbHandler = null;
+    protected DatabaseConnectionHandler dbHandler;
     public static final int SCREEN_WIDTH = 800;
     public static final int SCREEN_HEIGHT = 600;
     public static final Color TAB_COLOR = new Color(30, 30, 30);
