@@ -1,11 +1,11 @@
 package ui;
 
 import tabs.EmployeeAchievementPanel;
+import tabs.EmployeeArenaPanel;
 import tabs.EmployeeGamePanel;
 import tabs.EmployeeTeamPanel;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class EmployeeScreen extends AbstractScreen {
     EmployeeTeamPanel teamPanel;
@@ -13,7 +13,6 @@ public class EmployeeScreen extends AbstractScreen {
 
     public EmployeeScreen() {
         super();
-
         addTab("Games", setupGamesPanel());
         addTab("Teams", setupTeamsPanel());
         addTab("Achievements", setupAchievementsPanel());
@@ -27,13 +26,9 @@ public class EmployeeScreen extends AbstractScreen {
     }
 
     private JPanel setupArenasPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.YELLOW);
-        JLabel test = new JLabel("test");
-        panel.add(test);
-        return panel;
+        EmployeeArenaPanel panel = new EmployeeArenaPanel(this);
+        return panel.getPanel();
     }
-
 
 
     private JPanel setupGamesPanel() {
