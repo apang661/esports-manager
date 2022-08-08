@@ -1033,7 +1033,7 @@ public class DatabaseConnectionHandler {
 
     public void addTMRoster(int tmID, Roster r) {
         try {
-            String query = "INSERT INTO partofroster VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO PartOfRoster VALUES (?, ?, ?, ?)";
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
             ps.setString(1, r.getSeason());
             ps.setInt(2, r.getYear());
