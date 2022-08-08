@@ -63,7 +63,7 @@ public class AddGamePopup extends Popup {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        int aId = Integer.parseInt(fields[2].getText());
+        int aId = Integer.parseInt(fields[3].getText());
         Game game = new Game(editor.updateMaxKey("gID", "Game") + 1,Integer.parseInt(fields[1].getText()),
                 aId, Date.valueOf(fields[0].getText()),Integer.parseInt(fields[3].getText()), fields[4].getText(),Integer.parseInt(fields[0].getText().substring(0, 2)));
         editor.getParent().getDbHandler().insertGame(game);
