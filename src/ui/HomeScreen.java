@@ -12,7 +12,7 @@ public class HomeScreen extends JFrame {
     private JPanel userSelect;
 
     public HomeScreen() {
-        super("LOL Tracker");
+        super("LoL Tracker");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         userSelect = createUserSelect();
         add(userSelect, BorderLayout.CENTER);
