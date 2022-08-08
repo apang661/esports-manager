@@ -586,6 +586,7 @@ public class DatabaseConnectionHandler {
                             "INNER JOIN Team Team2 ON Game.rtID = Team2.tID " +
                             "WHERE Ticket.vID IS NOT NULL " +
                             "GROUP BY Team.name " +
+                            "HAVING COUNT(DISTINCT Game.gID) > 1 " +
                             "ORDER BY totalViewers DESC, totalSales DESC";
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
             ResultSet rs = ps.executeQuery();

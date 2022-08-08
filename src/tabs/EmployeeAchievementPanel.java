@@ -34,7 +34,7 @@ public class EmployeeAchievementPanel extends Panel {
 
     private void initSubmit() {
         JButton submit = new CustomButton("Submit");
-        submit.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH * 3/4, 80));
+        submit.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH * 3/4, 50));
         submit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -58,20 +58,27 @@ public class EmployeeAchievementPanel extends Panel {
         JPanel upper = new JPanel(new BorderLayout());
         JLabel title = new JLabel("Add Season Achievments");
         title.setForeground(AbstractScreen.TEXT_COLOR);
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        title.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH * 3/4, 30));
         upper.add(title, BorderLayout.NORTH);
-        upper.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH * 3/4, 40));
+        upper.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH * 3/4, 80));
         seasonInput = new CustomInputField("Season");
-        seasonInput.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH * 3/8, 50));
+        seasonInput.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH * 3/8 - 10, 30));
         upper.add(seasonInput, BorderLayout.LINE_START);
         yearInput = new CustomInputField("Year");
-        seasonInput.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH * 3/8, 50));
+        yearInput.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH * 3/8 - 10, 30));
         upper.add(yearInput, BorderLayout.LINE_END);
+        AbstractScreen.setColors(upper, "m");
+        JLabel controls = new JLabel("RETURN = new place | DELETE = remove place");
+        controls.setForeground(AbstractScreen.TEXT_COLOR);
+        upper.add(controls, BorderLayout.SOUTH);
         panel.add(upper, BorderLayout.NORTH);
     }
 
     private void initMain() {
 
         JPanel teamPanel = new JPanel(new GridBagLayout());
+
         AbstractScreen.setColors(teamPanel, "m");
         addPlace(teamPanel);
         panel.add(teamPanel, BorderLayout.CENTER);
@@ -87,7 +94,7 @@ public class EmployeeAchievementPanel extends Panel {
         placeLabel.setForeground(AbstractScreen.TEXT_COLOR);
         placeLabel.setPreferredSize(new Dimension(50, 50));
         place.add(placeLabel);
-        JTextField teamInput = new CustomInputField("");
+        JTextField teamInput = new CustomInputField("Team ID");
         teams.add(teamInput);
         teamInput.addKeyListener(new KeyListener() {
             @Override
