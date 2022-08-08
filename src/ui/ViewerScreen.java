@@ -5,7 +5,6 @@ import tabs.ViewerTeamPanel;
 import tabs.ViewerTicketsPanel;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class ViewerScreen extends AbstractScreen {
     private int viewerID;
@@ -15,7 +14,6 @@ public class ViewerScreen extends AbstractScreen {
         super();
         this.viewerID = viewerID;
         addTab("Tickets", setupTicketsPanel());
-        addTab("Schedule", setupSchedulePanel());
         addTab("Games", setupGamePanel());
         addTab("Teams", setupTeamPanel());
         displayTab(0);
@@ -29,14 +27,6 @@ public class ViewerScreen extends AbstractScreen {
 
     public ViewerTicketsPanel getTicketsPanel() {
         return ticketsPanel;
-    }
-
-    private JPanel setupSchedulePanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.RED);
-        JLabel test = new JLabel("test");
-        panel.add(test);
-        return panel;
     }
 
     private JPanel setupGamePanel() {

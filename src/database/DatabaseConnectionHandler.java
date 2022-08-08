@@ -577,7 +577,7 @@ public class DatabaseConnectionHandler {
         ArrayList<SalesStruct> teamSalesList = new ArrayList<>();
         try {
             String query =
-                    "SELECT Team.name, COUNT(Game.gID) AS totalGames, COUNT(ticketNum) AS totalViewers, SUM(price) AS totalSales " +
+                    "SELECT Team.name, COUNT(DISTINCT Game.gID) AS totalGames, COUNT(ticketNum) AS totalViewers, SUM(price) AS totalSales " +
                             "FROM Team " +
                             "INNER JOIN Game ON Game.btID = Team.tID OR Game.rtID = Team.tID " +
                             "INNER JOIN Ticket ON Game.gID = Ticket.gID " +
@@ -1047,5 +1047,54 @@ public class DatabaseConnectionHandler {
         }
     }
 
+    public void addArena(Arena a) {
+        try {
+            String query = "INSERT INTO Arena VALUES (?, ?, ?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, a.getArenaID());
+            ps.setString(2, a.getName());
+            ps.setString(3, a.getCity());
+            ps.setInt(4, a.getCapacity());
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
 
+    public ArrayList<Arena> getArenas() {
+        ArrayList<Arena> arenas = new ArrayList<>();
+        String query = "SELECT * FROM Arena " +
+                "ORDER BY aID ASC";
+        try {
+            PreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                arenas.add(new Arena(rs.getInt("aID"),
+                        rs.getString("name"),
+                        rs.getString("city"),
+                        rs.getInt("capacity")));
+            }
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+        return arenas;
+    }
+
+    public void addViewer(int newKey, String name) {
+        try {
+            String query = "INSERT INTO Viewer VALUES (?, ?)";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, newKey);
+            ps.setString(2, name);
+            ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+        }
+    }
 }

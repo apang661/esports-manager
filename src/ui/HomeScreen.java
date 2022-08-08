@@ -1,11 +1,14 @@
 package ui;
 
+import database.DatabaseConnectionHandler;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class HomeScreen extends JFrame {
     public static final String DEFAULT_FONT_NAME = "Helvetica";
+    private final DatabaseConnectionHandler dbHandler;
     private JPanel userSelect;
 
     public HomeScreen() {
@@ -16,6 +19,7 @@ public class HomeScreen extends JFrame {
         pack();
         setVisible(true);
         setResizable(false);
+        dbHandler = new DatabaseConnectionHandler();
     }
 
     private JPanel createUserSelect() {
@@ -37,27 +41,39 @@ public class HomeScreen extends JFrame {
         instructionText.setForeground(Color.white);
         instructionText.setFont(new Font(DEFAULT_FONT_NAME, Font.PLAIN, 18));
 
-        JButton viewerButton = getUserSelectButton("Viewer", new AbstractAction() {
+        JPanel viewerPanel = new JPanel(new GridLayout());
+
+        JButton viewerButton = createUserSelectButton("Viewer", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 createUserScreen("viewer");
             }
         });
-        JButton analystButton = getUserSelectButton("Analyst", new AbstractAction() {
+        JButton newViewerButton = createUserSelectButton("New", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createUserScreen("new viewer");
+            }
+        });
+        JButton analystButton = createUserSelectButton("Analyst", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 createUserScreen("analyst");
             }
         });
-        JButton employeeButton = getUserSelectButton("Employee", new AbstractAction() {
+        JButton employeeButton = createUserSelectButton("Employee", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 createUserScreen("employee");
             }
         });
 
+        viewerPanel.add(viewerButton);
+        viewerPanel.add(newViewerButton);
+        viewerPanel.setOpaque(false);
+
         panel.add(instructionText);
-        panel.add(viewerButton);
+        panel.add(viewerPanel);
         panel.add(analystButton);
         panel.add(employeeButton);
 
@@ -70,7 +86,6 @@ public class HomeScreen extends JFrame {
         if (user.equals("viewer")) {
             String inputValue = JOptionPane.showInputDialog("Please enter your viewer ID:", JOptionPane.QUESTION_MESSAGE);
 
-
             while (true) {
                 try {
                     int viewerID = Integer.parseInt(inputValue);
@@ -80,6 +95,12 @@ public class HomeScreen extends JFrame {
                     inputValue = JOptionPane.showInputDialog("Viewer ID must be an integer. Please try again:", JOptionPane.QUESTION_MESSAGE);
                 }
             }
+        } else if (user.equals("new viewer")) {
+            int newKey = dbHandler.getMaxKey("vID", "Viewer") + 1;
+            String inputValue = JOptionPane.showInputDialog("New viewer ID: " + newKey + ".  Please enter your name:", JOptionPane.QUESTION_MESSAGE);
+            dbHandler.addViewer(newKey, inputValue);
+            mainScreen = new ViewerScreen(newKey);
+
         } else if (user.equals("analyst")) {
             mainScreen = new AnalystScreen();
         } else {
@@ -91,7 +112,7 @@ public class HomeScreen extends JFrame {
         pack();
     }
 
-    private JButton getUserSelectButton(String label, Action action) {
+    private JButton createUserSelectButton(String label, Action action) {
         JButton button = new JButton(action);
         button.setText(label);
         button.setMargin(new Insets(10, 0, 10, 0));
