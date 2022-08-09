@@ -18,6 +18,7 @@ public class BuyTicketPopup extends Popup {
     public BuyTicketPopup(ViewerGamePanel viewerGamePanel, int gameID, int viewerID, ViewerScreen parent) {
         super(viewerGamePanel, "Buy Ticket", gameID, viewerID);
         this.parent = parent;
+        initializePrompts();
     }
 
     @Override

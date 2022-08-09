@@ -1,16 +1,20 @@
 package ui;
 
 import database.DatabaseConnectionHandler;
+import popups.PlayerPopup;
+import utils.CustomInputField;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 // A screen GUI template that facilitates the addition of tabs and tab content
-public class AbstractScreen extends JPanel {
-    protected DatabaseConnectionHandler dbHandler;
+public class AbstractScreen extends JPanel implements KeyListener {
+    protected static DatabaseConnectionHandler dbHandler;
     public static final int SCREEN_WIDTH = 800;
     public static final int SCREEN_HEIGHT = 600;
     public static final Color TAB_COLOR = new Color(30, 30, 30);
@@ -24,6 +28,9 @@ public class AbstractScreen extends JPanel {
     ArrayList<JPanel> tabPanels;
     int visibleTabIndex;
     JPanel contentPanel;
+    private JComboBox dropDown;
+    private JComboBox attributeDrop;
+    private CustomInputField input;
 
     public AbstractScreen() {
         dbHandler = new DatabaseConnectionHandler();
@@ -62,12 +69,13 @@ public class AbstractScreen extends JPanel {
     }
 
     private JPanel setupTabBar() {
+        JPanel sideBarParent = new JPanel(new BorderLayout());
         JPanel sideBar = new JPanel(new GridBagLayout());
+        sideBarParent.add(sideBar, BorderLayout.CENTER);
         sideBar.setPreferredSize(new Dimension(SCREEN_WIDTH / 4, SCREEN_HEIGHT));
         sideBar.setBackground(TAB_COLOR);
 
         GridBagConstraints gbc = new GridBagConstraints();
-
         tabBar = new JPanel();
         tabBar.setLayout(new GridBagLayout());
         tabBar.setBackground(TAB_COLOR);
@@ -88,7 +96,9 @@ public class AbstractScreen extends JPanel {
         JPanel panel = new JPanel();
         sideBar.add(panel, gbc);
         panel.setBackground(TAB_COLOR);
-        return sideBar;
+        sideBarParent.add(memberSearch(), BorderLayout.SOUTH);
+
+        return sideBarParent;
     }
 
     protected void addTab(String tabName, JPanel tabPanel) {
@@ -153,4 +163,48 @@ public class AbstractScreen extends JPanel {
         comp.setFont(new Font(HomeScreen.DEFAULT_FONT_NAME, Font.BOLD, fontSize));
     }
 
+    public JPanel memberSearch() {
+        String[] options = {"Player", "Staff"};
+        dropDown = new JComboBox(options);
+        setColors(dropDown, "m");
+        String[] attributes = {"id", "name","age"};
+        attributeDrop = new JComboBox(attributes);
+        setColors(attributeDrop, "m");
+        input = new CustomInputField("");
+        JPanel top = new JPanel(new BorderLayout());
+        JLabel title = new JLabel("Search Team Member");
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        title.setForeground(TEXT_COLOR);
+        top.add(title, BorderLayout.NORTH);
+        top.add(dropDown, BorderLayout.LINE_START);
+        top.add(attributeDrop, BorderLayout.LINE_END);
+        setColors(top, "m");
+        JPanel memberSearch = new JPanel(new BorderLayout());
+        memberSearch.add(top, BorderLayout.NORTH);
+        memberSearch.add(input, BorderLayout.CENTER);
+        input.addKeyListener(this);
+        memberSearch.setPreferredSize(new Dimension(AbstractScreen.SCREEN_WIDTH/4, 90));
+        setColors(memberSearch, "m");
+        return memberSearch;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int key = e.getKeyCode();
+        if (key == KeyEvent.VK_ENTER) {
+            ArrayList<Integer> ids = dbHandler.getTeamMemberAttr((String)
+                    dropDown.getSelectedItem(),(String) attributeDrop.getSelectedItem(), Integer.parseInt(input.getText()));
+            new PlayerPopup(this, ids, (String)
+                    dropDown.getSelectedItem());
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
 }

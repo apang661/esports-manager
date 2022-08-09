@@ -15,6 +15,7 @@ public class AddGamePopup extends Popup {
     private JTextField[] fields;
     public AddGamePopup(Panel e) {
         super(e, "Add Game");
+        initializePrompts();
     }
 
     @Override

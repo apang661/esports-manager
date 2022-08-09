@@ -1001,4 +1001,58 @@ public class DatabaseConnectionHandler {
     }
 
 
+    public ArrayList<Integer> getTeamMemberAttr(String table, String attr, int id) {
+        ArrayList<Integer> ids = new ArrayList<>();
+        try {
+            String query = "SELECT t.tmid FROM " + table +" p, TeamMember t WHERE p.tmid=t.tmid AND " + attr + " = ?";
+            System.out.println(query);
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ids.add(rs.getInt("tmid"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+            throw new RuntimeException(e.getMessage());
+        }
+        return ids;
+    }
+
+    public ArrayList<String> getTeamMemberDescrip(int id, ArrayList<String> attrs, String setting) {
+        ArrayList<String> stuff = new ArrayList<>();
+        try {
+            String query = "SELECT " ;
+            for (int i = 0; i < attrs.size(); i++) {
+                if (i == 0) {
+                    query += attrs.get(i);
+                } else query += ", " + attrs.get(i);
+            }
+            query += " FROM TeamMember t, " + setting + " p WHERE t.tmid = p.tmid AND t.tmid = ?";
+            System.out.println(query);
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                for (String s : attrs) {
+                    if (s.equals("t.tmid"))
+                        stuff.add(String.valueOf(rs.getInt("tmid")));
+                    else if (s.equals("age"))
+                        stuff.add(String.valueOf(rs.getInt(s)));
+                    else stuff.add(rs.getString(s));
+                }
+
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+            throw new RuntimeException(e.getMessage());
+        }
+        return stuff;
+    }
 }

@@ -12,6 +12,7 @@ public abstract class Popup extends JFrame implements ActionListener {
     protected static final int POPUP_WIDTH = 250;
     protected static final int POPUP_HEIGHT = 200;
     protected tabs.Panel editor;
+    protected AbstractScreen otherEditor;
     protected JPanel main;
     protected int sequence;
     protected int gameID;
@@ -26,6 +27,12 @@ public abstract class Popup extends JFrame implements ActionListener {
         initializeGraphics();
     }
 
+    public Popup(AbstractScreen e, String name) {
+        super(name);
+        otherEditor = e;
+        sequence = 0;
+        initializeGraphics();
+    }
     // used by BuyTicketPopup
     public Popup(Panel e, String name, int gameID, int viewerID) {
         super(name);
@@ -46,7 +53,6 @@ public abstract class Popup extends JFrame implements ActionListener {
         setResizable(false);
         setVisible(true);
         setDefaultCloseOperation(Popup.DISPOSE_ON_CLOSE);
-        initializePrompts();
     }
 
     // MODIFIES: this

@@ -15,6 +15,7 @@ public class AddTeamPopup extends Popup{
     JTextField nameInput;
     public AddTeamPopup(Panel e) {
         super(e, "Add Team");
+        initializePrompts();
 
     }
 
