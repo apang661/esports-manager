@@ -23,7 +23,7 @@ public class DatabaseConnectionHandler {
 	private Connection connection = null;
 
 	public DatabaseConnectionHandler() {
-        login("ora_apang11", "a23413743");
+        login("ora_dennis34 ", "a94349206");
 		try {
 			// Load the Oracle JDBC driver
 			// Note that the path could change for new drivers
@@ -483,9 +483,9 @@ public class DatabaseConnectionHandler {
     public ArrayList<String> getWinningTeam() {
         ArrayList<String> winteam = new ArrayList<>();
         try {
-            String query = "SELECT tID as tID, SUM(wins) AS wintotal" +
-                    "FROM Roster r" +
-                    "GROUP BY tID" +
+            String query = "SELECT tID as tID, SUM(wins) AS wintotal " +
+                    "FROM Roster r " +
+                    "GROUP BY tID " +
                     "HAVING SUM(r.wins) >= ALL (SELECT SUM(wins) FROM Roster GROUP BY tID)";
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
             ResultSet rs = ps.executeQuery();
