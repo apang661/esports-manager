@@ -480,7 +480,28 @@ public class DatabaseConnectionHandler {
         }
         return staff;
     }
-
+    public ArrayList<String> getWinningTeam() {
+        ArrayList<String> winteam = new ArrayList<>();
+        try {
+            String query = "SELECT tID as tID, SUM(wins) AS wintotal\n" +
+                    "FROM Roster r\n" +
+                    "GROUP BY tID\n" +
+                    "HAVING SUM(r.wins) = (SELECT DISTINCT SUM(wins) FROM Roster GROUP BY tID FETCH FIRST 1 ROW ONLY )";
+            PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                winteam.add(getTeam(rs.getInt("tID")).getName());
+                winteam.add(String.valueOf(rs.getInt("wintotal")));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
+            throw new RuntimeException(e.getMessage());
+        }
+        return winteam;
+    }
     public ArrayList<Roster> getRosters(int tID) {
         ArrayList<Roster> rosters = new ArrayList<>();
         try {

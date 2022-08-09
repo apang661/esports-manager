@@ -83,7 +83,7 @@ public class EmployeeGamePanel extends Panel {
     private void addSearchBar() {
         JPanel searchBar = new JPanel(new BorderLayout());
         AbstractScreen.setColors(searchBar, "m");
-        searchBar.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 50));
+        searchBar.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 70));
         JTextField search = new CustomInputField("Search");
         AbstractScreen.setColors(search, "s");
         search.setText("Search");
@@ -119,6 +119,13 @@ public class EmployeeGamePanel extends Panel {
         });
         searchBar.add(submit, BorderLayout.EAST);
         panel.add(searchBar, BorderLayout.NORTH);
+        ArrayList<String> winningteam = parent.getDbHandler().getWinningTeam();
+        String winningText = "Best Team of All Time: " + winningteam.get(0) + "  |  Wins: " + winningteam.get(1);
+        JLabel winningLabel = new JLabel(winningText);
+        winningLabel.setForeground(Color.ORANGE);
+        winningLabel.setPreferredSize(new Dimension(SCREEN_WIDTH * 3/4, 20));
+        winningLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        searchBar.add(winningLabel, BorderLayout.SOUTH);
     }
 
 
