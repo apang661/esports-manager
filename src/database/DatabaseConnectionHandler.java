@@ -483,10 +483,10 @@ public class DatabaseConnectionHandler {
     public ArrayList<String> getWinningTeam() {
         ArrayList<String> winteam = new ArrayList<>();
         try {
-            String query = "SELECT tID as tID, SUM(wins) AS wintotal\n" +
-                    "FROM Roster r\n" +
-                    "GROUP BY tID\n" +
-                    "HAVING SUM(r.wins) = (SELECT DISTINCT SUM(wins) FROM Roster GROUP BY tID FETCH FIRST 1 ROW ONLY )";
+            String query = "SELECT tID as tID, SUM(wins) AS wintotal " +
+                    "FROM Roster r " +
+                    "GROUP BY tID " +
+                    "HAVING SUM(r.wins) >= ALL (SELECT SUM(wins) FROM Roster GROUP BY tID)";
             PrintablePreparedStatement ps = new PrintablePreparedStatement(connection.prepareStatement(query), query, false);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
