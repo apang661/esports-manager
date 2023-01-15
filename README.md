@@ -1,4 +1,6 @@
-LoL Tracker is an application dedicated to all members of the professional League of Legends ecosystem. Viewers can buy tickets and look up their favourite teams and players, organizers can easily add and update information, and analysts can examine statistics and trends that have occurred throughout the league’s history. Built using the Oracle database system on Java/JDBC, LoL Tracker includes three user interfaces: viewers and fans, analysts, and league organizers.
+# Esports League Tracker
+
+Esports League Tracker is an application dedicated to all members of the professional League of Legends ecosystem. Viewers can buy tickets and look up their favourite teams and players, organizers can easily add and update information, and analysts can examine statistics and trends that have occurred throughout the league’s history. Built using the Oracle database system on Java/JDBC, LoL Tracker includes three user interfaces: viewers and fans, analysts, and league organizers.
 
 Overall, our project has accomplished these main goals:
 * Provide a multi-faceted esports league application and DBMS for viewers of the league, employees and analysts
